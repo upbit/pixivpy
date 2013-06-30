@@ -1,8 +1,8 @@
 """
 Pixiv API library
 """
-__version__ = '0.1'
+__version__ = '0.2'
 
-from pixivpy.parsers import Image, ImageParser
-from pixivpy.binder import bind_api
-from pixivpy.api import PixivAPI
+from parsers import Image, ImageParser
+from binder import bind_api
+from api import PixivAPI

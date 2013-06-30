@@ -19,13 +19,28 @@ class PixivAPI(object):
 		allowed_param = ['mode','pixiv_id','pass','skip'],
 	)
 
+	# content: [all, male, female, original]
+	# mode: [day, week, month]
+	# p: [1-n]
 	ranking = bind_api(
 		path = 'ranking.php',
 		allowed_param = ['content','mode','p'],
 		parser = ImageParser(),
 		payload_list = True,
 	)
-	
+
+	# Date_Year: 2013
+	# Date_Month: 01
+	# Date_Day: 01
+	# mode: [daily, weekly, monthly, male, female]
+	# p: [1-n]
+	ranking_log = bind_api(
+		path = 'ranking_log.php',
+		allowed_param = ['Date_Year','p','mode','Date_Month','Date_Day'],
+		parser = ImageParser(),
+		payload_list = True,
+	)
+
 	get_illust = bind_api(
 		path = 'illust.php',
 		allowed_param = ['illust_id'],
