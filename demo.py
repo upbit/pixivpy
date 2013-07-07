@@ -21,8 +21,8 @@ def main():
 	#illust = api.get_illust(36503804)
 	#print ">>> %d %s" % (illust.authorId, illust.mobileURL)
 
-	#print ">>> get_member(2471433, page=1)"
-	#illust_list = api.get_member(2471433, 1)
+	#print ">>> get_member(176223, page=1)"
+	#illust_list = api.get_member(176223, 1)
 	#for img in illust_list:
 	#	print img
 	
@@ -36,6 +36,7 @@ def main():
 	rank_list = api.ranking_log('2013',1,'monthly','05','15')
 	for img in rank_list:
 		print img
+
 
 if __name__ == '__main__':
 	main()

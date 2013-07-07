@@ -3,6 +3,23 @@
 
 import StringIO
 
+def payload_to_list(payload):
+	result = []
+	offset = 0
+	length = 0
+	tmp_payload = payload.replace("\\\"", "`").strip()
+	while offset < len(tmp_payload):
+		if (tmp_payload[offset] == "\""):		# ,"xxx",
+			length = tmp_payload[offset+1:].find("\"")
+			result.append(tmp_payload[offset+1:offset+1+length])
+			offset = offset + length + 3
+		elif (tmp_payload[offset] == ","):		# ,,
+			result.append("")
+			offset += 1
+		else:
+			raise Exception("[off:%d] '%s' error: %s" % (offset, tmp_payload[offset], tmp_payload))
+	return result
+
 class Image(object):
 	def __str__(self):
 		return "authorId=%d, id=%d, title=%s, point=%d, mobileURL: %s" % (self.authorId, self.id, self.title, self.point, self.mobileURL)
@@ -15,9 +32,9 @@ class ImageParser(object):
 		if len(payload.strip()) > 17:
 			# from http://sourceforge.jp/projects/pxv/scm/svn/blobs/head/trunk/src/pxv/Image.java
 			# illust_id, id, type, title, server, name, thumbnail,,, mobile,,, date, tags, use_tool, ranking, total, views, description,,,, unknow1, unknow2, user_name,, unknow3,,, head,
-			
+
 			try:
-				data = [ str[1:-1] for str in payload.split(',') ]
+				data = payload_to_list(payload)
 
 				image_obj.id = int(data[0])
 				image_obj.authorId = int(data[1])
@@ -39,7 +56,7 @@ class ImageParser(object):
 				image_obj.imageURL = "%s%s.%s" % (image_obj.mobileURL[0:image_obj.mobileURL.rfind("/mobile/")+1], image_obj.id, image_obj.ext)
 
 			except Exception, e:
-				raise Exception('Failed to unpack data: %s' % e)
+				raise Exception('Failed to unpack data: %s\n%s' % (e, payload))
 
 		return image_obj
 
