@@ -7,7 +7,8 @@ def payload_to_list(payload):
 	result = []
 	offset = 0
 	length = 0
-	tmp_payload = payload.replace("\\\"", "`").strip()
+	# replace "" to `
+	tmp_payload = payload.replace("\"\"", "`").strip()
 	while offset < len(tmp_payload):
 		if (tmp_payload[offset] == "\""):		# ,"xxx",
 			length = tmp_payload[offset+1:].find("\"")
@@ -17,7 +18,7 @@ def payload_to_list(payload):
 			result.append("")
 			offset += 1
 		else:
-			raise Exception("[off:%d] '%s' error: %s" % (offset, tmp_payload[offset], tmp_payload))
+			raise Exception("[off:%d] '%s' error: %s" % (offset, tmp_payload[offset:offset+8], tmp_payload))
 	return result
 
 class Image(object):
