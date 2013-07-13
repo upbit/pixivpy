@@ -18,13 +18,13 @@ def main():
 	#for img in rank_list:
 	#	print img
 
-	#illust = api.get_illust(36503804)
-	#print ">>> %d %s" % (illust.authorId, illust.mobileURL)
+	illust = api.get_illust(36492710)
+	print ">>> %d %d %s %s" % (illust.authorId, illust.pages, illust.mobileURL, illust.pageURL)
 
-	print ">>> get_member(1184799, page=1)"
-	illust_list = api.get_member(1184799, 1)
-	for img in illust_list:
-		print img
+	#print ">>> get_member(1184799, page=1)"
+	#illust_list = api.get_member(326359, 1)
+	#for img in illust_list:
+	#	print img
 	
 	### Authentication required! call api.login first!
 	#print ">>> get_bookmark(1418182, page=1)"

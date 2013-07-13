@@ -52,9 +52,21 @@ class ImageParser(object):
 				image_obj.point = int(data[16])
 				image_obj.views = int(data[17])
 				image_obj.comment = data[18]
+				try:
+					image_obj.pages = int(data[19])
+				except ValueError, e:
+					image_obj.pages = 0
 
 				image_obj.url = "http://www.pixiv.net/member_illust.php?mode=medium&illust_id=%s" % image_obj.id
-				image_obj.imageURL = "%s%s.%s" % (image_obj.mobileURL[0:image_obj.mobileURL.rfind("/mobile/")+1], image_obj.id, image_obj.ext)
+				base_url = image_obj.mobileURL[0:image_obj.mobileURL.rfind("/mobile/")+1]
+				image_obj.imageURL = "%s%s.%s" % (base_url, image_obj.id, image_obj.ext)
+
+				image_obj.pageURL = []
+				if (image_obj.pages > 0):
+					for i in range(image_obj.pages):
+						image_obj.pageURL.append("%s%s_big_p%d.%s" % (base_url, image_obj.id, i, image_obj.ext))
+				else:
+					image_obj.pageURL.append(image_obj.imageURL)
 
 			except Exception, e:
 				raise Exception('Failed to unpack data: %s\n%s' % (e, payload))
