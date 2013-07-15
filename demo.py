@@ -18,7 +18,7 @@ def main():
 	#for img in rank_list:
 	#	print img
 
-	illust = api.get_illust(36492710)
+	illust = api.get_illust(37026258)
 	print ">>> %d %d %s %s" % (illust.authorId, illust.pages, illust.mobileURL, illust.pageURL)
 
 	#print ">>> get_member(1184799, page=1)"

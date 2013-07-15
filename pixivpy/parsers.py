@@ -29,11 +29,11 @@ class ImageParser(object):
 
 	@classmethod
 	def parse(self, payload):
-		image_obj = Image()
 		if len(payload.strip()) > 17:
+			image_obj = Image()
+
 			# from http://sourceforge.jp/projects/pxv/scm/svn/blobs/head/trunk/src/pxv/Image.java
 			# illust_id, id, type, title, server, name, thumbnail,,, mobile,,, date, tags, use_tool, ranking, total, views, description,,,, unknow1, unknow2, user_name,, unknow3,,, head,
-
 			try:
 				data = payload_to_list(payload)
 
@@ -71,7 +71,11 @@ class ImageParser(object):
 			except Exception, e:
 				raise Exception('Failed to unpack data: %s\n%s' % (e, payload))
 
-		return image_obj
+			return image_obj
+
+		else:	# payload maybe null
+			return None
+
 
 	@classmethod
 	def parse_list(self, payload):
