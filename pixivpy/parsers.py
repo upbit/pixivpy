@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # Pixiv API
 # modify from tweepy (https://github.com/tweepy/tweepy/)
 
@@ -86,3 +88,46 @@ class ImageParser(object):
 			if (not line): break
 			result.append(self.parse(line))
 		return result
+
+
+class User(object):
+	def __str__(self):
+		return "authorId=%d, authorName=%s, username=%s, thumbURL: %s" % (self.authorId, self.authorName, self.username, self.thumbURL)
+
+class UserParser(object):
+
+	@classmethod
+	def parse(self, payload):
+		if len(payload.strip()) > 26:
+			user_obj = User()
+
+			# ,"428027",,,,"瑠奈璃亜","http://i1.pixiv.net/img21/profile/lunalia/mobile/2791844_58.jpg",,,,,,,,,,,,,,,,,,"lunalia",,
+			try:
+				data = payload_to_list(payload)
+
+				user_obj.authorId = int(data[1])
+				user_obj.authorName = data[5]
+				user_obj.thumbURL = data[6]
+				user_obj.username = data[24]
+
+				user_obj.url = "http://www.pixiv.net/member.php?id=%s" % user_obj.authorId
+
+			except Exception, e:
+				raise Exception('Failed to unpack data: %s\n%s' % (e, payload))
+
+			return user_obj
+
+		else:	# payload maybe null
+			return None
+
+
+	@classmethod
+	def parse_list(self, payload):
+		finput = StringIO.StringIO(payload)
+		result = []
+		while True:
+			line = finput.readline()
+			if (not line): break
+			result.append(self.parse(line))
+		return result
+

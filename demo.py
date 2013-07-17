@@ -7,8 +7,8 @@ _USERNAME = "username"
 _PASSWORD = "password"
 
 def main():
-	api = PixivAPI()
-	#api = PixivAPI(host="127.0.0.1", port=8888)    # for proxy
+	#api = PixivAPI()
+	api = PixivAPI(host="127.0.0.1", port=8888)    # for proxy
 
 	### change _USERNAME,_PASSWORD first!
 	#api.login("login", _USERNAME, _PASSWORD, 0)
@@ -18,7 +18,7 @@ def main():
 	#for img in rank_list:
 	#	print img
 
-	illust = api.get_illust(37026258)
+	illust = api.get_illust(37006153)
 	print ">>> %d %d %s %s" % (illust.authorId, illust.pages, illust.mobileURL, illust.pageURL)
 
 	#print ">>> get_member(1184799, page=1)"
@@ -37,6 +37,14 @@ def main():
 	#for img in rank_list:
 	#	print img
 
+	#print ">>> get_user(level=3, id=1184799)"
+	#user = api.get_user(3, 1184799)
+	#print "%s: %s" % (user.authorName, user.thumbURL)
+
+	#print ">>> get_mypixiv_all(id=428027, p=1)"
+	#user_list = api.get_mypixiv_all(428027, 1)
+	#for usr in user_list:
+	#	print usr
 
 if __name__ == '__main__':
 	main()

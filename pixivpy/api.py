@@ -2,7 +2,7 @@
 # modify from tweepy (https://github.com/tweepy/tweepy/)
 
 from pixivpy.binder import bind_api
-from pixivpy.parsers import ImageParser
+from pixivpy.parsers import ImageParser, UserParser
 
 class PixivAPI(object):
 	def __init__(self, host="spapi.pixiv.net", port=80, compression=True, timeout=60):
@@ -61,3 +61,20 @@ class PixivAPI(object):
 		parser = ImageParser(),
 		payload_list = True,
 	)
+
+	# level: 3
+	get_user = bind_api(
+		path = 'user.php',
+		allowed_param = ['level','user_id'],
+		parser = UserParser(),
+	)
+
+	# id: authorId
+	# p: [1-n]
+	get_mypixiv_all = bind_api(
+		path = 'mypixiv_all.php',
+		allowed_param = ['id','p'],
+		parser = UserParser(),
+		payload_list = True,
+	)
+
