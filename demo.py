@@ -1,14 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import time
 from pixivpy import *
 
 _USERNAME = "username"
 _PASSWORD = "password"
 
 def main():
-	#api = PixivAPI()
-	api = PixivAPI(host="127.0.0.1", port=8888)    # for proxy
+	api = PixivAPI()
+	#api = PixivAPI(host="127.0.0.1", port=8888)    # for proxy
 
 	### change _USERNAME,_PASSWORD first!
 	#api.login("login", _USERNAME, _PASSWORD, 0)
@@ -22,9 +23,9 @@ def main():
 	print ">>> %d %d %s %s" % (illust.authorId, illust.pages, illust.mobileURL, illust.pageURL)
 
 	#print ">>> get_member(1184799, page=1)"
-	#illust_list = api.get_member(326359, 1)
-	#for img in illust_list:
-	#	print img
+	#illust_list = api.get_member(428027, 1)
+	#for idx, img in enumerate(illust_list):
+	#	print "[%d] %s" % (idx+1, img)
 	
 	### Authentication required! call api.login first!
 	#print ">>> get_bookmark(1418182, page=1)"

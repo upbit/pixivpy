@@ -23,6 +23,12 @@ def payload_to_list(payload):
 			raise Exception("[off:%d] '%s' error: %s" % (offset, tmp_payload[offset:offset+8], tmp_payload))
 	return result
 
+def get_integer(str_data, default=0):
+	try:
+		return int(str_data)
+	except ValueError, e:
+		return default
+
 class Image(object):
 	def __str__(self):
 		return "authorId=%d, id=%d, title=%s, point=%d, mobileURL: %s" % (self.authorId, self.id, self.title, self.point, self.mobileURL)
@@ -54,10 +60,8 @@ class ImageParser(object):
 				image_obj.point = int(data[16])
 				image_obj.views = int(data[17])
 				image_obj.comment = data[18]
-				try:
-					image_obj.pages = int(data[19])
-				except ValueError, e:
-					image_obj.pages = 0
+				image_obj.pages = get_integer(data[19])
+				image_obj.bookmarks = get_integer(data[22])
 
 				image_obj.url = "http://www.pixiv.net/member_illust.php?mode=medium&illust_id=%s" % image_obj.id
 				base_url = image_obj.mobileURL[0:image_obj.mobileURL.rfind("/mobile/")+1]
