@@ -44,9 +44,7 @@ def bind_api(**config):
 			if (self.require_auth):
 				self.parameters.append(("PHPSESSID", self.api.session))
 			for idx, arg in enumerate(args):
-				if arg is None:
-					continue
-
+				if arg is None: continue
 				try:
 					self.parameters.append((self.allowed_param[idx], convert_to_utf8_str(arg)))
 				except IndexError:
@@ -72,10 +70,14 @@ def bind_api(**config):
 			except Exception, e:
 				raise Exception('Failed to send request: %s' % e)
 
-			# handle login 302 and get PHPSESSID
-			if resp.status in (301,302,) and (self.save_session):
+			# handle redirect
+			if resp.status in (301,302,) and self.save_session:
 				redirect_url = resp.getheader('location', '')
-				self.api.session = redirect_url[redirect_url.rfind("PHPSESSID")+len("PHPSESSID")+1:]
+				if resp.getheader('Set-Cookie'):
+					session_string = resp.getheader('Set-Cookie').split(';')[0]
+					self.api.session = session_string.split('=')[1].strip()
+				else:
+					self.api.session = redirect_url[redirect_url.rfind("PHPSESSID")+len("PHPSESSID")+1:]
 				return self.api.session
 
 			if resp.status != 200:

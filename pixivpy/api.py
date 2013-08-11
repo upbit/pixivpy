@@ -13,6 +13,11 @@ class PixivAPI(object):
 		self.timeout = timeout
 		self.session = None
 
+	def set_session(self, PHPSESSID):
+		"""Pixiv PHPSESSID expires in one hour"""
+		self.session = PHPSESSID
+		return self.session
+
 	login = bind_api(
 		save_session = True,
 		path = 'login.php',

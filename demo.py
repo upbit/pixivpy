@@ -25,7 +25,7 @@ def main():
 	#print ">>> get_member(1184799, page=1)"
 	#illust_list = api.get_member(428027, 1)
 	#for idx, img in enumerate(illust_list):
-	#	print "[%d] %s" % (idx+1, img)
+	#	print "[%d] bookmarks=%d, %s" % (idx+1, img.bookmarks, img)
 	
 	### Authentication required! call api.login first!
 	#print ">>> get_bookmark(1418182, page=1)"
