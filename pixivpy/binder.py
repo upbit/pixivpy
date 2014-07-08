@@ -5,6 +5,7 @@ import re
 import gzip
 import urllib
 import httplib
+import StringIO		# fix 'global name 'StringIO' is not defined' BUG
 
 def convert_to_utf8_str(arg):
 	# written by Michael Norton (http://docondev.blogspot.com/)
@@ -87,7 +88,7 @@ def bind_api(**config):
 			body = resp.read()
 			if resp.getheader('Content-Encoding', '') == 'gzip':
 				try:
-					zipper = gzip.GzipFile(fileobj=StringIO(body))
+					zipper = gzip.GzipFile(fileobj=StringIO.StringIO(body))
 					body = zipper.read()
 				except Exception, e:
 					raise Exception('Failed to decompress data: %s' % e)
