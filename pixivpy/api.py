@@ -18,6 +18,7 @@ class PixivAPI(object):
 		self.session = PHPSESSID
 		return self.session
 
+	# WARNNING: login API no longer exists, it return 404 Not Found
 	login = bind_api(
 		save_session = True,
 		path = 'login.php',

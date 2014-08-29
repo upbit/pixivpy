@@ -123,7 +123,7 @@ class UserParser(object):
 
 			# ,"428027",,,,"瑠奈璃亜","http://i1.pixiv.net/img21/profile/lunalia/mobile/2791844_58.jpg",,,,,,,,,,,,,,,,,,"lunalia",,
 			try:
-				data = payload_to_list(payload)
+				data = payload_to_list2(payload)
 
 				user_obj.authorId = int(data[1])
 				user_obj.authorName = data[5]
