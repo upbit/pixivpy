@@ -12,3 +12,5 @@ api = PixivAPI()
 illust = api.get_illust(36503804)
 print illust
 ~~~~~
+
+Find Pixiv API in Objective-C? You might also like [PixivAPI_iOS](https://github.com/upbit/PixivAPI_iOS)
