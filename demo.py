@@ -20,12 +20,12 @@ def main():
 	#	print img
 
 	illust = api.get_illust(37006153)
-	print ">>> %d %d %s %s" % (illust.authorId, illust.pages, illust.mobileURL, illust.pageURL)
+	print(">>> %d %d %s" % (illust.illust_id, illust.pages, illust.url))
 
 	#print ">>> get_member(1184799, page=1)"
 	#illust_list = api.get_member(428027, 1)
 	#for idx, img in enumerate(illust_list):
-	#	print "[%d] bookmarks=%d, %s" % (idx+1, img.bookmarks, img)
+	#	print "[%d] bookmarks=%d, %s" % (idx+1, img.cnt_bookmark, img)
 	
 	### Authentication required! call api.login first!
 	#print ">>> get_bookmark(1418182, page=1)"
@@ -40,7 +40,7 @@ def main():
 
 	#print ">>> get_user(level=3, id=1184799)"
 	#user = api.get_user(3, 1184799)
-	#print "%s: %s" % (user.authorName, user.thumbURL)
+	#print "%s: %s" % (user.dispname, user.pic)
 
 	#print ">>> get_mypixiv_all(id=428027, p=1)"
 	#user_list = api.get_mypixiv_all(428027, 1)
