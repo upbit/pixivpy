@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 # Pixiv API
 # modify from tweepy (https://github.com/tweepy/tweepy/)
 

@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 
 # Pixiv API
 
 from csv import reader
-from .compat import StringIO, urlencode
+from .compat import StringIO, urlencode, py2
 from datetime import datetime
 
 
@@ -44,8 +45,19 @@ def csv(data):
 		yield row
 
 
+class PixivObject(object):
+	def __bytes__(self):
+		return b''
+
+	def __unicode__(self):
+		return ''
+
+	def __str__(self):
+		return self.__bytes__() if py2 else self.__unicode__()
+
+
 class Parser(object):
-	model = object
+	model = PixivObject
 	keys = ()
 
 	def __call__(self, data, *args, **kwargs):
@@ -53,7 +65,7 @@ class Parser(object):
 		return [kv_populate(obj, self.keys, row) for row in csv(data)]
 
 
-class Image(object):
+class Image(PixivObject):
 	illust_id = 0
 	r18 = False
 	pages = 0
@@ -85,8 +97,13 @@ class Image(object):
 		params = urlencode((('mode', 'medium'), ('illust_id', self.illust_id)))
 		return '?'.join((base, params))
 
-	def __str__(self):
-		return self.title
+	def __bytes__(self):
+		if isinstance(self.title, text_type):
+			return self.title.encode('utf-8')
+		return self.title or b''
+
+	def __unicode__(self):
+		return self.title or ''
 
 	def __repr__(self):
 		fmt = (self.__class__.__name__, self.illust_id, self.title)
@@ -130,7 +147,7 @@ class ImageParser(Parser):
 	)
 
 
-class User(object):
+class User(PixivObject):
 	uid = 0
 	dispname = None
 	name = None
@@ -142,8 +159,13 @@ class User(object):
 		params = urlencode({'id': self.uid})
 		return '?'.join((base, params))
 
-	def __str__(self):
-		return self.dispname
+	def __bytes__(self):
+		if isinstance(self.dispname, text_type):
+			return self.dispname.encode('utf-8')
+		return self.dispname or b''
+
+	def __unicode__(self):
+		return self.dispname or ''
 
 	def __repr__(self):
 		class_name = self.__class__.__name__
