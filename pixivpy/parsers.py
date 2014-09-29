@@ -2,7 +2,7 @@
 
 # Pixiv API
 
-import csv
+from csv import reader
 from .compat import StringIO
 from datetime import datetime
 
@@ -30,6 +30,21 @@ def kv_populate(obj, keys, values):
 			setattr(obj, k[0], cast(v, k[1], k[2]))
 
 	return obj
+
+def csv(data):
+	if not data:
+		return
+		yield
+
+	for row in reader(StringIO(data)):
+		yield row
+
+class Parser(object):
+	model = object
+	keys = ()
+
+	def __call__(self, data, *args, **kwargs):
+		return [kv_populate(self.model(*args, **kwargs), self.keys, row) for row in csv(data)]
 
 class Image(object):
 	illust_id = 0
@@ -64,7 +79,8 @@ class Image(object):
 	def __str__(self):
 		return "uid=%d, id=%d, title=%s, score=%d, r18=%s, url: %s" % (self.user_id, self.illust_id, self.title, self.cnt_score, self.r18, self.url)
 
-class ImageParser(object):
+class ImageParser(Parser):
+	model = Image
 	keys = (
 		("illust_id",     int,    0),
 		("user_id",       int,    0),
@@ -99,23 +115,6 @@ class ImageParser(object):
 		None,
 	)
 
-	@classmethod
-	def parse(self, payload):
-		for row in csv.reader(StringIO(payload)):
-			return kv_populate(Image(), self.keys, row)
-
-		return None
-
-	@classmethod
-	def parse_list(self, payload):
-		result = []
-
-		for row in csv.reader(StringIO(payload)):
-			result.append(kv_populate(Image(), self.keys, row))
-
-		return result
-
-
 class User(object):
 	uid = 0
 	dispname = None
@@ -129,7 +128,8 @@ class User(object):
 	def __str__(self):
 		return "uid=%d, dispname=%s, name=%s, pic: %s" % (self.uid, self.disp, self.name, self.pic)
 
-class UserParser(object):
+class UserParser(Parser):
+	model = User
 	keys = (
 		None,
 		("uid",      int,  0),
@@ -145,19 +145,3 @@ class UserParser(object):
 		("name",     str,  None),
 		None,
 	)
-
-	@classmethod
-	def parse(self, payload):
-		for row in csv.reader(StringIO(payload)):
-			return kv_populate(User(), self.keys, row)
-
-		return None
-
-	@classmethod
-	def parse_list(self, payload):
-		result = []
-
-		for row in csv.reader(StringIO(payload)):
-			result.append(kv_populate(User(), self.keys, row))
-
-		return result

@@ -96,10 +96,10 @@ def bind_api(**config):
 				body = body.decode('utf-8')
 
 			if (self.parser):
-				if (self.payload_list):
-					result = self.parser.parse_list(body)
-				else:
-					result = self.parser.parse(body)
+				result = self.parser(body)
+
+				if not self.payload_list:
+					result = result[0] if len(result) else None
 			else:
 				result = body		# parser not define, return raw string
 
