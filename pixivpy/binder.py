@@ -3,15 +3,13 @@
 
 import re
 import gzip
-import urllib
-import httplib
-import StringIO		# fix 'global name 'StringIO' is not defined' BUG
+from .compat import *
 
-def convert_to_utf8_str(arg):
+def utf8(arg):
 	# written by Michael Norton (http://docondev.blogspot.com/)
-	if isinstance(arg, unicode):
+	if isinstance(arg, text_type):
 		arg = arg.encode('utf-8')
-	elif not isinstance(arg, str):
+	elif not isinstance(arg, string_types):
 		arg = str(arg)
 	return arg
 
@@ -44,32 +42,33 @@ def bind_api(**config):
 			self.parameters = []
 			if (self.require_auth):
 				self.parameters.append(("PHPSESSID", self.api.session))
-			for idx, arg in enumerate(args):
-				if arg is None: continue
-				try:
-					self.parameters.append((self.allowed_param[idx], convert_to_utf8_str(arg)))
-				except IndexError:
-					raise Exception('Too many parameters supplied!')
+			for k, v in zip(self.allowed_param, args):
+				if v:
+					self.parameters.append((k, utf8(v)))
 
 
 		def execute(self):
 			# Build the request URL
 			url = self.api_root + self.path
+			conn = HTTPConnection(self.api.host, self.api.port, timeout=self.api.timeout)
 			if len(self.parameters):
-				url = '%s?%s' % (url, urllib.urlencode(self.parameters))
-
-			conn = httplib.HTTPConnection(self.api.host, self.api.port, timeout=self.api.timeout)
+				url = '?'.join((url, urlencode(self.parameters)))
 
 			# Request compression if configured
 			if self.api.compression:
 				self.headers['Accept-encoding'] = 'gzip'
 
+
 			# Execute request
 			try:
 				conn.request(self.method, url, headers=self.headers, body=self.post_data)
 				resp = conn.getresponse()
-			except Exception, e:
+			except Exception as e:
 				raise Exception('Failed to send request: %s' % e)
+			else:
+				body = resp.read()
+			finally:
+				conn.close()
 
 			# handle redirect
 			if resp.status in (301,302,) and self.save_session:
@@ -81,17 +80,20 @@ def bind_api(**config):
 					self.api.session = redirect_url[redirect_url.rfind("PHPSESSID")+len("PHPSESSID")+1:]
 				return self.api.session
 
-			if resp.status != 200:
-				raise Exception(resp.read())
+			if not (200 <= resp.status < 400):
+				raise Exception("Bad response status: %s" % resp.status)
 
 			# Parse the response payload
-			body = resp.read()
+
 			if resp.getheader('Content-Encoding', '') == 'gzip':
 				try:
-					zipper = gzip.GzipFile(fileobj=StringIO.StringIO(body))
+					zipper = gzip.GzipFile(fileobj=BytesIO(body))
 					body = zipper.read()
-				except Exception, e:
+				except Exception as e:
 					raise Exception('Failed to decompress data: %s' % e)
+
+			if not py2:
+				body = body.decode('utf-8')
 
 			if (self.parser):
 				if (self.payload_list):
@@ -100,8 +102,6 @@ def bind_api(**config):
 					result = self.parser.parse(body)
 			else:
 				result = body		# parser not define, return raw string
-
-			conn.close()
 
 			return result
 

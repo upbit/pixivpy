@@ -3,7 +3,7 @@
 # Pixiv API
 
 import csv
-import StringIO
+from .compat import StringIO
 from datetime import datetime
 
 
@@ -101,7 +101,7 @@ class ImageParser(object):
 
 	@classmethod
 	def parse(self, payload):
-		for row in csv.reader(StringIO.StringIO(payload)):
+		for row in csv.reader(StringIO(payload)):
 			return kv_populate(Image(), self.keys, row)
 
 		return None
@@ -110,7 +110,7 @@ class ImageParser(object):
 	def parse_list(self, payload):
 		result = []
 
-		for row in csv.reader(StringIO.StringIO(payload)):
+		for row in csv.reader(StringIO(payload)):
 			result.append(kv_populate(Image(), self.keys, row))
 
 		return result
@@ -148,7 +148,7 @@ class UserParser(object):
 
 	@classmethod
 	def parse(self, payload):
-		for row in csv.reader(StringIO.StringIO(payload)):
+		for row in csv.reader(StringIO(payload)):
 			return kv_populate(User(), self.keys, row)
 
 		return None
@@ -157,7 +157,7 @@ class UserParser(object):
 	def parse_list(self, payload):
 		result = []
 
-		for row in csv.reader(StringIO.StringIO(payload)):
+		for row in csv.reader(StringIO(payload)):
 			result.append(kv_populate(User(), self.keys, row))
 
 		return result
