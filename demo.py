@@ -19,7 +19,7 @@ def main():
 	#print(">>> ranking(male, day, page=1)")
 	#rank_list = api.ranking("all", 'day', 1)
 	#for img in rank_list:
-	#	print(repr(img))
+	#	print(img)
 
 	illust = api.get_illust(37006153)
 	print(">>> %d %d %s" % (illust.illust_id, illust.pages, illust.url))
@@ -33,12 +33,12 @@ def main():
 	#print(">>> get_bookmark(1418182, page=1)")
 	#bookmark_list = api.get_bookmark(1418182, 1)
 	#for img in bookmark_list:
-	#	print(repr(img))
+	#	print(img)
 
 	#print(">>> ranking_log(2013-01-15, monthly, page=1)")
 	#rank_list = api.ranking_log('2013',1,'monthly','05','15')
 	#for img in rank_list:
-	#	print(repr(img))
+	#	print(img)
 
 	#print(">>> get_user(level=3, id=1184799)")
 	#user = api.get_user(3, 1184799)
@@ -47,7 +47,7 @@ def main():
 	#print(">>> get_mypixiv_all(id=428027, p=1)")
 	#user_list = api.get_mypixiv_all(428027, 1)
 	#for usr in user_list:
-	#	print(repr(usr))
+	#	print(usr)
 
 if __name__ == '__main__':
 	main()
