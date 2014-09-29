@@ -77,7 +77,10 @@ class Image(object):
 		return "http://www.pixiv.net/member_illust.php?mode=medium&illust_id=%s" % self.illust_id
 
 	def __str__(self):
-		return "uid=%d, id=%d, title=%s, score=%d, r18=%s, url: %s" % (self.user_id, self.illust_id, self.title, self.cnt_score, self.r18, self.url)
+		return self.title
+
+	def __repr__(self):
+		return '<%s(%s) "%s">' % (self.__class__.__name__, self.illust_id, self.title)
 
 class ImageParser(Parser):
 	model = Image
@@ -126,7 +129,10 @@ class User(object):
 		return "http://www.pixiv.net/member.php?id=%s" % self.uid
 
 	def __str__(self):
-		return "uid=%d, dispname=%s, name=%s, pic: %s" % (self.uid, self.disp, self.name, self.pic)
+		return self.dispname
+
+	def __repr__(self):
+		return '<%s(%s, %s) "%s">' % (self.__class__.__name__, self.uid, repr(self.name), self.dispname)
 
 class UserParser(Parser):
 	model = User
