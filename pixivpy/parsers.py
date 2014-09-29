@@ -45,7 +45,7 @@ def csv(data):
 
 
 class Parser(object):
-	model = PixivObject
+	model = object
 	keys = ()
 
 	def __call__(self, data, *args, **kwargs):
