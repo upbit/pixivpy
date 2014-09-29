@@ -4,6 +4,7 @@
 from pixivpy.binder import bind_api
 from pixivpy.parsers import ImageParser, UserParser
 
+
 class PixivAPI(object):
 	def __init__(self, host="spapi.pixiv.net", port=80, compression=True, timeout=60):
 		self.api_root = "http://spapi.pixiv.net/iphone/"
@@ -83,4 +84,3 @@ class PixivAPI(object):
 		parser = UserParser(),
 		payload_list = True,
 	)
-

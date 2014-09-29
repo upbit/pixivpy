@@ -16,4 +16,5 @@ else:
 	text_type = str
 	string_types = str
 
-__all__ = ("py2", "BytesIO", "StringIO", "HTTPConnection", "urlencode", "text_type", "string_types")
+__all__ = ("py2", "BytesIO", "StringIO", "HTTPConnection", "urlencode",
+           "text_type", "string_types")

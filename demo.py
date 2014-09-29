@@ -7,6 +7,7 @@ from pixivpy import *
 _USERNAME = "username"
 _PASSWORD = "password"
 
+
 def main():
 	api = PixivAPI()
 	#api = PixivAPI(host="127.0.0.1", port=8888)    # for proxy

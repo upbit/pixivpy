@@ -3,15 +3,17 @@
 # Pixiv API
 
 from csv import reader
-from .compat import StringIO
+from .compat import StringIO, urlencode
 from datetime import datetime
 
 
 def s2dt(string):
 	return datetime.strptime(string, "%Y-%m-%d %H:%M:%S")
 
+
 def s2bool(string):
 	return bool(int(string))
+
 
 def cast(data, cb, default=None):
 	if not data:
@@ -24,12 +26,14 @@ def cast(data, cb, default=None):
 	else:
 		return data
 
+
 def kv_populate(obj, keys, values):
 	for k, v in zip(keys, values):
 		if k:
 			setattr(obj, k[0], cast(v, k[1], k[2]))
 
 	return obj
+
 
 def csv(data):
 	if not data:
@@ -39,12 +43,15 @@ def csv(data):
 	for row in reader(StringIO(data)):
 		yield row
 
+
 class Parser(object):
 	model = object
 	keys = ()
 
 	def __call__(self, data, *args, **kwargs):
-		return [kv_populate(self.model(*args, **kwargs), self.keys, row) for row in csv(data)]
+		obj = self.model(*args, **kwargs)
+		return [kv_populate(obj, self.keys, row) for row in csv(data)]
+
 
 class Image(object):
 	illust_id = 0
@@ -74,13 +81,17 @@ class Image(object):
 
 	@property
 	def url(self):
-		return "http://www.pixiv.net/member_illust.php?mode=medium&illust_id=%s" % self.illust_id
+		base = 'http://www.pixiv.net/member_illust.php'
+		params = urlencode((('mode', 'medium'), ('illust_id', self.illust_id)))
+		return '?'.join((base, params))
 
 	def __str__(self):
 		return self.title
 
 	def __repr__(self):
-		return '<%s(%s) "%s">' % (self.__class__.__name__, self.illust_id, self.title)
+		fmt = (self.__class__.__name__, self.illust_id, self.title)
+		return '<%s(%s) "%s">' % fmt
+
 
 class ImageParser(Parser):
 	model = Image
@@ -118,6 +129,7 @@ class ImageParser(Parser):
 		None,
 	)
 
+
 class User(object):
 	uid = 0
 	dispname = None
@@ -126,13 +138,18 @@ class User(object):
 
 	@property
 	def url(self):
-		return "http://www.pixiv.net/member.php?id=%s" % self.uid
+		base = 'http://www.pixiv.net/member.php'
+		params = urlencode({'id': self.uid})
+		return '?'.join((base, params))
 
 	def __str__(self):
 		return self.dispname
 
 	def __repr__(self):
-		return '<%s(%s, %s) "%s">' % (self.__class__.__name__, self.uid, repr(self.name), self.dispname)
+		class_name = self.__class__.__name__
+		fmt = (class_name, self.uid, repr(self.name), self.dispname)
+		return '<%s(%s, %s) "%s">' % fmt
+
 
 class UserParser(Parser):
 	model = User

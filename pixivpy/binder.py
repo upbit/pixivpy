@@ -1,9 +1,9 @@
 # Pixiv API
 # modify from tweepy (https://github.com/tweepy/tweepy/)
 
-import re
 import gzip
 from .compat import *
+
 
 def utf8(arg):
 	# written by Michael Norton (http://docondev.blogspot.com/)
@@ -12,6 +12,7 @@ def utf8(arg):
 	elif not isinstance(arg, string_types):
 		arg = str(arg)
 	return arg
+
 
 def bind_api(**config):
 	class APIMethod(object):
@@ -46,11 +47,12 @@ def bind_api(**config):
 				if v:
 					self.parameters.append((k, utf8(v)))
 
-
 		def execute(self):
 			# Build the request URL
 			url = self.api_root + self.path
-			conn = HTTPConnection(self.api.host, self.api.port, timeout=self.api.timeout)
+			host, port = self.api.host, self.api.port
+			conn = HTTPConnection(host, port, timeout=self.api.timeout)
+
 			if len(self.parameters):
 				url = '?'.join((url, urlencode(self.parameters)))
 
@@ -58,10 +60,9 @@ def bind_api(**config):
 			if self.api.compression:
 				self.headers['Accept-encoding'] = 'gzip'
 
-
 			# Execute request
 			try:
-				conn.request(self.method, url, headers=self.headers, body=self.post_data)
+				conn.request(self.method, url, self.post_data, self.headers)
 				resp = conn.getresponse()
 			except Exception as e:
 				raise Exception('Failed to send request: %s' % e)
@@ -71,13 +72,15 @@ def bind_api(**config):
 				conn.close()
 
 			# handle redirect
-			if resp.status in (301,302,) and self.save_session:
+			if resp.status in (301, 302) and self.save_session:
 				redirect_url = resp.getheader('location', '')
 				if resp.getheader('Set-Cookie'):
 					session_string = resp.getheader('Set-Cookie').split(';')[0]
 					self.api.session = session_string.split('=')[1].strip()
 				else:
-					self.api.session = redirect_url[redirect_url.rfind("PHPSESSID")+len("PHPSESSID")+1:]
+					sid_key = "PHPSESSID"
+					idx = redirect_url.rfind(sid_key) + len(sid_key) + 1
+					self.api.session = redirect_url[idx:]
 				return self.api.session
 
 			if not (200 <= resp.status < 400):
@@ -104,7 +107,6 @@ def bind_api(**config):
 				result = body		# parser not define, return raw string
 
 			return result
-
 
 	def _call(api, *args, **kargs):
 		method = APIMethod(api, args, kargs)
