@@ -5,15 +5,6 @@ import gzip
 from .compat import *
 
 
-def utf8(arg):
-	# written by Michael Norton (http://docondev.blogspot.com/)
-	if isinstance(arg, text_type):
-		arg = arg.encode('utf-8')
-	elif not isinstance(arg, string_types):
-		arg = str(arg)
-	return arg
-
-
 def bind_api(**config):
 	class APIMethod(object):
 		path = config['path']
@@ -41,11 +32,9 @@ def bind_api(**config):
 
 		def build_parameters(self, args):
 			self.parameters = []
+			self.parameters.extend(zip(self.allowed_param, args))
 			if (self.require_auth):
 				self.parameters.append(("PHPSESSID", self.api.session))
-			for k, v in zip(self.allowed_param, args):
-				if v:
-					self.parameters.append((k, utf8(v)))
 
 		def execute(self):
 			# Build the request URL
