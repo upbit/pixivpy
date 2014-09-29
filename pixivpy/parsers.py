@@ -49,8 +49,7 @@ class Parser(object):
 	keys = ()
 
 	def __call__(self, data, *args, **kwargs):
-		obj = self.model(*args, **kwargs)
-		return [kv_populate(obj, self.keys, row) for row in csv(data)]
+		return [kv_populate(self.model(*args, **kwargs), self.keys, row) for row in csv(data)]
 
 
 class Image(object):
