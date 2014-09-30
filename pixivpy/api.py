@@ -1,8 +1,12 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 # Pixiv API
 # modify from tweepy (https://github.com/tweepy/tweepy/)
 
 from pixivpy.binder import bind_api
 from pixivpy.parsers import ImageParser, UserParser
+
 
 class PixivAPI(object):
 	def __init__(self, host="spapi.pixiv.net", port=80, compression=True, timeout=60):
@@ -83,4 +87,3 @@ class PixivAPI(object):
 		parser = UserParser(),
 		payload_list = True,
 	)
-

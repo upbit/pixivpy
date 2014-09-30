@@ -1,19 +1,12 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 # Pixiv API
 # modify from tweepy (https://github.com/tweepy/tweepy/)
 
-import re
 import gzip
-import urllib
-import httplib
-import StringIO		# fix 'global name 'StringIO' is not defined' BUG
+from .compat import *
 
-def convert_to_utf8_str(arg):
-	# written by Michael Norton (http://docondev.blogspot.com/)
-	if isinstance(arg, unicode):
-		arg = arg.encode('utf-8')
-	elif not isinstance(arg, str):
-		arg = str(arg)
-	return arg
 
 def bind_api(**config):
 	class APIMethod(object):
@@ -42,23 +35,18 @@ def bind_api(**config):
 
 		def build_parameters(self, args):
 			self.parameters = []
+			self.parameters.extend(zip(self.allowed_param, args))
 			if (self.require_auth):
 				self.parameters.append(("PHPSESSID", self.api.session))
-			for idx, arg in enumerate(args):
-				if arg is None: continue
-				try:
-					self.parameters.append((self.allowed_param[idx], convert_to_utf8_str(arg)))
-				except IndexError:
-					raise Exception('Too many parameters supplied!')
-
 
 		def execute(self):
 			# Build the request URL
 			url = self.api_root + self.path
-			if len(self.parameters):
-				url = '%s?%s' % (url, urllib.urlencode(self.parameters))
+			host, port = self.api.host, self.api.port
+			conn = HTTPConnection(host, port, timeout=self.api.timeout)
 
-			conn = httplib.HTTPConnection(self.api.host, self.api.port, timeout=self.api.timeout)
+			if len(self.parameters):
+				url = '?'.join((url, urlencode(self.parameters)))
 
 			# Request compression if configured
 			if self.api.compression:
@@ -66,45 +54,51 @@ def bind_api(**config):
 
 			# Execute request
 			try:
-				conn.request(self.method, url, headers=self.headers, body=self.post_data)
+				conn.request(self.method, url, self.post_data, self.headers)
 				resp = conn.getresponse()
-			except Exception, e:
+			except Exception as e:
 				raise Exception('Failed to send request: %s' % e)
+			else:
+				body = resp.read()
+			finally:
+				conn.close()
 
 			# handle redirect
-			if resp.status in (301,302,) and self.save_session:
+			if resp.status in (301, 302) and self.save_session:
 				redirect_url = resp.getheader('location', '')
 				if resp.getheader('Set-Cookie'):
 					session_string = resp.getheader('Set-Cookie').split(';')[0]
 					self.api.session = session_string.split('=')[1].strip()
 				else:
-					self.api.session = redirect_url[redirect_url.rfind("PHPSESSID")+len("PHPSESSID")+1:]
+					sid_key = "PHPSESSID"
+					idx = redirect_url.rfind(sid_key) + len(sid_key) + 1
+					self.api.session = redirect_url[idx:]
 				return self.api.session
 
-			if resp.status != 200:
-				raise Exception(resp.read())
+			if not (200 <= resp.status < 400):
+				raise Exception("Bad response status: %s" % resp.status)
 
 			# Parse the response payload
-			body = resp.read()
+
 			if resp.getheader('Content-Encoding', '') == 'gzip':
 				try:
-					zipper = gzip.GzipFile(fileobj=StringIO.StringIO(body))
+					zipper = gzip.GzipFile(fileobj=BytesIO(body))
 					body = zipper.read()
-				except Exception, e:
+				except Exception as e:
 					raise Exception('Failed to decompress data: %s' % e)
 
+			if not py2:
+				body = body.decode('utf-8')
+
 			if (self.parser):
-				if (self.payload_list):
-					result = self.parser.parse_list(body)
-				else:
-					result = self.parser.parse(body)
+				result = self.parser(body)
+
+				if not self.payload_list:
+					result = result[0] if len(result) else None
 			else:
 				result = body		# parser not define, return raw string
 
-			conn.close()
-
 			return result
-
 
 	def _call(api, *args, **kargs):
 		method = APIMethod(api, args, kargs)
