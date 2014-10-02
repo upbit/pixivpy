@@ -7,6 +7,12 @@ from csv import reader
 from .compat import StringIO, urlencode, py2, text
 from datetime import datetime
 
+if py2:
+	# FIX BUG: csv.reader(StringIO(data)) only work on UTF-8 encode in Python2.7
+	import sys
+	reload(sys)
+	sys.setdefaultencoding('utf-8')
+
 def s2dt(string):
 	return datetime.strptime(string, "%Y-%m-%d %H:%M:%S")
 
@@ -27,10 +33,17 @@ def cast(data, cb, default=None):
 		return data
 
 
-def kv_populate(obj, keys, values):
-	for k, v in zip(keys, values):
+def kv_populate(obj, keys, alias, values):
+	for k, a, v in zip(keys, alias, values):
 		if k:
-			setattr(obj, k[0], cast(v, k[1], k[2]))
+			val = cast(v, k[1], k[2])
+			setattr(obj, k[0], val)
+			# add alias for key
+			if isinstance(a, (list, tuple)):
+				[ setattr(obj, k2a, val) for k2a in a if k2a ]
+			elif a:		# not None
+				setattr(obj, a, val)
+
 
 	return obj
 
@@ -49,7 +62,7 @@ class Parser(object):
 	keys = ()
 
 	def __call__(self, data, *args, **kwargs):
-		return [kv_populate(self.model(*args, **kwargs), self.keys, row) for row in csv(data)]
+		return [kv_populate(self.model(*args, **kwargs), self.keys, self.alias, row) for row in csv(data)]
 
 
 class Image(object):
@@ -83,6 +96,29 @@ class Image(object):
 		base = 'http://www.pixiv.net/member_illust.php'
 		params = urlencode((('mode', 'medium'), ('illust_id', self.illust_id)))
 		return '?'.join((base, params))
+
+	# Add image / page URL and alias
+	@property
+	def image_url(self):
+		base = self.image_480mw[0:self.image_480mw.rfind("/mobile/")+1]
+		return "%s%s.%s" % (base, self.illust_id, self.type)
+	@property
+	def imageURL(self):
+		return self.image_url
+
+	@property
+	def page_url(self):
+		base = self.image_480mw[0:self.image_480mw.rfind("/mobile/")+1]
+		result = []
+		if (self.pages > 0):
+			for i in range(self.pages):
+				result.append("%s%s_big_p%d.%s" % (base, self.illust_id, i, self.type))
+		else:
+			result.append(self.image_url)
+		return result
+	@property
+	def pageURL(self):
+		return self.page_url
 
 	def __repr__(self):
 		fmt = (self.__class__.__name__, self.illust_id, self.title)
@@ -125,6 +161,42 @@ class ImageParser(Parser):
 		None,
 	)
 
+	# from http://sourceforge.jp/projects/pxv/scm/svn/blobs/head/trunk/src/pxv/Image.java
+	# illust_id, id, type, title, server, name, thumbnail,,, mobile,,, date, tags, use_tool, ranking, total, views, description,,,, unknow1, unknow2, user_name,, unknow3,,, head,
+	# Image property aliases
+	alias = (
+		("id"),
+		("author_id", "authorId"),
+		("ext"),
+		(None),		# title
+		("server"),
+		("author_name", "authorName"),
+		("thumbnail", "thumbURL"),
+		None,
+		None,
+		("mobile", "mobileURL"),
+		None,
+		None,
+		(None),		# data
+		(None),		# tags
+		("use_tool"),
+		("feedback"),
+		("point"),
+		("views"),
+		("comment"),
+		("pages"),
+		None,
+		None,
+		("bookmarks"),
+		(None),		# cnt_comment
+		("username"),
+		None,
+		("isR18"),		# r18
+		None,
+		None,
+		("head"),
+		None,
+	)
 
 class User(object):
 	uid = 0
@@ -159,5 +231,21 @@ class UserParser(Parser):
 		None, None, None,
 		None, None,
 		("name",     text, None),
+		None,
+	)
+	# User property aliases
+	alias = (
+		None,
+		("author_id", "authorId"),
+		None, None, None,
+		("author_name", "authorName"),
+		("thumbnail", "thumbURL"),
+		None, None, None,
+		None, None, None,
+		None, None, None,
+		None, None, None,
+		None, None, None,
+		None, None,
+		("user_name", "username"),
 		None,
 	)
