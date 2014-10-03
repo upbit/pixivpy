@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from .compat import *
+
 # Pixiv API
 # modify from tweepy (https://github.com/tweepy/tweepy/)
 
@@ -28,6 +30,57 @@ class PixivAPI(object):
 		path = 'login.php',
 		allowed_param = ['mode','pixiv_id','pass','skip'],
 	)
+
+	# get PHPSESSID from www.pixiv.net
+	def login2(self, username, password):
+		url = "http://www.pixiv.net/login.php"
+		host, port = "www.pixiv.net", 80
+		conn = HTTPConnection(host, port, timeout=30)
+
+		headers = {}
+		
+		headers['Accept-encoding'] = 'gzip'
+		headers['Origin'] = 'www.pixiv.net'
+		headers['Referer'] = 'http://www.pixiv.net/login.php'
+		headers['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36'
+		# Important!
+		headers['Content-Type'] = 'application/x-www-form-urlencoded'
+
+		parameters = []
+		parameters.append(('mode', 'login'))
+		parameters.append(('return_to', '/'))
+		parameters.append(('pixiv_id', username))
+		parameters.append(('pass', password))
+		
+		post_data = urlencode(parameters)
+
+		try:
+			conn.request("POST", url, post_data, headers)
+			resp = conn.getresponse()
+		except Exception as e:
+			raise Exception('Failed to send request: %s' % e)
+		else:
+			body = resp.read()
+		finally:
+			conn.close()
+
+		if resp.status in (200,301,302,):
+			redirect_url = resp.getheader('location', '')
+			if resp.getheader('Set-Cookie'):
+				session_string = resp.getheader('Set-Cookie').split(';')[0]
+				self.session = session_string.split('=')[1].strip()
+			else:
+				self.session = redirect_url[redirect_url.rfind("PHPSESSID")+len("PHPSESSID")+1:]
+			return self.session
+
+		if resp.getheader('Content-Encoding', '') == 'gzip':
+			try:
+				zipper = gzip.GzipFile(fileobj=BytesIO(body))
+				body = zipper.read()
+			except Exception as e:
+				raise Exception('Failed to decompress data: %s' % e)
+
+		raise Exception('Unknow HTTP error: %d\n%s' % (resp.status, body))
 
 	# content: [all, male, female, original]
 	# mode: [day, week, month]
