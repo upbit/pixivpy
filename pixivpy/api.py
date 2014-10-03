@@ -132,6 +132,26 @@ class PixivAPI(object):
 		parser = UserParser(),
 	)
 
+	# illust_id: target illust
+	# p: page
+	get_illust_bookmarks = bind_api(
+		path = 'illust_bookmarks.php',
+		allowed_param = ['illust_id','p'],
+		parser = UserParser(),
+		payload_list = True,
+	)
+
+	# id: authorId
+	# p: [1-n]
+	# rest: "show"
+	get_bookmark_user_all = bind_api(
+		path = 'bookmark_user_all.php',
+		allowed_param = ['id','p','rest'],
+		require_auth = True,				# auto parse PHPSESSID in url
+		parser = UserParser(),
+		payload_list = True,
+	)
+
 	# id: authorId
 	# p: [1-n]
 	get_mypixiv_all = bind_api(
