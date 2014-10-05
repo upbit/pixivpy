@@ -2,6 +2,10 @@ PixivPy
 ======
 *Pixiv API for Python*
 
+Since @Pixiv switch to Public-API(V1), SAPI versions will stop updating.
+
+Please check the 'master' branch for more information.
+
 ~~~~~ python
 api = PixivAPI()
 
