@@ -1,25 +1,22 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 
-# Pixiv API
+import csv
+import urllib
+import datetime
+import StringIO
 
-from csv import reader
-from .compat import StringIO, urlencode, py2, text
-from datetime import datetime
+# FIX BUG: csv.reader(StringIO(data)) only work on UTF-8 encode in Python2.7
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
-if py2:
-	# FIX BUG: csv.reader(StringIO(data)) only work on UTF-8 encode in Python2.7
-	import sys
-	reload(sys)
-	sys.setdefaultencoding('utf-8')
+text = unicode
 
 def s2dt(string):
-	return datetime.strptime(string, "%Y-%m-%d %H:%M:%S")
-
+	return datetime.datetime.strptime(string, "%Y-%m-%d %H:%M:%S")
 
 def s2bool(string):
 	return bool(int(string))
-
 
 def cast(data, cb, default=None):
 	if not data:
@@ -32,7 +29,6 @@ def cast(data, cb, default=None):
 	else:
 		return data
 
-
 def kv_populate(obj, keys, alias, values):
 	for k, a, v in zip(keys, alias, values):
 		if k:
@@ -43,17 +39,14 @@ def kv_populate(obj, keys, alias, values):
 				[ setattr(obj, k2a, val) for k2a in a if k2a ]
 			elif a:		# not None
 				setattr(obj, a, val)
-
-
 	return obj
 
-
-def csv(data):
+def csv_reader(data):
 	if not data:
 		return
 		yield
 
-	for row in reader(StringIO(data)):
+	for row in csv.reader(StringIO.StringIO(data)):
 		yield row
 
 
@@ -62,14 +55,14 @@ class Parser(object):
 	keys = ()
 
 	def __call__(self, data, *args, **kwargs):
-		return [kv_populate(self.model(*args, **kwargs), self.keys, self.alias, row) for row in csv(data)]
+		return [kv_populate(self.model(*args, **kwargs), self.keys, self.alias, row) for row in csv_reader(data)]
 
 
 class Image(object):
 	illust_id = 0
 	r18 = False
 	pages = 0
-	date = datetime.utcnow()
+	date = datetime.datetime.utcnow()
 	title = None
 	tags = None
 	tool = None
@@ -94,7 +87,7 @@ class Image(object):
 	@property
 	def url(self):
 		base = 'http://www.pixiv.net/member_illust.php'
-		params = urlencode((('mode', 'medium'), ('illust_id', self.illust_id)))
+		params = urllib.urlencode((('mode', 'medium'), ('illust_id', self.illust_id)))
 		return '?'.join((base, params))
 
 	# Add image / page URL and alias

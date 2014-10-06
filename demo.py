@@ -1,53 +1,34 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 
-import time
-from pixivpy import *
+import sys 
+reload(sys) 
+sys.setdefaultencoding('utf8')
+
+from pixivpy2 import *
 
 _USERNAME = "username"
 _PASSWORD = "password"
 
-
 def main():
 	api = PixivAPI()
-	#api = PixivAPI(host="127.0.0.1", port=8888)    # for proxy
 
 	### change _USERNAME,_PASSWORD first!
-	api.login2(_USERNAME, _PASSWORD)
+	api.login(_USERNAME, _PASSWORD)
 
-	#print(">>> ranking(male, day, page=1)")
-	#rank_list = api.ranking("all", 'day', 1)
-	#for img in rank_list:
-	#	print(img)
-
-	#illust = api.get_illust(37006153)
-	#print(">>> %d %d %s" % (illust.illust_id, illust.pages, illust.url))
-
-	#print(">>> get_member(1184799, page=1)")
-	#illust_list = api.get_member(428027, 1)
-	#for idx, img in enumerate(illust_list):
-	#	print("[%d] bookmarks=%d, %s" % (idx+1, img.cnt_bookmark, img))
+	json_result = api.papi.get_works(45455208)
+	print json_result
 	
+	illust = json_result.response[0]
+	print illust
+	print "  large: %s" % illust.image_urls['large']
+	print " medium: %s" % illust.image_urls['medium']
+
 	### Authentication required! call api.login first!
-	print(">>> get_bookmark(1418182, page=1)")
-	bookmark_list = api.get_bookmark(1418182, 1)
-	for img in bookmark_list:
-		print(img)
-
-	#print(">>> ranking_log(2013-01-15, monthly, page=1)")
-	#rank_list = api.ranking_log('2013',1,'monthly','05','15')
-	#for img in rank_list:
+	#print(">>> sapi.get_bookmark(1418182, page=1)")
+	#bookmark_list = api.sapi.get_bookmark(1418182)
+	#for img in bookmark_list:
 	#	print(img)
-
-	#print(">>> get_user(level=3, id=1184799)")
-	#user = api.get_user(3, 1184799)
-	#print("%s: %s" % (user.dispname, user.pic))
-
-	#print(">>> get_mypixiv_all(id=428027, p=1)")
-	#user_list = api.get_mypixiv_all(428027, 1)
-	#for usr in user_list:
-	#	print(usr)
 
 if __name__ == '__main__':
 	main()
