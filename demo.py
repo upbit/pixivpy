@@ -30,21 +30,25 @@ def sapi_demo(api):
 	#	print(img)
 
 def papi_demo(api):
-	json_result = api.papi.get_works(46363414)
+	json_result = api.papi.works(46363414)
 	print json_result
-	
 	illust = json_result.response[0]
-	print "origin url: %s" % illust.image_urls['large']
+	print ">>> origin url: %s" % illust.image_urls['large']
+
+	#json_result = api.papi.users(1184799)
+	#print json_result
+	#user = json_result.response[0]
+	#print user.profile.introduction
 
 
 def main():
 	api = PixivAPI()
 
 	### change _USERNAME,_PASSWORD first!
-	#api.login(_USERNAME, _PASSWORD)
+	api.login(_USERNAME, _PASSWORD)
 
-	sapi_demo(api)
-	#papi_demo(api)
+	#sapi_demo(api)
+	papi_demo(api)
 
 if __name__ == '__main__':
 	main()
