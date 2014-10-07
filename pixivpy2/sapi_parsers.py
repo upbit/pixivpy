@@ -90,29 +90,6 @@ class Image(object):
 		params = urllib.urlencode((('mode', 'medium'), ('illust_id', self.illust_id)))
 		return '?'.join((base, params))
 
-	# Add image / page URL and alias
-	@property
-	def image_url(self):
-		base = self.image_480mw[0:self.image_480mw.rfind("/mobile/")+1]
-		return "%s%s.%s" % (base, self.illust_id, self.type)
-	@property
-	def imageURL(self):
-		return self.image_url
-
-	@property
-	def page_url(self):
-		base = self.image_480mw[0:self.image_480mw.rfind("/mobile/")+1]
-		result = []
-		if (self.pages > 0):
-			for i in range(self.pages):
-				result.append("%s%s_big_p%d.%s" % (base, self.illust_id, i, self.type))
-		else:
-			result.append(self.image_url)
-		return result
-	@property
-	def pageURL(self):
-		return self.page_url
-
 	def __repr__(self):
 		fmt = (self.__class__.__name__, self.illust_id, self.title)
 		return '<%s(%s) "%s">' % fmt
