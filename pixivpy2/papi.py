@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
 
 import json
+from utils import PixivError
 
 class Pixiv_PAPI(object):
 

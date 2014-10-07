@@ -1,16 +1,16 @@
 PixivPy
 ======
-*Pixiv API for Python*
+_Pixiv API for Python (with Auth supported)_
 
 * [2014/10/07] new framework, **SAPI / Public-API** supported (requests needed)
 
-First:
+Requirements: [requests](https://pypi.python.org/pypi/requests), use pip to install:
 
 ~~~~
 pip install requests
 ~~~~
 
-Example:
+### Example:
 
 ~~~~~ python
 api = PixivAPI()
