@@ -48,10 +48,13 @@ class Pixiv_SAPI(object):
 
 	def get_illust(self, illust_id):
 		url = 'http://spapi.pixiv.net/iphone/illust.php'
+		headers = {
+			'User-Agent': 'pixiv-ios-app(ver4.0.0)',
+		}
 		params = {
 			'illust_id': illust_id,
 		}
-		r = self.api._requests_call('GET', url, params=params)
+		r = self.api._requests_call('GET', url, params=params, headers=headers)
 		return self.parser_payload(r.text, ImageParser())
 
 	def get_member(self, id, p=1):
@@ -78,11 +81,14 @@ class Pixiv_SAPI(object):
 	# level: 3
 	def get_user(self, user_id, level=3):
 		url = 'http://spapi.pixiv.net/iphone/user.php'
+		headers = {
+			'User-Agent': 'pixiv-ios-app(ver4.0.0)',
+		}
 		params = {
 			'user_id': user_id,
 			'level': level,
 		}
-		r = self.api._requests_call('GET', url, params=params)
+		r = self.api._requests_call('GET', url, params=params, headers=headers)
 		return self.parser_payload(r.text, UserParser())
 
 	# illust_id: target illust
