@@ -46,7 +46,7 @@ class Pixiv_SAPI(object):
 		r = self.api._requests_call('GET', url, params=params)
 		return self.parser_payload(r.text, ImageParser(), payload_list=True)
 
-	def get_illust(self, illust_id):
+	def get_illust(self, illust_id, require_auth=False):
 		url = 'http://spapi.pixiv.net/iphone/illust.php'
 		headers = {
 			'User-Agent': 'pixiv-ios-app(ver4.0.0)',
@@ -54,6 +54,10 @@ class Pixiv_SAPI(object):
 		params = {
 			'illust_id': illust_id,
 		}
+		if require_auth:
+			self.api._require_auth()
+			params['PHPSESSID'] = self.api.session
+
 		r = self.api._requests_call('GET', url, params=params, headers=headers)
 		return self.parser_payload(r.text, ImageParser())
 
@@ -79,7 +83,7 @@ class Pixiv_SAPI(object):
 		return self.parser_payload(r.text, ImageParser(), payload_list=True)
 
 	# level: 3
-	def get_user(self, user_id, level=3):
+	def get_user(self, user_id, level=3, require_auth=False):
 		url = 'http://spapi.pixiv.net/iphone/user.php'
 		headers = {
 			'User-Agent': 'pixiv-ios-app(ver4.0.0)',
@@ -88,6 +92,10 @@ class Pixiv_SAPI(object):
 			'user_id': user_id,
 			'level': level,
 		}
+		if require_auth:
+			self.api._require_auth()
+			params['PHPSESSID'] = self.api.session
+
 		r = self.api._requests_call('GET', url, params=params, headers=headers)
 		return self.parser_payload(r.text, UserParser())
 

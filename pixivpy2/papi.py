@@ -1,16 +1,11 @@
 # -*- coding:utf-8 -*-
 
-import json
 from utils import PixivError
 
 class Pixiv_PAPI(object):
 
 	def __init__(self, api):
 		self.api = api
-
-	def _bearer_token(self):
-		# return Android Bearer Key
-		return 'Bearer %s' % '8mMXXWT9iuwdJvsVIvQsFYDwuZpRCMePeyagSh30ZdU'
 
 	def parse_result(self, req):
 		try:
@@ -24,7 +19,7 @@ class Pixiv_PAPI(object):
 
 		url = 'https://public-api.secure.pixiv.net/v1/works/%d.json' % (illust_id)
 		headers = {
-			'Authorization': self._bearer_token(),
+			'Authorization': 'Bearer %s' % self.api.access_token,
 			'Cookie': 'PHPSESSID=%s' % self.api.session,
 		}
 		params = {
@@ -41,7 +36,7 @@ class Pixiv_PAPI(object):
 
 		url = 'https://public-api.secure.pixiv.net/v1/users/%d.json' % (author_id)
 		headers = {
-			'Authorization': self._bearer_token(),
+			'Authorization': 'Bearer %s' % self.api.access_token,
 			'Cookie': 'PHPSESSID=%s' % self.api.session,
 		}
 		params = {
