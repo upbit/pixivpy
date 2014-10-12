@@ -29,12 +29,12 @@ class Pixiv_SAPI(object):
 		r = self.api._requests_call('GET', url, params=params)
 		return self.parser_payload(r.text, ImageParser(), payload_list=True)
 
-	# Date_Year: 2013
-	# Date_Month: 01
+	# Date_Year: 2014
+	# Date_Month: 04
 	# Date_Day: 01
-	# mode: [daily, weekly, monthly, male, female]
+	# mode: [daily, weekly, monthly, male, female, rookie], require_auth[daily_r18, weekly_r18, male_r18, female_r18, r18g]
 	# p: [1-n]
-	def ranking_log(self, Date_Year, Date_Month, Date_Day, mode="weekly", p=1):
+	def ranking_log(self, Date_Year, Date_Month, Date_Day, mode="weekly", p=1, require_auth=False):
 		url = 'http://spapi.pixiv.net/iphone/ranking_log.php'
 		params = {
 			'Date_Year': Date_Year,
@@ -43,6 +43,10 @@ class Pixiv_SAPI(object):
 			'mode': mode,
 			'p': p,
 		}
+		if require_auth:
+			self.api._require_auth()
+			params['PHPSESSID'] = self.api.session
+
 		r = self.api._requests_call('GET', url, params=params)
 		return self.parser_payload(r.text, ImageParser(), payload_list=True)
 
