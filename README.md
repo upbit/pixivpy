@@ -51,7 +51,7 @@ class Pixiv_SAPI(object):
 	# Date_Month: 04
 	# Date_Day: 01
 	# mode: [daily, weekly, monthly, male, female, rookie]
-	#				require_auth[daily_r18, weekly_r18, male_r18, female_r18, r18g]
+	#       require_auth[daily_r18, weekly_r18, male_r18, female_r18, r18g]
 	# p: [1-n]
 	def ranking_log(self, Date_Year, Date_Month, Date_Day,
 									mode="weekly", p=1, require_auth=False):
@@ -96,6 +96,8 @@ class Pixiv_SAPI(object):
 [api.papi](https://github.com/upbit/pixivpy/blob/master/pixivpy2/papi.py).*
 
 ~~~~~ python
+class Pixiv_PAPI(object):
+
 	def bad_words(self):
 
 	# [需鉴权]作品详细
