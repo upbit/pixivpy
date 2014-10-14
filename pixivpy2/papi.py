@@ -2,6 +2,7 @@
 
 from utils import PixivError
 
+# [需鉴权]
 class Pixiv_PAPI(object):
 
 	def __init__(self, api):
@@ -25,7 +26,7 @@ class Pixiv_PAPI(object):
 		r = self.api._requests_call('GET', url, headers=headers)
 		return self.parse_result(r)
 
-	# [需鉴权]作品详细
+	# 作品详细
 	def works(self, illust_id):
 		self.api._require_auth()
 
@@ -43,7 +44,7 @@ class Pixiv_PAPI(object):
 		r = self.api._requests_call('GET', url, headers=headers, params=params)
 		return self.parse_result(r)
 
-	# [需鉴权]用户资料
+	# 用户资料
 	def users(self, author_id):
 		self.api._require_auth()
 
@@ -64,7 +65,7 @@ class Pixiv_PAPI(object):
 		r = self.api._requests_call('GET', url, headers=headers, params=params)
 		return self.parse_result(r)
 
-	# [需鉴权]我的订阅
+	# 我的订阅
 	def me_feeds(self, show_r18=1):
 		self.api._require_auth()
 
@@ -82,7 +83,7 @@ class Pixiv_PAPI(object):
 		r = self.api._requests_call('GET', url, headers=headers, params=params)
 		return self.parse_result(r)
 
-	# [需鉴权]用户收藏
+	# 用户收藏
 	def users_favorite_works(self, author_id, page=1, per_page=30):
 		self.api._require_auth()
 

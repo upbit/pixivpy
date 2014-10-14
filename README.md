@@ -96,19 +96,20 @@ class Pixiv_SAPI(object):
 [api.papi](https://github.com/upbit/pixivpy/blob/master/pixivpy2/papi.py).*
 
 ~~~~~ python
+# [需鉴权]
 class Pixiv_PAPI(object):
 
 	def bad_words(self):
 
-	# [需鉴权]作品详细
+	# 作品详细
 	def works(self, illust_id):
 
-	# [需鉴权]用户资料
+	# 用户资料
 	def users(self, author_id):
 
-	# [需鉴权]我的订阅
+	# 我的订阅
 	def me_feeds(self, show_r18=1):
 
-	# [需鉴权]用户收藏
+	# 用户收藏
 	def users_favorite_works(self, author_id, page=1, per_page=30):
 ~~~~~
