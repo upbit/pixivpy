@@ -10,6 +10,7 @@ from utils import PixivError, JsonDict
 class PixivAPI(object):
 	session = None
 	access_token = None
+	user_id = 0
 
 	def __init__(self):
 		self.sapi = Pixiv_SAPI(self)
@@ -74,10 +75,12 @@ class PixivAPI(object):
 		if (not r.status_code in [200, 301, 302]):
 			raise PixivError('[ERROR] login() failed! check username and password.\nHTTP %s: %s' % (r.status_code, r.text), header=r.headers, body=r.text)
 
+		token = None
 		try:
 			# get access_token
 			token = self._parse_json(r.text)
 			self.access_token = token.response.access_token
+			self.user_id = token.response.user.id
 			print "AccessToken:", self.access_token
 
 		except:
@@ -93,4 +96,7 @@ class PixivAPI(object):
 
 		except:
 			raise PixivError('Get PHPSESSID error! Set-Cookie: %s' % (r.headers.get('Set-Cookie')), header=r.headers, body=r.text)
+
+		# return auth/token response
+		return token
 
