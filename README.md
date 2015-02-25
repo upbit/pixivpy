@@ -29,7 +29,13 @@ for img in bookmark_list:
 	print(img)
 ~~~~~
 
-Find Pixiv API in Objective-C? You might also like [PixivAPI_iOS](https://github.com/upbit/PixivAPI_iOS)
+### About
+
+1. Blog: [Pixiv Public-API (OAuth)分析](http://blog.imaou.com/opensource/2014/10/09/pixiv_api_for_ios_update.html)
+
+If you have any questions, please feel free to contact me: rmusique@gmail.com
+
+Find Pixiv API in **Objective-C**? You might also like [**PixivAPI_iOS**](https://github.com/upbit/PixivAPI_iOS)
 
 ## API functions
 
@@ -113,3 +119,7 @@ class Pixiv_PAPI(object):
 	# 用户收藏
 	def users_favorite_works(self, author_id, page=1, per_page=30):
 ~~~~~
+
+## License
+
+Feel free to use, reuse and abuse the code in this project.
