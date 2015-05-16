@@ -22,7 +22,7 @@ json_result = api.papi.get_works(45455208)
 illust = json_result.response[0]
 print "origin url: %s" % illust.image_urls['large']
 
-# get weekly ranking (page1)
+# get ranking (page1)
 json_result = api.papi.ranking_all('daily')
 ranking = json_result.response[0]
 for illust in ranking.works:
