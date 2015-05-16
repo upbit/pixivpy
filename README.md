@@ -2,8 +2,8 @@ PixivPy
 ======
 _Pixiv API for Python (with Auth supported)_
 
-* [2015/05/16] As pixiv **deprecated** SAPI in recent days, push new Public-API **ranking_all** and [wiki pages](https://github.com/upbit/pixivpy/wiki)
-* [2014/10/07] new framework, **SAPI / Public-API** supported (requests needed)
+* [2015/05/16] As Pixiv **deprecated** SAPI in recent days, push new Public-API **ranking_all**
+* [2014/10/07] New framework, **SAPI / Public-API** supported (requests needed)
 
 Requirements: [requests](https://pypi.python.org/pypi/requests), use pip to install:
 
