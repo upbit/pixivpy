@@ -115,7 +115,7 @@ class Pixiv_PAPI(object):
 			include_stats=True, include_sanity_level=True):
 		self.api._require_auth()
 
-		url = 'https://public-api.secure.pixiv.net/v1/ranking/all?&include_sanity_level=true&per_page=50'
+		url = 'https://public-api.secure.pixiv.net/v1/ranking/all'
 		headers = {
 			'Authorization': 'Bearer %s' % self.api.access_token,
 			'Cookie': 'PHPSESSID=%s' % self.api.session,
