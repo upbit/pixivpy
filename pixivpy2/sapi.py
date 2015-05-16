@@ -16,7 +16,7 @@ class Pixiv_SAPI(object):
 			result = result[0] if len(result) else None
 		return result
 
-	# 每日排行
+	# 每日排行 (新版客户端已使用 PAPI/ranking_all 代替)
 	# content: [all, male, female, original]
 	# mode: [day, week, month]
 	# p: [1-n]
@@ -30,7 +30,7 @@ class Pixiv_SAPI(object):
 		r = self.api._requests_call('GET', url, params=params)
 		return self.parser_payload(r.text, ImageParser(), payload_list=True)
 
-	# 过去的排行
+	# 过去的排行 (新版客户端已使用 PAPI/ranking_all 代替)
 	# Date_Year: 2014
 	# Date_Month: 04
 	# Date_Day: 01

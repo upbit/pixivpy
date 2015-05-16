@@ -21,7 +21,7 @@ class PixivAPI(object):
 
 		req_header = {
 			'Referer': 'http://spapi.pixiv.net/',
-			'User-Agent': 'PixivIOSApp/5.1.1',
+			'User-Agent': 'PixivIOSApp/5.6.0',
 			'Content-Type': 'application/x-www-form-urlencoded',
 		}
 		# override use user headers

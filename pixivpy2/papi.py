@@ -105,5 +105,32 @@ class Pixiv_PAPI(object):
 		r = self.api._requests_call('GET', url, headers=headers, params=params)
 		return self.parse_result(r)
 
+	# 排行榜/过去排行榜
+	# mode: [daily, weekly, monthly, male, female, rookie, daily_r18, weekly_r18, male_r18, female_r18, r18g]
+	# page: [1-n]
+	# date: '2015-04-01' (仅过去排行榜)
+	def ranking_all(self, mode='daily', page=1, per_page=50, date=None,
+			image_sizes=['px_128x128', 'px_480mw', 'large'],
+			profile_image_sizes=['px_170x170', 'px_50x50'],
+			include_stats=True, include_sanity_level=True):
+		self.api._require_auth()
 
+		url = 'https://public-api.secure.pixiv.net/v1/ranking/all?&include_sanity_level=true&per_page=50'
+		headers = {
+			'Authorization': 'Bearer %s' % self.api.access_token,
+			'Cookie': 'PHPSESSID=%s' % self.api.session,
+		}
+		params = {
+			'mode': mode,
+			'page': page,
+			'per_page': per_page,
+			'include_stats': include_stats,
+			'include_sanity_level': include_sanity_level,
+			'image_sizes': ','.join(image_sizes),
+			'profile_image_sizes': ','.join(profile_image_sizes),
+		}
+		if date:	# 过去排行榜
+			params['date'] = date
 
+		r = self.api._requests_call('GET', url, headers=headers, params=params)
+		return self.parse_result(r)

@@ -2,6 +2,7 @@ PixivPy
 ======
 _Pixiv API for Python (with Auth supported)_
 
+* [2015/05/16] As pixiv **deprecated** SAPI in recent days, push new Public-API **ranking_all** and [wiki pages](https://github.com/upbit/pixivpy/wiki)
 * [2014/10/07] new framework, **SAPI / Public-API** supported (requests needed)
 
 Requirements: [requests](https://pypi.python.org/pypi/requests), use pip to install:
@@ -14,7 +15,6 @@ pip install requests
 
 ~~~~~ python
 api = PixivAPI()
-
 api.login("username", "password")
 
 # get origin url
@@ -22,11 +22,11 @@ json_result = api.papi.get_works(45455208)
 illust = json_result.response[0]
 print "origin url: %s" % illust.image_urls['large']
 
-### Authentication required! call api.login first!
-print(">>> sapi.get_bookmark(1418182, page=1)")
-bookmark_list = api.sapi.get_bookmark(1418182)
-for img in bookmark_list:
-	print(img)
+# get weekly ranking (page1)
+json_result = api.papi.ranking_all('daily')
+ranking = json_result.response[0]
+for illust in ranking.works:
+	print "[%s] %s" % (illust.work.title, illust.work.image_urls.px_480mw)
 ~~~~~
 
 ### About
@@ -39,6 +39,38 @@ Find Pixiv API in **Objective-C**? You might also like [**PixivAPI_iOS**](https:
 
 ## API functions
 
+### Public-API
+
+[api.papi](https://github.com/upbit/pixivpy/blob/master/pixivpy2/papi.py).*
+
+~~~~~ python
+# [需鉴权]
+class Pixiv_PAPI(object):
+
+	def bad_words(self):
+
+	# 作品详细
+	def works(self, illust_id):
+
+	# 用户资料
+	def users(self, author_id):
+
+	# 我的订阅
+	def me_feeds(self, show_r18=1):
+
+	# 用户收藏
+	def users_favorite_works(self, author_id, page=1, per_page=30):
+
+	# 排行榜/过去排行榜
+	# mode: [daily, weekly, monthly, male, female, rookie, daily_r18, weekly_r18, male_r18, female_r18, r18g]
+	# page: [1-n]
+	# date: '2015-04-01' (仅过去排行榜)
+	def ranking_all(self, mode='daily', page=1, per_page=50, date=None,
+			image_sizes=['px_128x128', 'px_480mw', 'large'],
+			profile_image_sizes=['px_170x170', 'px_50x50'],
+			include_stats=True, include_sanity_level=True):
+~~~~~
+
 ### SAPI
 
 [api.sapi](https://github.com/upbit/pixivpy/blob/master/pixivpy2/sapi.py).*
@@ -46,19 +78,21 @@ Find Pixiv API in **Objective-C**? You might also like [**PixivAPI_iOS**](https:
 ~~~~~ python
 class Pixiv_SAPI(object):
 
-	# 每日排行
+	# 每日排行 (新版客户端已使用 PAPI/ranking_all 代替)
 	# content: [all, male, female, original]
 	# mode: [day, week, month]
 	# p: [1-n]
+	@deprecated
 	def ranking(self, content='all', mode='day', p=1):
 
-	# 过去的排行
+	# 过去的排行 (新版客户端已使用 PAPI/ranking_all 代替)
 	# Date_Year: 2014
 	# Date_Month: 04
 	# Date_Day: 01
 	# mode: [daily, weekly, monthly, male, female, rookie]
 	#       require_auth[daily_r18, weekly_r18, male_r18, female_r18, r18g]
 	# p: [1-n]
+	@deprecated
 	def ranking_log(self, Date_Year, Date_Month, Date_Day,
 									mode="weekly", p=1, require_auth=False):
 
@@ -95,29 +129,6 @@ class Pixiv_SAPI(object):
 	# id: authorId
 	# p: [1-n]
 	def get_mypixiv_all(self, id, p):
-~~~~~
-
-### Public-API
-
-[api.papi](https://github.com/upbit/pixivpy/blob/master/pixivpy2/papi.py).*
-
-~~~~~ python
-# [需鉴权]
-class Pixiv_PAPI(object):
-
-	def bad_words(self):
-
-	# 作品详细
-	def works(self, illust_id):
-
-	# 用户资料
-	def users(self, author_id):
-
-	# 我的订阅
-	def me_feeds(self, show_r18=1):
-
-	# 用户收藏
-	def users_favorite_works(self, author_id, page=1, per_page=30):
 ~~~~~
 
 ## License
