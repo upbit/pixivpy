@@ -58,7 +58,7 @@ class Pixiv_PAPI(object):
 	# 我的订阅
 	def me_feeds(self, show_r18=1):
 
-  # 用户作品
+	# 用户作品
 	# publicity:  public, private
 	def users_works(self, author_id, page=1, per_page=30, publicity='public'):
 
@@ -85,7 +85,7 @@ class Pixiv_PAPI(object):
 	def ranking_all(self, mode='daily', page=1, per_page=50, date=None):
 ~~~~~
 
-### SAPI
+### SAPI (已逐步废弃)
 
 [api.sapi](https://github.com/upbit/pixivpy/blob/master/pixivpy2/sapi.py).*
 
