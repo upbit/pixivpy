@@ -62,8 +62,20 @@ class Pixiv_PAPI(object):
 	def users_favorite_works(self, author_id, page=1, per_page=30):
 
 	# 排行榜/过去排行榜
-	# mode: [daily, weekly, monthly, male, female, rookie, daily_r18, weekly_r18, male_r18, female_r18, r18g]
-	# page: [1-n]
+	# mode:
+	#   daily - 每日
+	#   weekly - 每周
+	#   monthly - 每月
+	#   male - 男性热门
+	#   female - 女性热门
+	#   original - 原创
+	#   rookie - Rookie
+	#   daily_r18 - R18每日
+	#   weekly_r18 - R18每周
+	#   male_r18
+	#   female_r18
+	#   r18g
+	# page: 1-n
 	# date: '2015-04-01' (仅过去排行榜)
 	def ranking_all(self, mode='daily', page=1, per_page=50, date=None,
 			image_sizes=['px_128x128', 'px_480mw', 'large'],
