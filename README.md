@@ -85,7 +85,7 @@ class Pixiv_PAPI(object):
 	def ranking_all(self, mode='daily', page=1, per_page=50, date=None):
 ~~~~~
 
-### SAPI (已逐步废弃)
+### SAPI (deprecated)
 
 [api.sapi](https://github.com/upbit/pixivpy/blob/master/pixivpy2/sapi.py).*
 
