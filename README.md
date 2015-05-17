@@ -58,8 +58,13 @@ class Pixiv_PAPI(object):
 	# 我的订阅
 	def me_feeds(self, show_r18=1):
 
+  # 用户作品
+	# publicity:  public, private
+	def users_works(self, author_id, page=1, per_page=30, publicity='public'):
+
 	# 用户收藏
-	def users_favorite_works(self, author_id, page=1, per_page=30):
+	# publicity:  public, private
+	def users_favorite_works(self, author_id, page=1, per_page=30, publicity='public'):
 
 	# 排行榜/过去排行榜
 	# mode:
@@ -77,10 +82,7 @@ class Pixiv_PAPI(object):
 	#   r18g
 	# page: 1-n
 	# date: '2015-04-01' (仅过去排行榜)
-	def ranking_all(self, mode='daily', page=1, per_page=50, date=None,
-			image_sizes=['px_128x128', 'px_480mw', 'large'],
-			profile_image_sizes=['px_170x170', 'px_50x50'],
-			include_stats=True, include_sanity_level=True):
+	def ranking_all(self, mode='daily', page=1, per_page=50, date=None):
 ~~~~~
 
 ### SAPI
@@ -113,8 +115,9 @@ class Pixiv_SAPI(object):
 	@deprecated
 	def get_illust(self, illust_id, require_auth=False):
 
-	# 用户作品列表
+	# 用户作品列表 (新版客户端已使用 PAPI/users_works 代替)
 	# id: author id
+	@deprecated
 	def get_member(self, id, p=1):
 
 	# [需鉴权]用户收藏 (新版客户端已使用 PAPI/users/favorite_works 代替)
