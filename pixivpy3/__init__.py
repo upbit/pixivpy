@@ -1,7 +1,7 @@
 """
 Pixiv API library
 """
-__version__ = '1.0'
+__version__ = '3.0'
 
 from .api import PixivAPI
 from .utils import PixivError
