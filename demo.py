@@ -68,7 +68,7 @@ def papi_demo(api):
 	print ">>> %s origin url: %s" % (illust.title, illust.image_urls['large'])
 
 	# PAPI.search_works
-	json_result = api.search_works("水遊び", 1)
+	json_result = api.search_works("水遊び", page=1, mode='exact_tag')
 	print json_result
 	illust = json_result.response[0]
 	print ">>> %s origin url: %s" % (illust.title, illust.image_urls['large'])
