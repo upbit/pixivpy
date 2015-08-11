@@ -2,7 +2,7 @@ PixivPy
 ======
 _Pixiv API for Python (with Auth supported)_
 
-* [2015/08/11] Remove SPAI and release v3.0 (pixivpy3) (~~Public-API with Search APIs~~)
+* [2015/08/11] Remove SPAI and release v3.0 (pixivpy3) (Public-API with Search API)
 * [2015/05/16] As Pixiv **deprecated** SAPI in recent days, push new Public-API **ranking_all**
 * [2014/10/07] New framework, **SAPI / Public-API** supported (requests needed)
 
@@ -30,7 +30,7 @@ for illust in ranking.works:
 	print "[%s] %s" % (illust.work.title, illust.work.image_urls.px_480mw)
 ~~~
 
-### Migrate pixivpy2 to pixivpy3
+### [Migrate pixivpy2 to pixivpy3](https://github.com/upbit/pixivpy/blob/master/demo.py#L15-L25)
 
 1. Replace `api.papi.*` to `api.*`
 2. Change deprecated SPAI call to Public-API call
@@ -102,9 +102,15 @@ class PixivAPI(object):
 	# date: '2015-04-01' (仅过去排行榜)
 	def ranking_all(self, mode='daily', page=1, per_page=50, date=None):
 
+	# 搜索
+	# query: 搜索的文字
+	# page: 1-n
+	def search_works(self, query, page=1, per_page=30,
+		period='all', order='desc', sort='date', mode='exact_tag'):
+
 ~~~
 
-Example:
+[Usage](https://github.com/upbit/pixivpy/blob/master/demo.py#L27):
 
 ~~~python
 # 作品详细 PAPI.works
@@ -147,6 +153,12 @@ print ">>> %s origin url: %s" % (illust.title, illust.image_urls['large'])
 json_result = api.ranking_all(mode='daily', page=1, date='2015-05-01')
 print json_result
 illust = json_result.response[0].works[0].work
+print ">>> %s origin url: %s" % (illust.title, illust.image_urls['large'])
+
+# PAPI.search_works
+json_result = api.search_works("水遊び", 1)
+print json_result
+illust = json_result.response[0]
 print ">>> %s origin url: %s" % (illust.title, illust.image_urls['large'])
 ~~~
 
