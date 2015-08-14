@@ -198,7 +198,7 @@ class PixivAPI(BasePixivAPI):
 		return self.parse_result(r)
 
 	# 作品搜索
-	def search_works(self, query, page=1, per_page=30, mode='exact_tag',
+	def search_works(self, query, page=1, per_page=30, mode='text',
 			period='all', order='desc', sort='date',
 			image_sizes=['px_128x128', 'px_480mw', 'large'],
 			profile_image_sizes=['px_170x170', 'px_50x50'],

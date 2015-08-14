@@ -106,12 +106,12 @@ class PixivAPI(object):
 	# query: 搜索的文字
 	# page: 1-n
 	# mode:
-	#		exact_tag - 标签
 	#   text - 标题
+	#   exact_tag - 标签
 	# order:
-	#		desc - 新顺序
-	#		asc - 旧顺序
-	def search_works(self, query, page=1, per_page=30, mode='exact_tag',
+	#   desc - 新顺序
+	#   asc - 旧顺序
+	def search_works(self, query, page=1, per_page=30, mode='text',
 		period='all', order='desc', sort='date'):
 
 ~~~
@@ -161,7 +161,8 @@ print json_result
 illust = json_result.response[0].works[0].work
 print ">>> %s origin url: %s" % (illust.title, illust.image_urls['large'])
 
-# 标签(exact_tag)/标题(text)搜索 PAPI.search_works
+# 标题(text)/标签(exact_tag)搜索 PAPI.search_works
+#json_result = api.search_works("五航戦 姉妹", page=1, mode='text')
 json_result = api.search_works("水遊び", page=1, mode='exact_tag')
 print json_result
 illust = json_result.response[0]
