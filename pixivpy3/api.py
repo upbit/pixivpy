@@ -30,7 +30,7 @@ class BasePixivAPI:
 
 		req_header = {
 			'Referer': 'http://spapi.pixiv.net/',
-			'User-Agent': 'PixivIOSApp/5.6.0 (PixivPy)',
+			'User-Agent': 'PixivIOSApp/5.8.0',
 		}
 		# override use user headers
 		for k,v in headers.items():
