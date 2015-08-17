@@ -30,6 +30,8 @@ for illust in ranking.works:
 	print "[%s] %s" % (illust.work.title, illust.work.image_urls.px_480mw)
 ~~~
 
+[Sniffer - Public API](https://github.com/upbit/pixivpy/wiki/sniffer)
+
 ### [Migrate pixivpy2 to pixivpy3](https://github.com/upbit/pixivpy/blob/master/demo.py#L15-L25)
 
 1. Replace `api.papi.*` to `api.*`
