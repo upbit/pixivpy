@@ -2,3 +2,7 @@
 test.py
 dumpObj.py
 url.txt
+
+# pypi
+dist/
+MANIFEST
