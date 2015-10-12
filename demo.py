@@ -4,7 +4,6 @@
 import sys
 import imp
 imp.reload(sys)
-sys.setdefaultencoding('utf8')
 sys.dont_write_bytecode = True
 
 from pixivpy3 import *
