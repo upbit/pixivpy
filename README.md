@@ -23,15 +23,15 @@ api = PixivAPI()
 api.login("username", "password")
 
 # get origin url
-json_result = api.get_works(45455208)
+json_result = api.works(45455208)
 illust = json_result.response[0]
-print "origin url: %s" % illust.image_urls['large']
+print("origin url: %s" % illust.image_urls['large'])
 
 # get ranking (page1)
 json_result = api.ranking_all('daily')
 ranking = json_result.response[0]
 for illust in ranking.works:
-	print "[%s] %s" % (illust.work.title, illust.work.image_urls.px_480mw)
+	print("[%s] %s" % (illust.work.title, illust.work.image_urls.px_480mw))
 ~~~
 
 [Sniffer - Public API](https://github.com/upbit/pixivpy/wiki/sniffer)
@@ -45,13 +45,13 @@ for illust in ranking.works:
 print(">>> new ranking_all(mode='daily', page=1, per_page=50)")
 #rank_list = api.sapi.ranking("all", 'day', 1)
 rank_list = api.ranking_all('daily', 1, 50)
-print rank_list
+print(rank_list)
 
 # more fields about response: https://github.com/upbit/pixivpy/wiki/sniffer
 ranking = rank_list.response[0]
 for img in ranking.works:
 	#print img.work
-	print "[%s/%s(id=%s)] %s" % (img.work.user.name, img.work.title, img.work.id, img.work.image_urls.px_480mw)
+	print("[%s/%s(id=%s)] %s" % (img.work.user.name, img.work.title, img.work.id, img.work.image_urls.px_480mw))
 ~~~
 
 ### About
@@ -127,52 +127,52 @@ class PixivAPI(object):
 ~~~python
 # 作品详细 PAPI.works
 json_result = api.works(46363414)
-print json_result
+print(json_result)
 illust = json_result.response[0]
-print ">>> %s, origin url: %s" % (illust.caption, illust.image_urls['large'])
+print( ">>> %s, origin url: %s" % (illust.caption, illust.image_urls['large']))
 
 # 用户资料 PAPI.users
 json_result = api.users(1184799)
-print json_result
+print(json_result)
 user = json_result.response[0]
-print user.profile.introduction
+print(user.profile.introduction)
 
 # 我的订阅 PAPI.me_feeds
 json_result = api.me_feeds(show_r18=0)
-print json_result
+print(json_result)
 ref_work = json_result.response[0].ref_work
-print ref_work.title
+print(ref_work.title)
 
 # 用户作品 PAPI.users_works
 json_result = api.users_works(1184799)
-print json_result
+print(json_result)
 illust = json_result.response[0]
-print ">>> %s, origin url: %s" % (illust.caption, illust.image_urls['large'])
+print(">>> %s, origin url: %s" % (illust.caption, illust.image_urls['large']))
 
 # 用户收藏 PAPI.users_favorite_works
 json_result = api.users_favorite_works(1184799)
-print json_result
+print(json_result)
 illust = json_result.response[0].work
-print ">>> %s origin url: %s" % (illust.caption, illust.image_urls['large'])
+print(">>> %s origin url: %s" % (illust.caption, illust.image_urls['large']))
 
 # 排行榜 PAPI.ranking_all
 json_result = api.ranking_all('weekly', 1)
-print json_result
+print(json_result)
 illust = json_result.response[0].works[0].work
-print ">>> %s origin url: %s" % (illust.title, illust.image_urls['large'])
+print(">>> %s origin url: %s" % (illust.title, illust.image_urls['large']))
 
 # 过去排行榜 PAPI.ranking_all(2015-05-01)
 json_result = api.ranking_all(mode='daily', page=1, date='2015-05-01')
-print json_result
+print(json_result)
 illust = json_result.response[0].works[0].work
-print ">>> %s origin url: %s" % (illust.title, illust.image_urls['large'])
+print(">>> %s origin url: %s" % (illust.title, illust.image_urls['large']))
 
 # 标题(text)/标签(exact_tag)搜索 PAPI.search_works
 #json_result = api.search_works("五航戦 姉妹", page=1, mode='text')
 json_result = api.search_works("水遊び", page=1, mode='exact_tag')
-print json_result
+print(json_result)
 illust = json_result.response[0]
-print ">>> %s origin url: %s" % (illust.title, illust.image_urls['large'])
+print(">>> %s origin url: %s" % (illust.title, illust.image_urls['large']))
 ~~~
 
 ## License
