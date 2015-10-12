@@ -4,7 +4,7 @@ class PixivError(Exception):
 	"""Pixiv API exception"""
 
 	def __init__(self, reason, header=None, body=None):
-		self.reason = unicode(reason)
+		self.reason = str(reason)
 		self.header = header
 		self.body = body
 		Exception.__init__(self, reason)

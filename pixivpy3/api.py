@@ -3,7 +3,7 @@
 import json
 import requests
 
-from utils import PixivError, JsonDict
+from .utils import PixivError, JsonDict
 
 class BasePixivAPI:
 	access_token = None
@@ -15,7 +15,7 @@ class BasePixivAPI:
 		def _obj_hook(pairs):
 			"""convert json object to python object"""
 			o = JsonDict()
-			for k, v in pairs.iteritems():
+			for k, v in pairs.items():
 				o[str(k)] = v
 			return o
 
@@ -33,7 +33,7 @@ class BasePixivAPI:
 			'User-Agent': 'PixivIOSApp/5.8.0',
 		}
 		# override use user headers
-		for k,v in headers.items():
+		for k,v in list(headers.items()):
 			req_header[k] = v
 
 		try:
@@ -41,7 +41,7 @@ class BasePixivAPI:
 				return requests.get(url, params=params, headers=req_header)
 			elif (method == 'POST'):
 				return requests.post(url, params=params, data=data, headers=req_header)
-		except Exception, e:
+		except Exception as e:
 			raise PixivError('requests %s %s error: %s' % (method, url, e))
 
 		raise PixivError('Unknow method: %s' % method)
@@ -73,7 +73,7 @@ class BasePixivAPI:
 			token = self.parse_json(r.text)
 			self.access_token = token.response.access_token
 			self.user_id = token.response.user.id
-			print "AccessToken:", self.access_token
+			print("AccessToken:", self.access_token)
 
 		except:
 			raise PixivError('Get access_token error! Response: %s' % (token), header=r.headers, body=r.text)
@@ -93,7 +93,7 @@ class PixivAPI(BasePixivAPI):
 	def parse_result(self, req):
 		try:
 			return self.parse_json(req.text)
-		except Exception, e:
+		except Exception as e:
 			raise PixivError("parse_json() error: %s" % (e), header=req.headers, body=req.text)
 
 	def bad_words(self):
