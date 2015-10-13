@@ -2,8 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import sys
-import imp
-imp.reload(sys)
+if sys.version_info >= (3, 0):
+	import imp
+	imp.reload(sys)
+else:
+	reload(sys)
+	sys.setdefaultencoding('utf8')
 sys.dont_write_bytecode = True
 
 from pixivpy3 import *
