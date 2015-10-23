@@ -13,8 +13,8 @@ sys.dont_write_bytecode = True
 from pixivpy3 import *
 
 ### change _USERNAME,_PASSWORD first!
-_USERNAME = "username"
-_PASSWORD = "password"
+_USERNAME = "usersp"
+_PASSWORD = "passsp"
 
 def migrate_rev2_to_papi(api):
 	print(">>> new ranking_all(mode='daily', page=1, per_page=50)")
