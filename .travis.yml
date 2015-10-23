@@ -12,4 +12,4 @@ script: python demo.py
 
 branches:
   only:
-    - travis-ci
+    - master
