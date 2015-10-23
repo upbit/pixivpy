@@ -1,4 +1,4 @@
-PixivPy
+PixivPy [![Build Status](https://travis-ci.org/upbit/pixivpy.svg)](https://travis-ci.org/upbit/pixivpy)
 ======
 _Pixiv API for Python (with Auth supported)_
 
