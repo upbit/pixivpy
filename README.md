@@ -20,7 +20,7 @@ Requirements: [requests](https://pypi.python.org/pypi/requests)
 from pixivpy3 import *
 
 api = PixivAPI()
-api.login("username", "password")
+token = api.login("username", "password")
 
 # get origin url
 json_result = api.works(45455208)
@@ -32,6 +32,10 @@ json_result = api.ranking_all('daily')
 ranking = json_result.response[0]
 for illust in ranking.works:
 	print("[%s] %s" % (illust.work.title, illust.work.image_urls.px_480mw))
+	
+# relogin
+time.sleep(3600)
+token = api.tokenlogin(token.response.refresh_token)
 ~~~
 
 [Sniffer - Public API](https://github.com/upbit/pixivpy/wiki/sniffer)
@@ -90,6 +94,20 @@ class PixivAPI(object):
 	# publicity:  public, private
 	def users_favorite_works(self, author_id, page=1, per_page=30, publicity='public'):
 
+	# 获取收藏夹
+	def me_favorite_works(self,page=1,per_page=50,image_sizes=['px_128x128', 'px_480mw', 'large']):
+	
+	# 添加收藏
+    # publicity:  public, private
+	def me_favorite_works_add(self, work_id, publicity='public'):
+	
+	# 删除收藏
+	def me_favorite_works_delete(self, ids):
+
+	# 关注用户
+    # publicity:  public, private
+	def me_favorite_users_follow(self, user_id, publicity='public'):
+	
 	# 排行榜/过去排行榜
 	# mode:
 	#   daily - 每日
@@ -154,6 +172,23 @@ json_result = api.users_favorite_works(1184799)
 print(json_result)
 illust = json_result.response[0].work
 print(">>> %s origin url: %s" % (illust.caption, illust.image_urls['large']))
+
+# 获取收藏夹 PAPI.me_favorite_works
+json_result = api.me_favorite_works()
+print(json_result)
+ids = json_result.response[0].id
+
+# 添加收藏 PAPI.me_favorite_works_add
+json_result = api.me_favorite_works_add(46363414)
+print(json_result)
+
+# 删除收藏 PAPI.me_favorite_works_delete
+json_result = api.me_favorite_works_delete(ids)
+print(json_result)
+
+# 关注用户 PAPI.me_favorite_users_follow
+json_result = api.me_favorite_users_follow(1184799)
+print(json_result)
 
 # 排行榜 PAPI.ranking_all
 json_result = api.ranking_all('weekly', 1)

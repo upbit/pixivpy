@@ -81,6 +81,36 @@ class BasePixivAPI:
 		# return auth/token response
 		return token
 
+	def tokenlogin(self, refresh_token):
+		url = 'https://oauth.secure.pixiv.net/auth/token'
+		headers = {
+			'Referer': 'http://www.pixiv.net/',
+		}
+		data = {
+			'refresh_token': refresh_token,
+			'grant_type': 'refresh_token',
+			'client_id': 'bYGKuGVw91e0NMfPGp44euvGt59s',
+			'client_secret': 'HP3RmkgAmEGro0gn1x9ioawQE8WMfvLXDz3ZqxpK',
+		}
+
+		r = self.requests_call('POST', url, headers=headers, data=data)
+		if (not r.status_code in [200, 301, 302]):
+			raise PixivError('[ERROR] login() failed! check username and password.\nHTTP %s: %s' % (r.status_code, r.text), header=r.headers, body=r.text)
+
+		token = None
+		try:
+			# get access_token
+			token = self.parse_json(r.text)
+			self.access_token = token.response.access_token
+			self.user_id = token.response.user.id
+			print("AccessToken:", self.access_token)
+
+		except:
+			raise PixivError('Get access_token error! Response: %s' % (token), header=r.headers, body=r.text)
+
+		# return auth/token response
+		return token
+
 ## Public-API
 class PixivAPI(BasePixivAPI):
 
@@ -171,6 +201,68 @@ class PixivAPI(BasePixivAPI):
 			'include_sanity_level': include_sanity_level,
 			'image_sizes': ','.join(image_sizes),
 			'profile_image_sizes': ','.join(profile_image_sizes),
+		}
+		r = self.auth_requests_call('GET', url, params=params)
+		return self.parse_result(r)
+
+    # 获取收藏夹
+	def me_favorite_works(self,page=1,per_page=50,image_sizes=['px_128x128', 'px_480mw', 'large']):
+		url = 'https://public-api.secure.pixiv.net/v1/me/favorite_works.json'
+		params = {
+			'page': page,
+			'per_page': per_page,
+            'image_sizes': ','.join(image_sizes)
+		}
+		r = self.auth_requests_call('GET', url, params=params)
+		return self.parse_result(r)
+
+    # 添加收藏
+    # publicity:  public, private
+	def me_favorite_works_add(self, work_id, publicity='public'):
+		url = 'https://public-api.secure.pixiv.net/v1/me/favorite_works.json'
+		params = {
+			'work_id': work_id,
+			'publicity': publicity
+		}
+		r = self.auth_requests_call('POST', url, params=params)
+		return self.parse_result(r)
+
+    # 删除收藏
+	def me_favorite_works_delete(self, ids):
+		url = 'https://public-api.secure.pixiv.net/v1/me/favorite_works.json'
+		params = {
+			'ids': ids
+		}
+		r = self.auth_requests_call('GET', url, params=params)
+		return self.parse_result(r)
+
+    # 获取关注用户
+    # Experimental function
+	def me_favorite_users(self, page=1):
+		url = 'https://public-api.secure.pixiv.net/v1/me/favorite-users.json'
+		params = {
+			'page': page
+		}
+		r = self.auth_requests_call('GET', url, params=params)
+		return self.parse_result(r)
+
+    # 关注用户
+    # publicity:  public, private
+	def me_favorite_users_follow(self, user_id, publicity='public'):
+		url = 'https://public-api.secure.pixiv.net/v1/me/favorite-users.json'
+		params = {
+			'target_user_id': user_id,
+			'publicity': publicity
+		}
+		r = self.auth_requests_call('POST', url, params=params)
+		return self.parse_result(r)
+
+    # 解除关注用户
+    # Experimental function
+	def me_favorite_users_unfollow(self, ids):
+		url = 'https://public-api.secure.pixiv.net/v1/me/favorite-users.json'
+		params = {
+			'delete_ids': ids
 		}
 		r = self.auth_requests_call('GET', url, params=params)
 		return self.parse_result(r)
