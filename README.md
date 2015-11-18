@@ -20,7 +20,7 @@ Requirements: [requests](https://pypi.python.org/pypi/requests)
 from pixivpy3 import *
 
 api = PixivAPI()
-token = api.login("username", "password")
+api.login("username", "password")
 
 # get origin url
 json_result = api.works(45455208)
@@ -32,13 +32,13 @@ json_result = api.ranking_all('daily')
 ranking = json_result.response[0]
 for illust in ranking.works:
 	print("[%s] %s" % (illust.work.title, illust.work.image_urls.px_480mw))
-	
-# relogin
-time.sleep(3600)
-token = api.tokenlogin(token.response.refresh_token)
+
+# acquire a new bearer token after your current token expires
+# time.sleep(3600)
+api.auth()
 ~~~
 
-[Sniffer - Public API](https://github.com/upbit/pixivpy/wiki/sniffer)
+### [Sniffer - Public API](https://github.com/upbit/pixivpy/wiki/sniffer)
 
 ### [Migrate pixivpy2 to pixivpy3](https://github.com/upbit/pixivpy/blob/master/demo.py#L15-L25)
 
@@ -86,6 +86,20 @@ class PixivAPI(object):
 	# 我的订阅
 	def me_feeds(self, show_r18=1):
 
+	# 获取收藏夹
+	def me_favorite_works(self,page=1,per_page=50,image_sizes=['px_128x128', 'px_480mw', 'large']):
+
+	# 添加收藏
+	# publicity:  public, private
+	def me_favorite_works_add(self, work_id, publicity='public'):
+
+	# 删除收藏
+	def me_favorite_works_delete(self, ids):
+
+	# 关注用户
+	# publicity:  public, private
+	def me_favorite_users_follow(self, user_id, publicity='public'):
+
 	# 用户作品
 	# publicity:  public, private
 	def users_works(self, author_id, page=1, per_page=30, publicity='public'):
@@ -94,20 +108,6 @@ class PixivAPI(object):
 	# publicity:  public, private
 	def users_favorite_works(self, author_id, page=1, per_page=30, publicity='public'):
 
-	# 获取收藏夹
-	def me_favorite_works(self,page=1,per_page=50,image_sizes=['px_128x128', 'px_480mw', 'large']):
-	
-	# 添加收藏
-    # publicity:  public, private
-	def me_favorite_works_add(self, work_id, publicity='public'):
-	
-	# 删除收藏
-	def me_favorite_works_delete(self, ids):
-
-	# 关注用户
-    # publicity:  public, private
-	def me_favorite_users_follow(self, user_id, publicity='public'):
-	
 	# 排行榜/过去排行榜
 	# mode:
 	#   daily - 每日

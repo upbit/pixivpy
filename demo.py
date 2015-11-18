@@ -78,6 +78,18 @@ def papi_demo(api):
 	illust = json_result.response[0]
 	print(">>> %s origin url: %s" % (illust.title, illust.image_urls['large']))
 
+def refresh_token(api):
+	"""
+	Acquire a new bearer token after your current token expires,
+	  just call auth() or specifies a refresh_token
+	"""
+
+	print("refresh_token before: %s" % api.refresh_token)
+
+	# api.auth(refresh_token = api.refresh_token)
+	api.auth()
+
+	print("refresh_token  after: %s" % api.refresh_token)
 
 def main():
 	api = PixivAPI()
@@ -85,6 +97,8 @@ def main():
 
 	#migrate_rev2_to_papi(api)
 	papi_demo(api)
+
+	refresh_token(api)
 
 if __name__ == '__main__':
 	main()
