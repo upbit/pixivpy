@@ -298,3 +298,14 @@ class PixivAPI(BasePixivAPI):
 		}
 		r = self.auth_requests_call('GET', url, params=params)
 		return self.parse_result(r)
+	
+	#returns latest works	
+	def latest_works(self,  page=1, per_page=30, image_sizes=['px_128x128', 'px_480mw', 'large']):
+		url = 'https://public-api.secure.pixiv.net/v1/works.json'
+		params = {
+			'page': page,
+			'per_page': per_page,
+			'image_sizes': ','.join(image_sizes),
+		}
+		r = self.auth_requests_call('GET', url, params=params)
+		return self.parse_result(r)
