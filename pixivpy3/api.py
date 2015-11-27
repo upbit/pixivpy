@@ -122,7 +122,6 @@ class PixivAPI(BasePixivAPI):
 	def works(self, illust_id):
 		url = 'https://public-api.secure.pixiv.net/v1/works/%d.json' % (illust_id)
 		params = {
-			'profile_image_sizes': 'px_170x170,px_50x50',
 			'image_sizes': 'px_128x128,small,medium,large,px_480mw',
 			'include_stats': 'true',
 		}
@@ -144,13 +143,14 @@ class PixivAPI(BasePixivAPI):
 		return self.parse_result(r)
 
 	# 我的订阅
-	def me_feeds(self, show_r18=1):
+	def me_feeds(self, show_r18=1, max_id=None):
 		url = 'https://public-api.secure.pixiv.net/v1/me/feeds.json'
 		params = {
 			'relation': 'all',
 			'type': 'touch_nottext',
 			'show_r18': show_r18,
 		}
+		if max_id: params['max_id'] = max_id
 		r = self.auth_requests_call('GET', url, params=params)
 		return self.parse_result(r)
 
@@ -207,49 +207,39 @@ class PixivAPI(BasePixivAPI):
 		return self.parse_result(r)
 
 	# 解除关注用户
-	# Experimental function
 	def me_favorite_users_unfollow(self, ids):
 		url = 'https://public-api.secure.pixiv.net/v1/me/favorite-users.json'
 		params = {
 			'delete_ids': ids
 		}
-		r = self.auth_requests_call('GET', url, params=params)
+		r = self.auth_requests_call('DELETE', url, params=params)
 		return self.parse_result(r)
 
 	# 用户作品列表
-	# publicity:  public, private
-	def users_works(self, author_id, page=1, per_page=30, publicity='public',
+	def users_works(self, author_id, page=1, per_page=30,
 			image_sizes=['px_128x128', 'px_480mw', 'large'],
-			profile_image_sizes=['px_170x170', 'px_50x50'],
 			include_stats=True, include_sanity_level=True):
 		url = 'https://public-api.secure.pixiv.net/v1/users/%d/works.json' % (author_id)
 		params = {
 			'page': page,
 			'per_page': per_page,
-			'publicity': publicity,
 			'include_stats': include_stats,
 			'include_sanity_level': include_sanity_level,
 			'image_sizes': ','.join(image_sizes),
-			'profile_image_sizes': ','.join(profile_image_sizes),
 		}
 		r = self.auth_requests_call('GET', url, params=params)
 		return self.parse_result(r)
 
 	# 用户收藏
-	# publicity:  public, private
-	def users_favorite_works(self, author_id, page=1, per_page=30, publicity='public',
+	def users_favorite_works(self, author_id, page=1, per_page=30,
 			image_sizes=['px_128x128', 'px_480mw', 'large'],
-			profile_image_sizes=['px_170x170', 'px_50x50'],
-			include_stats=True, include_sanity_level=True):
+			include_sanity_level=True):
 		url = 'https://public-api.secure.pixiv.net/v1/users/%d/favorite_works.json' % (author_id)
 		params = {
 			'page': page,
 			'per_page': per_page,
-			'publicity': publicity,
-			'include_stats': include_stats,
 			'include_sanity_level': include_sanity_level,
 			'image_sizes': ','.join(image_sizes),
-			'profile_image_sizes': ','.join(profile_image_sizes),
 		}
 		r = self.auth_requests_call('GET', url, params=params)
 		return self.parse_result(r)
@@ -262,7 +252,7 @@ class PixivAPI(BasePixivAPI):
 			image_sizes=['px_128x128', 'px_480mw', 'large'],
 			profile_image_sizes=['px_170x170', 'px_50x50'],
 			include_stats=True, include_sanity_level=True):
-		url = 'https://public-api.secure.pixiv.net/v1/ranking/all'
+		url = 'https://public-api.secure.pixiv.net/v1/ranking/all.json'
 		params = {
 			'mode': mode,
 			'page': page,
@@ -279,8 +269,8 @@ class PixivAPI(BasePixivAPI):
 	# 作品搜索
 	def search_works(self, query, page=1, per_page=30, mode='text',
 			period='all', order='desc', sort='date',
+			types=['illustration', 'manga', 'ugoira'],
 			image_sizes=['px_128x128', 'px_480mw', 'large'],
-			profile_image_sizes=['px_170x170', 'px_50x50'],
 			include_stats=True, include_sanity_level=True):
 		url = 'https://public-api.secure.pixiv.net/v1/search/works.json'
 		params = {
@@ -291,16 +281,16 @@ class PixivAPI(BasePixivAPI):
 			'order': order,
 			'sort': sort,
 			'mode': mode,
+			'types': ','.join(types),
 			'include_stats': include_stats,
 			'include_sanity_level': include_sanity_level,
 			'image_sizes': ','.join(image_sizes),
-			'profile_image_sizes': ','.join(profile_image_sizes),
 		}
 		r = self.auth_requests_call('GET', url, params=params)
 		return self.parse_result(r)
-	
-	#returns latest works	
-	def latest_works(self,  page=1, per_page=30, image_sizes=['px_128x128', 'px_480mw', 'large']):
+
+	# 最新作品
+	def latest_works(self, page=1, per_page=30, image_sizes=['px_128x128', 'px_480mw', 'large']):
 		url = 'https://public-api.secure.pixiv.net/v1/works.json'
 		params = {
 			'page': page,
