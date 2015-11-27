@@ -270,6 +270,18 @@ class PixivAPI(BasePixivAPI):
 		r = self.auth_requests_call('GET', url, params=params)
 		return self.parse_result(r)
 
+	# 用户活动
+	def users_feeds(self, author_id, show_r18=1, max_id=None):
+		url = 'https://public-api.secure.pixiv.net/v1/users/%d/feeds.json' % (author_id)
+		params = {
+			'relation': 'all',
+			'type': 'touch_nottext',
+			'show_r18': show_r18,
+		}
+		if max_id: params['max_id'] = max_id
+		r = self.auth_requests_call('GET', url, params=params)
+		return self.parse_result(r)
+
 	# 用户关注的用户
 	def users_following(self, author_id, page=1, per_page=30):
 		url = 'https://public-api.secure.pixiv.net/v1/users/%d/following.json' % (author_id)
