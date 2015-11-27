@@ -154,6 +154,21 @@ class PixivAPI(BasePixivAPI):
 		r = self.auth_requests_call('GET', url, params=params)
 		return self.parse_result(r)
 
+	# 关注的新作品
+	def me_following_works(self, page=1, per_page=30,
+			image_sizes=['px_128x128', 'px_480mw', 'large'],
+			include_stats=True, include_sanity_level=True):
+		url = 'https://public-api.secure.pixiv.net/v1/me/following/works.json'
+		params = {
+			'page': page,
+			'per_page': per_page,
+			'image_sizes': ','.join(image_sizes),
+			'include_stats': include_stats,
+			'include_sanity_level': include_sanity_level,
+		}
+		r = self.auth_requests_call('GET', url, params=params)
+		return self.parse_result(r)
+
 	# 获取收藏夹
 	def me_favorite_works(self, page=1, per_page=50, image_sizes=['px_128x128', 'px_480mw', 'large']):
 		url = 'https://public-api.secure.pixiv.net/v1/me/favorite_works.json'
@@ -181,6 +196,17 @@ class PixivAPI(BasePixivAPI):
 		url = 'https://public-api.secure.pixiv.net/v1/me/favorite_works.json'
 		params = {
 			'ids': ids
+		}
+		r = self.auth_requests_call('GET', url, params=params)
+		return self.parse_result(r)
+
+	# 获取关注用户
+	def me_following(self, page=1, per_page=30, publicity='public'):
+		url = 'https://public-api.secure.pixiv.net/v1/me/following.json'
+		params = {
+			'page': page,
+			'per_page': per_page,
+			'publicity': publicity,
 		}
 		r = self.auth_requests_call('GET', url, params=params)
 		return self.parse_result(r)
@@ -240,6 +266,16 @@ class PixivAPI(BasePixivAPI):
 			'per_page': per_page,
 			'include_sanity_level': include_sanity_level,
 			'image_sizes': ','.join(image_sizes),
+		}
+		r = self.auth_requests_call('GET', url, params=params)
+		return self.parse_result(r)
+
+	# 用户关注的用户
+	def users_following(self, author_id, page=1, per_page=30):
+		url = 'https://public-api.secure.pixiv.net/v1/users/%d/following.json' % (author_id)
+		params = {
+			'page': page,
+			'per_page': per_page,
 		}
 		r = self.auth_requests_call('GET', url, params=params)
 		return self.parse_result(r)
