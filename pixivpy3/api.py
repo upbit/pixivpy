@@ -293,14 +293,17 @@ class PixivAPI(BasePixivAPI):
 		return self.parse_result(r)
 
 	# 排行榜/过去排行榜
-	# mode: [daily, weekly, monthly, male, female, rookie, daily_r18, weekly_r18, male_r18, female_r18, r18g]
+	# ranking_type: [all, illust, manga, ugoira]
+	# mode: [daily, weekly, monthly, rookie, original, male, female, daily_r18, weekly_r18, male_r18, female_r18, r18g]
+	#       for 'illust' & 'manga': [daily, weekly, monthly, rookie, daily_r18, weekly_r18, r18g]
+	#       for 'ugoira': [daily, weekly, daily_r18, weekly_r18],
 	# page: [1-n]
 	# date: '2015-04-01' (仅过去排行榜)
-	def ranking_all(self, mode='daily', page=1, per_page=50, date=None,
+	def ranking(self, ranking_type='all', mode='daily', page=1, per_page=50, date=None,
 			image_sizes=['px_128x128', 'px_480mw', 'large'],
 			profile_image_sizes=['px_170x170', 'px_50x50'],
 			include_stats=True, include_sanity_level=True):
-		url = 'https://public-api.secure.pixiv.net/v1/ranking/all.json'
+		url = 'https://public-api.secure.pixiv.net/v1/ranking/%s.json' % (ranking_type)
 		params = {
 			'mode': mode,
 			'page': page,
