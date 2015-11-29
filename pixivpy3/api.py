@@ -197,7 +197,7 @@ class PixivAPI(BasePixivAPI):
 		params = {
 			'ids': ids
 		}
-		r = self.auth_requests_call('GET', url, params=params)
+		r = self.auth_requests_call('DELETE', url, params=params)
 		return self.parse_result(r)
 
 	# 获取关注用户
@@ -316,6 +316,15 @@ class PixivAPI(BasePixivAPI):
 		if date: params['date'] = date
 		r = self.auth_requests_call('GET', url, params=params)
 		return self.parse_result(r)
+
+	# alias for old API ranking_all()
+	def ranking_all(self, mode='daily', page=1, per_page=50, date=None,
+			image_sizes=['px_128x128', 'px_480mw', 'large'],
+			profile_image_sizes=['px_170x170', 'px_50x50'],
+			include_stats=True, include_sanity_level=True):
+		return self.ranking(ranking_type='all', mode=mode, page=page, per_page=per_page, date=date,
+			image_sizes=image_sizes, profile_image_sizes=profile_image_sizes,
+			include_stats=include_stats, include_sanity_level=include_sanity_level)
 
 	# 作品搜索
 	def search_works(self, query, page=1, per_page=30, mode='text',
