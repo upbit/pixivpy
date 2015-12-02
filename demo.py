@@ -15,7 +15,7 @@ from pixivpy3 import *
 ### change _USERNAME,_PASSWORD first!
 _USERNAME = "usersp"
 _PASSWORD = "passsp"
-#_TEST_WRITE = True
+_TEST_WRITE = False
 
 def migrate_rev2_to_papi(api):
 	print(">>> new ranking_all(mode='daily', page=1, per_page=50)")
@@ -139,6 +139,7 @@ def papi_search(api):
 	print(">>> %s origin url: %s" % (illust.title, illust.image_urls['large']))
 
 def papi_others(api):
+	# PAPI.latest_works (New -> Everyone)
 	json_result = api.latest_works()
 	print(json_result)
 	illust = json_result.response[0]

@@ -161,6 +161,24 @@ print(json_result)
 ref_work = json_result.response[0].ref_work
 print(ref_work.title)
 
+# 我的收藏列表(private) PAPI.me_favorite_works
+json_result = api.me_favorite_works(publicity='private')
+print(json_result)
+illust = json_result.response[0].work
+print("[%s] %s: %s" % (illust.user.name, illust.title, illust.image_urls.px_480mw))
+
+# 关注的新作品[New -> Follow] PAPI.me_following_works
+json_result = api.me_following_works()
+print(json_result)
+illust = json_result.response[0]
+print(">>> %s, origin url: %s" % (illust.caption, illust.image_urls['large']))
+
+# 我关注的用户 PAPI.me_following
+json_result = api.me_following()
+print(json_result)
+user = json_result.response[0]
+print(user.name)
+
 # 用户作品 PAPI.users_works
 json_result = api.users_works(1184799)
 print(json_result)
@@ -190,14 +208,14 @@ print(json_result)
 json_result = api.me_favorite_users_follow(1184799)
 print(json_result)
 
-# 排行榜 PAPI.ranking_all
-json_result = api.ranking_all('weekly', 1)
+# 排行榜 PAPI.ranking(illust)
+json_result = api.ranking('illust', 'weekly', 1)
 print(json_result)
 illust = json_result.response[0].works[0].work
 print(">>> %s origin url: %s" % (illust.title, illust.image_urls['large']))
 
-# 过去排行榜 PAPI.ranking_all(2015-05-01)
-json_result = api.ranking_all(mode='daily', page=1, date='2015-05-01')
+# 过去排行榜 PAPI.ranking(all, 2015-05-01)
+json_result = api.ranking(ranking_type='all', mode='daily', page=1, date='2015-05-01')
 print(json_result)
 illust = json_result.response[0].works[0].work
 print(">>> %s origin url: %s" % (illust.title, illust.image_urls['large']))
@@ -208,6 +226,12 @@ json_result = api.search_works("水遊び", page=1, mode='exact_tag')
 print(json_result)
 illust = json_result.response[0]
 print(">>> %s origin url: %s" % (illust.title, illust.image_urls['large']))
+
+# 最新作品列表[New -> Everyone] PAPI.latest_works
+json_result = api.latest_works()
+print(json_result)
+illust = json_result.response[0]
+print(">>> %s url: %s" % (illust.title, illust.image_urls.px_480mw))
 ~~~
 
 ## License
