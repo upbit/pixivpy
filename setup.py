@@ -18,7 +18,7 @@ setup(
   author_email = 'rmusique@gmail.com',
   install_requires = requires,
   url = 'https://github.com/upbit/pixivpy',
-  download_url = 'https://github.com/upbit/pixivpy/releases/tag/v3.0',
+  download_url = 'https://github.com/upbit/pixivpy/releases',
   keywords = ['pixiv', 'api', 'pixivpy'],
   classifiers = [],
 )
