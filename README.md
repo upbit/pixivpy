@@ -131,8 +131,15 @@ class PixivAPI(object):
 	# query: 搜索的文字
 	# page: 1-n
 	# mode:
-	#   text - 标题
-	#   exact_tag - 标签
+	#   text - 标题/描述
+	#   tag - 非精确标签
+	#   exact_tag - 精确标签
+	#   caption - 描述
+	# period (only applies to asc order):  
+	#   all - 所有
+	#   day - 一天之内
+	#   week - 一周之内
+	#   month - 一月之内
 	# order:
 	#   desc - 新顺序
 	#   asc - 旧顺序
