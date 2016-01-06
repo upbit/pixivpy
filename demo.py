@@ -49,8 +49,8 @@ def papi_me(api):
     # PAPI.me_feeds
     json_result = api.me_feeds(show_r18=0)
     print(json_result)
-    # ref_work = json_result.response[0].ref_work
-    # print(ref_work.title)
+    work = json_result.response[0].ref_user.works[0]
+    print(work.title)
 
     # PAPI.me_favorite_works
     json_result = api.me_favorite_works(publicity='private')
