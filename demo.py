@@ -19,12 +19,11 @@ _TEST_WRITE = False
 
 # ## If a special network environment is met, please configure requests as you need.
 # ## Otherwise, just keep it empty.
-_KWARGS = {
-    'proxies': {
-        'http': 'http://xxx.xxx.xxx.xxx:xxxx',
-        'https': 'https://xxx.xxx.xxx.xxx:xxxx'
-    },
-    'cert': ('cert', 'key')
+_REQUESTS_KWARGS = {
+  # 'proxies': {
+  #   'https': 'http://127.0.0.1:8888',
+  # },
+  # 'verify': False,       # PAPI use https, an easy way is disable requests SSL verify
 }
 
 def migrate_rev2_to_papi(api):
@@ -176,10 +175,11 @@ def refresh_token(api):
 
 
 def main():
-    api = PixivAPI(**_KWARGS)
+    # api = PixivAPI()
+    api = PixivAPI(**_REQUESTS_KWARGS)
     api.login(_USERNAME, _PASSWORD)
 
-    # migrate_rev2_to_papi(api)
+    migrate_rev2_to_papi(api)
 
     papi_base(api)
     papi_me(api)
@@ -189,7 +189,9 @@ def main():
     papi_search(api)
     papi_others(api)
 
-    refresh_token(api)
+    # Because issues #12, Pixiv return 1508 when use refresh_token
+    # Disable refresh_token before found a new solution
+    # refresh_token(api)
 
 if __name__ == '__main__':
     main()

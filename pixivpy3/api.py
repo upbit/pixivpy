@@ -48,7 +48,7 @@ class BasePixivAPI(object):
             elif (method == 'POST'):
                 return requests.post(url, params=params, data=data, headers=req_header, **self.requests_kwargs)
             elif (method == 'DELETE'):
-                return requests.delete(url, params=params, data=data, headers=req_header, **requests_kwargs)
+                return requests.delete(url, params=params, data=data, headers=req_header, **self.requests_kwargs)
         except Exception as e:
             raise PixivError('requests %s %s error: %s' % (method, url, e))
 
@@ -109,7 +109,7 @@ class PixivAPI(BasePixivAPI):
 
     def __init__(self, **requests_kwargs):
         """initialize requests kwargs if need be"""
-        super().__init__(**requests_kwargs)
+        super(PixivAPI, self).__init__(**requests_kwargs)
 
     # Check auth and set BearerToken to headers
     def auth_requests_call(self, method, url, headers={}, params=None, data=None):
