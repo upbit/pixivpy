@@ -11,6 +11,10 @@ class BasePixivAPI(object):
     user_id = 0
     refresh_token = None
 
+    def __init__(self, **requests_kwargs):
+        """initialize requests kwargs if need be"""
+        self.requests_kwargs = requests_kwargs
+
     def parse_json(self, json_str):
         """parse str into JsonDict"""
 
@@ -40,11 +44,11 @@ class BasePixivAPI(object):
 
         try:
             if (method == 'GET'):
-                return requests.get(url, params=params, headers=req_header)
+                return requests.get(url, params=params, headers=req_header, **self.requests_kwargs)
             elif (method == 'POST'):
-                return requests.post(url, params=params, data=data, headers=req_header)
+                return requests.post(url, params=params, data=data, headers=req_header, **self.requests_kwargs)
             elif (method == 'DELETE'):
-                return requests.delete(url, params=params, data=data, headers=req_header)
+                return requests.delete(url, params=params, data=data, headers=req_header, **requests_kwargs)
         except Exception as e:
             raise PixivError('requests %s %s error: %s' % (method, url, e))
 
@@ -102,6 +106,10 @@ class BasePixivAPI(object):
 
 # Public-API
 class PixivAPI(BasePixivAPI):
+
+    def __init__(self, **requests_kwargs):
+        """initialize requests kwargs if need be"""
+        super().__init__(**requests_kwargs)
 
     # Check auth and set BearerToken to headers
     def auth_requests_call(self, method, url, headers={}, params=None, data=None):

@@ -17,6 +17,15 @@ _USERNAME = "usersp"
 _PASSWORD = "passsp"
 _TEST_WRITE = False
 
+# ## If a special network environment is met, please configure requests as you need.
+# ## Otherwise, just keep it empty.
+_KWARGS = {
+    'proxies': {
+        'http': 'http://xxx.xxx.xxx.xxx:xxxx',
+        'https': 'https://xxx.xxx.xxx.xxx:xxxx'
+    },
+    'cert': ('cert', 'key')
+}
 
 def migrate_rev2_to_papi(api):
     print(">>> new ranking_all(mode='daily', page=1, per_page=50)")
@@ -167,7 +176,7 @@ def refresh_token(api):
 
 
 def main():
-    api = PixivAPI()
+    api = PixivAPI(**_KWARGS)
     api.login(_USERNAME, _PASSWORD)
 
     # migrate_rev2_to_papi(api)
