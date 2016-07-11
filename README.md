@@ -2,6 +2,7 @@ PixivPy [![Build Status](https://travis-ci.org/upbit/pixivpy.svg)](https://travi
 ======
 _Pixiv API for Python (with Auth supported)_
 
+* [2016/07/11] Add new [iOS 6.x ref to Wiki](https://github.com/upbit/pixivpy/wiki#6x-api)
 * [2015/12/02] Add write API for favorite an user / illust, release v3.1
 * [2015/08/11] Remove SPAI and release v3.0 (pixivpy3) (Public-API with Search API)
 * [2015/05/16] As Pixiv **deprecated** SAPI in recent days, push new Public-API **ranking_all**
