@@ -10,15 +10,15 @@ else:
     sys.setdefaultencoding('utf8')
 sys.dont_write_bytecode = True
 
-from pixivpy3 import *  # noqa
+from pixivpy3 import *
 
-# ## change _USERNAME,_PASSWORD first!
+## change _USERNAME,_PASSWORD first!
 _USERNAME = "usersp"
 _PASSWORD = "passsp"
 _TEST_WRITE = False
 
-# ## If a special network environment is met, please configure requests as you need.
-# ## Otherwise, just keep it empty.
+## If a special network environment is met, please configure requests as you need.
+## Otherwise, just keep it empty.
 _REQUESTS_KWARGS = {
   # 'proxies': {
   #   'https': 'http://127.0.0.1:8888',
