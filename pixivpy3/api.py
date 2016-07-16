@@ -2,6 +2,7 @@
 
 import json
 import requests
+import urlparse
 
 from .utils import PixivError, JsonDict
 
@@ -380,9 +381,6 @@ class PixivAPI(BasePixivAPI):
         r = self.auth_requests_call('GET', url, params=params)
         return self.parse_result(r)
 
-# turn bool to string
-bool_string = lambda b: 'true' if b else 'false'
-
 # App-API (6.x - app-api.pixiv.net)
 class PixivAppAPI(BasePixivAPI):
 
@@ -402,19 +400,38 @@ class PixivAppAPI(BasePixivAPI):
         except Exception as e:
             raise PixivError("parse_json() error: %s" % (e), header=req.headers, body=req.text)
 
+    def format_bool(self, bool_value):
+        if type(bool_value) == bool:
+            return 'true' if bool_value else 'false'
+        if bool_value in ['true', 'True']:
+            return 'true'
+        else:
+            return 'false'
+
+    def parse_qs(self, next_url):
+        query = urlparse.urlparse(next_url).query
+        return dict([(k,v[0]) for k,v in urlparse.parse_qs(query).items()])
+
     # 插画推荐 (Home - Main)
     # content_type: [illust, manga]
-    def illust_recommended(self, content_type='illust', include_ranking_label=True, _filter='for_ios'):
+    def illust_recommended(self, content_type='illust', include_ranking_label=True, filter='for_ios',
+            max_bookmark_id_for_recommend=None, min_bookmark_id_for_recent_illust=None,
+            offset=None, include_ranking=None):
         url = 'https://app-api.pixiv.net/v1/illust/recommended'
         params = {
             'content_type': content_type,
-            'include_ranking_label': bool_string(include_ranking_label),
-            'filter': _filter,
-            # min_bookmark_id_for_recent_illust=2027326954
-            # max_bookmark_id_for_recommend=1968362135
-            # 'offset': offset,
-            # 'include_ranking': bool_string(include_ranking),
+            'include_ranking_label': self.format_bool(include_ranking_label),
+            'filter': filter,
         }
+        if (max_bookmark_id_for_recommend):
+            params['max_bookmark_id_for_recommend'] = max_bookmark_id_for_recommend
+        if (min_bookmark_id_for_recent_illust):
+            params['min_bookmark_id_for_recent_illust'] = min_bookmark_id_for_recent_illust
+        if (offset):
+            params['offset'] = offset
+        if (include_ranking):
+            params['include_ranking'] = include_ranking
+
         r = self.auth_requests_call('GET', url, params=params)
         return self.parse_result(r)
 

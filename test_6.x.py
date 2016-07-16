@@ -23,14 +23,27 @@ _REQUESTS_KWARGS = {
   'verify': False,       # PAPI use https, an easy way is disable requests SSL verify
 }
 
-def main():
-    api = PixivAppAPI()
-    # api = PixivAppAPI(**_REQUESTS_KWARGS)
-    api.login(_USERNAME, _PASSWORD)
+def get_qs(url):
+  import urlparse
+  query = urlparse.urlparse(url).query
+  return dict([(k,v[0]) for k,v in urlparse.parse_qs(query).items()])
 
-    response = api.illust_recommended()
-    print response.illusts[0]
-    print response.next_url
+
+def main():
+  api = PixivAppAPI()
+  # api = PixivAppAPI(**_REQUESTS_KWARGS)
+  api.login(_USERNAME, _PASSWORD)
+
+  response = api.illust_recommended()
+  illust = response.illusts[0]
+  print illust.title, illust.image_urls.medium
+
+  # next page
+  qs = api.parse_qs(response.next_url)
+  response = api.illust_recommended(**qs)
+  illust = response.illusts[0]
+  print illust.title, illust.image_urls.medium
+
 
 if __name__ == '__main__':
     main()
