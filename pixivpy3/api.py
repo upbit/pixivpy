@@ -396,11 +396,11 @@ class PixivAPI(BasePixivAPI):
         return self.parse_result(r)
 
 # App-API (6.x - app-api.pixiv.net)
-class PixivAppAPI(BasePixivAPI):
+class AppPixivAPI(BasePixivAPI):
 
     def __init__(self, **requests_kwargs):
         """initialize requests kwargs if need be"""
-        super(PixivAppAPI, self).__init__(**requests_kwargs)
+        super(AppPixivAPI, self).__init__(**requests_kwargs)
 
     # Check auth and set BearerToken to headers
     def auth_requests_call(self, method, url, headers={}, params=None, data=None):

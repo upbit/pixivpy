@@ -35,8 +35,8 @@ def appapi_recommend(api):
     print("page2: %s %s" % (illust.title, illust.meta_single_page.original_image_url))
 
 def main():
-    api = PixivAppAPI()
-    # api = PixivAppAPI(**_REQUESTS_KWARGS)
+    api = AppPixivAPI()
+    # api = AppPixivAPI(**_REQUESTS_KWARGS)
     api.login(_USERNAME, _PASSWORD)
 
     appapi_recommend(api)
