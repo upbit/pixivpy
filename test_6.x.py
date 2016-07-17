@@ -17,33 +17,29 @@ _PASSWORD = "passsp"
 _TEST_WRITE = False
 
 _REQUESTS_KWARGS = {
-  'proxies': {
-    'https': 'http://192.168.88.167:8888',
-  },
-  'verify': False,       # PAPI use https, an easy way is disable requests SSL verify
+    'proxies': {
+        'https': 'http://192.168.88.167:8888',
+    },
+    'verify': False,       # PAPI use https, an easy way is disable requests SSL verify
 }
 
-def get_qs(url):
-  import urlparse
-  query = urlparse.urlparse(url).query
-  return dict([(k,v[0]) for k,v in urlparse.parse_qs(query).items()])
+def appapi_recommend(api):
+    response = api.illust_recommended()
+    illust = response.illusts[0]
+    print("page1: %s %s" % (illust.title, illust.meta_single_page.original_image_url))
 
+    # get next page
+    qs = api.parse_qs(response.next_url)
+    response = api.illust_recommended(**qs)
+    illust = response.illusts[0]
+    print("page2: %s %s" % (illust.title, illust.meta_single_page.original_image_url))
 
 def main():
-  api = PixivAppAPI()
-  # api = PixivAppAPI(**_REQUESTS_KWARGS)
-  api.login(_USERNAME, _PASSWORD)
+    api = PixivAppAPI()
+    # api = PixivAppAPI(**_REQUESTS_KWARGS)
+    api.login(_USERNAME, _PASSWORD)
 
-  response = api.illust_recommended()
-  illust = response.illusts[0]
-  print illust.title, illust.image_urls.medium
-
-  # next page
-  qs = api.parse_qs(response.next_url)
-  response = api.illust_recommended(**qs)
-  illust = response.illusts[0]
-  print illust.title, illust.image_urls.medium
-
+    appapi_recommend(api)
 
 if __name__ == '__main__':
     main()

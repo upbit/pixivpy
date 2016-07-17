@@ -1,5 +1,8 @@
 # -*- coding:utf-8 -*-
 
+import os
+import shutil
+
 import json
 import requests
 import urlparse
@@ -32,14 +35,14 @@ class BasePixivAPI(object):
         if self.access_token is None:
             raise PixivError('Authentication required! Call login() or set_auth() first!')
 
-    def requests_call(self, method, url, headers={}, params=None, data=None):
+    def requests_call(self, method, url, headers={}, params=None, data=None, stream=False):
         """ requests http/https call for Pixiv API """
 
         req_header = {
-            'App-Version': '6.0.4',
+            'App-Version': '6.0.5',
             'App-OS': 'ios',
             'App-OS-Version': '9.3.2',
-            'User-Agent': 'PixivIOSApp/6.0.4 (iOS 9.3.2; iPhone8,1)',
+            'User-Agent': 'PixivIOSApp/6.0.5 (iOS 9.3.2; iPhone8,1)',
         }
         # override use user headers
         for k, v in list(headers.items()):
@@ -47,11 +50,11 @@ class BasePixivAPI(object):
 
         try:
             if (method == 'GET'):
-                return requests.get(url, params=params, headers=req_header, **self.requests_kwargs)
+                return requests.get(url, params=params, headers=req_header, stream=stream, **self.requests_kwargs)
             elif (method == 'POST'):
-                return requests.post(url, params=params, data=data, headers=req_header, **self.requests_kwargs)
+                return requests.post(url, params=params, data=data, headers=req_header, stream=stream, **self.requests_kwargs)
             elif (method == 'DELETE'):
-                return requests.delete(url, params=params, data=data, headers=req_header, **self.requests_kwargs)
+                return requests.delete(url, params=params, data=data, headers=req_header, stream=stream, **self.requests_kwargs)
         except Exception as e:
             raise PixivError('requests %s %s error: %s' % (method, url, e))
 
@@ -69,10 +72,10 @@ class BasePixivAPI(object):
 
         url = 'https://oauth.secure.pixiv.net/auth/token'
         headers = {
-            'App-Version': '6.0.4',
+            'App-Version': '6.0.5',
             'App-OS': 'ios',
             'App-OS-Version': '9.3.2',
-            'User-Agent': 'PixivIOSApp/6.0.4 (iOS 9.3.2; iPhone8,1)',
+            'User-Agent': 'PixivIOSApp/6.0.5 (iOS 9.3.2; iPhone8,1)',
         }
         data = {
             'get_secure_url': 1,
@@ -110,6 +113,17 @@ class BasePixivAPI(object):
         # return auth/token response
         return token
 
+    def download(self, url, filename=None, referer='https://app-api.pixiv.net/'):
+        if (not filename):
+            filename = os.path.basename(url)
+        headers = {
+            'Accept-Encoding': 'gzip, deflate',
+            'Referer': referer,
+        }
+        response = self.requests_call('GET', url, headers=headers, stream=True)
+        with open(filename, 'wb') as out_file:
+            shutil.copyfileobj(response.raw, out_file)
+        del response
 
 # Public-API
 class PixivAPI(BasePixivAPI):
