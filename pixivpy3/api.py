@@ -424,6 +424,43 @@ class AppPixivAPI(BasePixivAPI):
         query = urlparse.urlparse(next_url).query
         return dict([(k,v[0]) for k,v in urlparse.parse_qs(query).items()])
 
+    # 用户详情
+    def user_detail(self, user_id, filter='for_ios'):
+        url = 'https://app-api.pixiv.net/v1/user/detail'
+        params = {
+            'user_id': user_id,
+            'filter': filter,
+        }
+        r = self.auth_requests_call('GET', url, params=params)
+        return self.parse_result(r)
+
+    # 用户作品列表
+    def user_illusts(self, user_id, type='illust', filter='for_ios', offset=None):
+        url = 'https://app-api.pixiv.net/v1/user/illusts'
+        params = {
+            'user_id': user_id,
+            'type': type,
+            'filter': filter,
+        }
+        if (offset):
+            params['offset'] = offset
+        r = self.auth_requests_call('GET', url, params=params)
+        return self.parse_result(r)
+
+    # 相关作品列表
+    def illust_related(self, illust_id, filter='for_ios', seed_illust_ids=None):
+        url = 'https://app-api.pixiv.net/v1/illust/related'
+        params = {
+            'illust_id': illust_id,
+            'filter': filter,
+        }
+        if type(seed_illust_ids) == str:
+            params['seed_illust_ids'] = seed_illust_ids
+        if type(seed_illust_ids) == list:
+            params['seed_illust_ids'] = ",".join(seed_illust_ids)
+        r = self.auth_requests_call('GET', url, params=params)
+        return self.parse_result(r)
+
     # 插画推荐 (Home - Main)
     # content_type: [illust, manga]
     def illust_recommended(self, content_type='illust', include_ranking_label=True, filter='for_ios',
@@ -446,4 +483,6 @@ class AppPixivAPI(BasePixivAPI):
 
         r = self.auth_requests_call('GET', url, params=params)
         return self.parse_result(r)
+
+
 
