@@ -393,8 +393,11 @@ class PixivAPI(BasePixivAPI):
         r = self.auth_requests_call('GET', url, params=params)
         return self.parse_result(r)
 
-# App-API (6.x - app-api.pixiv.net)
+# Experimental App-API (6.x - app-api.pixiv.net)
 class AppPixivAPI(BasePixivAPI):
+    """
+    Warning: The AppPixivAPI backend is experimental !!!
+    """
 
     def __init__(self, **requests_kwargs):
         """initialize requests kwargs if need be"""
@@ -483,6 +486,4 @@ class AppPixivAPI(BasePixivAPI):
 
         r = self.auth_requests_call('GET', url, params=params)
         return self.parse_result(r)
-
-
 

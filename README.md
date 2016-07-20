@@ -2,6 +2,7 @@ PixivPy [![Build Status](https://travis-ci.org/upbit/pixivpy.svg)](https://travi
 ======
 _Pixiv API for Python (with Auth supported)_
 
+* [2016/07/20] New **App-API** (Experimental) for `PixivIOSApp/6.0.5`
 * [2016/07/11] Add new [iOS 6.x API](https://github.com/upbit/pixivpy/wiki#6x-api) reference to Wiki
 * [2015/12/02] Add write API for favorite an user / illust, release v3.1
 * [2015/08/11] Remove SPAI and release v3.0 (pixivpy3) (Public-API with Search API)
@@ -34,13 +35,10 @@ json_result = api.ranking_all('daily')
 ranking = json_result.response[0]
 for illust in ranking.works:
 	print("[%s] %s" % (illust.work.title, illust.work.image_urls.px_480mw))
-
-# acquire a new bearer token after your current token expires
-# time.sleep(3600)
-api.auth()
 ~~~
 
 ### [Sniffer - Public API](https://github.com/upbit/pixivpy/wiki/sniffer)
+### [Sniffer - App API](https://github.com/upbit/pixivpy/wiki#6x-api)
 
 ### [Migrate pixivpy2 to pixivpy3](https://github.com/upbit/pixivpy/blob/master/demo.py#L15-L25)
 
@@ -70,14 +68,69 @@ Find Pixiv API in **Objective-C**? You might also like [**PixivAPI_iOS**](https:
 
 ## API functions
 
+### App-API (6.0 - app-api.pixiv.net)
+
+~~~python
+class AppPixivAPI(BasePixivAPI):
+    """
+    Warning: The AppPixivAPI backend is experimental !!!
+    """
+    # 用户详情
+    def user_detail(self, user_id):
+
+    # 用户作品列表
+    def user_illusts(self, user_id, type='illust'):
+
+    # 相关作品列表
+    def illust_related(self, illust_id):
+
+    # 插画推荐 (Home - Main)
+    # content_type: [illust, manga]
+    def illust_recommended(self, content_type='illust'):
+
+~~~
+
+[Usage](https://github.com/upbit/pixivpy/blob/master/demo.py#L42):
+
+~~~python
+# 用户详情
+json_result = aapi.user_detail(660788)
+print(json_result)
+user = json_result.user
+print("%s(@%s) region=%s" % (user.name, user.account, json_result.profile.region))
+
+# 用户作品列表
+json_result = aapi.user_illusts(660788)
+print(json_result)
+illust = json_result.illusts[0]
+print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+
+# 用户作品列表-下一页 (.parse_qs(next_url) 用法)
+next_qs = aapi.parse_qs(json_result.next_url)
+json_result = aapi.user_illusts(**next_qs)
+print(json_result)
+illust = json_result.illusts[0]
+print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+
+# 作品推荐
+json_result = aapi.illust_recommended()
+print(json_result)
+illust = json_result.illusts[0]
+print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+
+# 作品相关推荐
+json_result = aapi.illust_related(57065990)
+print(json_result)
+illust = json_result.illusts[0]
+print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+~~~
+
 ### Public-API
 
 [PAPI](https://github.com/upbit/pixivpy/blob/master/pixivpy3/api.py).*
 
 ~~~python
-class PixivAPI(object):
-
-	def bad_words(self):
+class PixivAPI(BasePixivAPI):
 
 	# 作品详细
 	def works(self, illust_id):
@@ -149,7 +202,7 @@ class PixivAPI(object):
 
 ~~~
 
-[Usage](https://github.com/upbit/pixivpy/blob/master/demo.py#L27):
+[Usage](https://github.com/upbit/pixivpy/blob/master/demo.py#L42):
 
 ~~~python
 # 作品详细 PAPI.works
