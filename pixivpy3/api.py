@@ -1,11 +1,10 @@
 # -*- coding:utf-8 -*-
 
 import os
+import sys
 import shutil
-
 import json
 import requests
-import urlparse
 
 from .utils import PixivError, JsonDict
 
@@ -424,8 +423,12 @@ class AppPixivAPI(BasePixivAPI):
             return 'false'
 
     def parse_qs(self, next_url):
-        query = urlparse.urlparse(next_url).query
-        return dict([(k,v[0]) for k,v in urlparse.parse_qs(query).items()])
+        if sys.version_info >= (3, 0):
+            from urllib.parse import urlparse, parse_qs
+        else:
+            from urlparse import urlparse, parse_qs
+        query = urlparse(next_url).query
+        return dict([(k,v[0]) for k,v in parse_qs(query).items()])
 
     # 用户详情
     def user_detail(self, user_id, filter='for_ios'):
