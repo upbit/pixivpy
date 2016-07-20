@@ -10,15 +10,15 @@ else:
     sys.setdefaultencoding('utf8')
 sys.dont_write_bytecode = True
 
-from pixivpy3 import *  # noqa
+from pixivpy3 import *
 
-# ## change _USERNAME,_PASSWORD first!
+## change _USERNAME,_PASSWORD first!
 _USERNAME = "usersp"
 _PASSWORD = "passsp"
 _TEST_WRITE = False
 
-# ## If a special network environment is met, please configure requests as you need.
-# ## Otherwise, just keep it empty.
+## If a special network environment is met, please configure requests as you need.
+## Otherwise, just keep it empty.
 _REQUESTS_KWARGS = {
   # 'proxies': {
   #   'https': 'http://127.0.0.1:8888',
@@ -38,6 +38,7 @@ def migrate_rev2_to_papi(api):
         # print img.work
         print("[%s/%s(id=%s)] %s" % (img.work.user.name, img.work.title, img.work.id, img.work.image_urls.px_480mw))
 
+## PAPI start
 
 def papi_base(api):
     # PAPI.works
@@ -57,8 +58,8 @@ def papi_me(api):
     # PAPI.me_feeds
     json_result = api.me_feeds(show_r18=0)
     print(json_result)
-    work = json_result.response[0].ref_user.works[0]
-    print(work.title)
+    # work = json_result.response[0].ref_user.works[0]
+    # print(work.title)
 
     # PAPI.me_favorite_works
     json_result = api.me_favorite_works(publicity='private')
@@ -161,6 +162,48 @@ def papi_others(api):
     illust = json_result.response[0]
     print(">>> %s url: %s" % (illust.title, illust.image_urls.px_480mw))
 
+## AppAPI start
+
+def appapi_get_nextpage(api, test_function, next_url):
+    """Helper function for call next_url"""
+    
+    return test_function(**qs)
+
+def appapi_users(aapi):
+    json_result = aapi.user_detail(660788)
+    print(json_result)
+    user = json_result.user
+    print("%s(@%s) region=%s" % (user.name, user.account, json_result.profile.region))
+
+    json_result = aapi.user_illusts(660788)
+    print(json_result)
+    illust = json_result.illusts[0]
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+
+    # get next page
+    next_qs = aapi.parse_qs(json_result.next_url)
+    json_result = aapi.user_illusts(**next_qs)
+    # print(json_result)
+    illust = json_result.illusts[0]
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+
+def appapi_recommend(aapi):
+    json_result = aapi.illust_recommended()
+    print(json_result)
+    illust = json_result.illusts[0]
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+
+    json_result = aapi.illust_related(57065990)
+    print(json_result)
+    illust = json_result.illusts[0]
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+
+    # get next page
+    next_qs = aapi.parse_qs(json_result.next_url)
+    json_result = aapi.illust_related(**next_qs)
+    # print(json_result)
+    illust = json_result.illusts[0]
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
 def refresh_token(api):
     """Acquire a new bearer token after your current token expires,
@@ -188,6 +231,13 @@ def main():
     papi_ranking(api)
     papi_search(api)
     papi_others(api)
+
+    # app-api (experimental)
+    aapi = AppPixivAPI(**_REQUESTS_KWARGS)
+    aapi.login(_USERNAME, _PASSWORD)
+
+    appapi_users(aapi)
+    appapi_recommend(aapi)
 
     # Because issues #12, Pixiv return 1508 when use refresh_token
     # Disable refresh_token before found a new solution

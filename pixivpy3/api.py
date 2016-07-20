@@ -1,7 +1,11 @@
 # -*- coding:utf-8 -*-
 
+import os
+import shutil
+
 import json
 import requests
+import urlparse
 
 from .utils import PixivError, JsonDict
 
@@ -31,12 +35,14 @@ class BasePixivAPI(object):
         if self.access_token is None:
             raise PixivError('Authentication required! Call login() or set_auth() first!')
 
-    def requests_call(self, method, url, headers={}, params=None, data=None):
+    def requests_call(self, method, url, headers={}, params=None, data=None, stream=False):
         """ requests http/https call for Pixiv API """
 
         req_header = {
-            'Referer': 'http://spapi.pixiv.net/',
-            'User-Agent': 'PixivIOSApp/5.8.3',
+            'App-Version': '6.0.5',
+            'App-OS': 'ios',
+            'App-OS-Version': '9.3.2',
+            'User-Agent': 'PixivIOSApp/6.0.5 (iOS 9.3.2; iPhone8,1)',
         }
         # override use user headers
         for k, v in list(headers.items()):
@@ -44,11 +50,11 @@ class BasePixivAPI(object):
 
         try:
             if (method == 'GET'):
-                return requests.get(url, params=params, headers=req_header, **self.requests_kwargs)
+                return requests.get(url, params=params, headers=req_header, stream=stream, **self.requests_kwargs)
             elif (method == 'POST'):
-                return requests.post(url, params=params, data=data, headers=req_header, **self.requests_kwargs)
+                return requests.post(url, params=params, data=data, headers=req_header, stream=stream, **self.requests_kwargs)
             elif (method == 'DELETE'):
-                return requests.delete(url, params=params, data=data, headers=req_header, **self.requests_kwargs)
+                return requests.delete(url, params=params, data=data, headers=req_header, stream=stream, **self.requests_kwargs)
         except Exception as e:
             raise PixivError('requests %s %s error: %s' % (method, url, e))
 
@@ -66,9 +72,13 @@ class BasePixivAPI(object):
 
         url = 'https://oauth.secure.pixiv.net/auth/token'
         headers = {
-            'Referer': 'http://www.pixiv.net/',
+            'App-Version': '6.0.5',
+            'App-OS': 'ios',
+            'App-OS-Version': '9.3.2',
+            'User-Agent': 'PixivIOSApp/6.0.5 (iOS 9.3.2; iPhone8,1)',
         }
         data = {
+            'get_secure_url': 1,
             'client_id': 'bYGKuGVw91e0NMfPGp44euvGt59s',
             'client_secret': 'HP3RmkgAmEGro0gn1x9ioawQE8WMfvLXDz3ZqxpK',
         }
@@ -103,6 +113,15 @@ class BasePixivAPI(object):
         # return auth/token response
         return token
 
+    def download(self, url, filename=None, referer='https://app-api.pixiv.net/'):
+        """Download image to file (use 6.0 app-api)"""
+        if (not filename):
+            filename = os.path.basename(url)
+        # Write stream to file
+        response = self.requests_call('GET', url, headers={ 'Referer': referer }, stream=True)
+        with open(filename, 'wb') as out_file:
+            shutil.copyfileobj(response.raw, out_file)
+        del response
 
 # Public-API
 class PixivAPI(BasePixivAPI):
@@ -373,3 +392,98 @@ class PixivAPI(BasePixivAPI):
         }
         r = self.auth_requests_call('GET', url, params=params)
         return self.parse_result(r)
+
+# Experimental App-API (6.x - app-api.pixiv.net)
+class AppPixivAPI(BasePixivAPI):
+    """
+    Warning: The AppPixivAPI backend is experimental !!!
+    """
+
+    def __init__(self, **requests_kwargs):
+        """initialize requests kwargs if need be"""
+        super(AppPixivAPI, self).__init__(**requests_kwargs)
+
+    # Check auth and set BearerToken to headers
+    def auth_requests_call(self, method, url, headers={}, params=None, data=None):
+        self.require_auth()
+        headers['Authorization'] = 'Bearer %s' % self.access_token
+        return self.requests_call(method, url, headers, params, data)
+
+    def parse_result(self, req):
+        try:
+            return self.parse_json(req.text)
+        except Exception as e:
+            raise PixivError("parse_json() error: %s" % (e), header=req.headers, body=req.text)
+
+    def format_bool(self, bool_value):
+        if type(bool_value) == bool:
+            return 'true' if bool_value else 'false'
+        if bool_value in ['true', 'True']:
+            return 'true'
+        else:
+            return 'false'
+
+    def parse_qs(self, next_url):
+        query = urlparse.urlparse(next_url).query
+        return dict([(k,v[0]) for k,v in urlparse.parse_qs(query).items()])
+
+    # 用户详情
+    def user_detail(self, user_id, filter='for_ios'):
+        url = 'https://app-api.pixiv.net/v1/user/detail'
+        params = {
+            'user_id': user_id,
+            'filter': filter,
+        }
+        r = self.auth_requests_call('GET', url, params=params)
+        return self.parse_result(r)
+
+    # 用户作品列表
+    def user_illusts(self, user_id, type='illust', filter='for_ios', offset=None):
+        url = 'https://app-api.pixiv.net/v1/user/illusts'
+        params = {
+            'user_id': user_id,
+            'type': type,
+            'filter': filter,
+        }
+        if (offset):
+            params['offset'] = offset
+        r = self.auth_requests_call('GET', url, params=params)
+        return self.parse_result(r)
+
+    # 相关作品列表
+    def illust_related(self, illust_id, filter='for_ios', seed_illust_ids=None):
+        url = 'https://app-api.pixiv.net/v1/illust/related'
+        params = {
+            'illust_id': illust_id,
+            'filter': filter,
+        }
+        if type(seed_illust_ids) == str:
+            params['seed_illust_ids'] = seed_illust_ids
+        if type(seed_illust_ids) == list:
+            params['seed_illust_ids'] = ",".join(seed_illust_ids)
+        r = self.auth_requests_call('GET', url, params=params)
+        return self.parse_result(r)
+
+    # 插画推荐 (Home - Main)
+    # content_type: [illust, manga]
+    def illust_recommended(self, content_type='illust', include_ranking_label=True, filter='for_ios',
+            max_bookmark_id_for_recommend=None, min_bookmark_id_for_recent_illust=None,
+            offset=None, include_ranking=None):
+        url = 'https://app-api.pixiv.net/v1/illust/recommended'
+        params = {
+            'content_type': content_type,
+            'include_ranking_label': self.format_bool(include_ranking_label),
+            'filter': filter,
+        }
+        if (max_bookmark_id_for_recommend):
+            params['max_bookmark_id_for_recommend'] = max_bookmark_id_for_recommend
+        if (min_bookmark_id_for_recent_illust):
+            params['min_bookmark_id_for_recent_illust'] = min_bookmark_id_for_recent_illust
+        if (offset):
+            params['offset'] = offset
+        if (include_ranking):
+            params['include_ranking'] = include_ranking
+
+        r = self.auth_requests_call('GET', url, params=params)
+        return self.parse_result(r)
+
