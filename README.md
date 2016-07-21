@@ -82,6 +82,10 @@ class AppPixivAPI(BasePixivAPI):
     # 用户作品列表
     def user_illusts(self, user_id, type='illust'):
 
+    # 关注用户的新作
+    # restrict: [public, private]
+    def illust_follow(self, restrict='public'):
+
     # 相关作品列表
     def illust_related(self, illust_id):
 
@@ -89,6 +93,14 @@ class AppPixivAPI(BasePixivAPI):
     # content_type: [illust, manga]
     def illust_recommended(self, content_type='illust'):
 
+    # 趋势标签 (Search - tags)
+    def trending_tags_illust(self):
+
+    # 搜索 (Search)
+    # search_target - 搜索类型
+    #   partial_match_for_tags -  标签匹配
+    # sort: [date_desc, date_asc]
+    def search_illust(self, word, search_target='partial_match_for_tags', sort='date_desc'):
 ~~~
 
 [Usage](https://github.com/upbit/pixivpy/blob/master/demo.py#L42):
@@ -124,6 +136,18 @@ print("%s(@%s) region=%s" % (user.name, user.account, json_result.profile.region
 
 # 用户作品列表
 json_result = aapi.user_illusts(660788)
+print(json_result)
+illust = json_result.illusts[0]
+print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+
+# 关注用户的新作
+json_result = aapi.illust_follow()
+print(json_result)
+illust = json_result.illusts[0]
+print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+
+# 标签 "水着" 搜索
+json_result = aapi.search_illust('水着', search_target='partial_match_for_tags')
 print(json_result)
 illust = json_result.illusts[0]
 print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
