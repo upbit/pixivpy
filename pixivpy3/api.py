@@ -38,10 +38,10 @@ class BasePixivAPI(object):
         """ requests http/https call for Pixiv API """
 
         req_header = {
-            'App-Version': '6.0.5',
             'App-OS': 'ios',
             'App-OS-Version': '9.3.2',
-            'User-Agent': 'PixivIOSApp/6.0.5 (iOS 9.3.2; iPhone8,1)',
+            'App-Version': '6.0.7',
+            'User-Agent': 'PixivIOSApp/6.0.7 (iOS 9.3.2; iPhone8,1)',
         }
         # override use user headers
         for k, v in list(headers.items()):
@@ -71,10 +71,10 @@ class BasePixivAPI(object):
 
         url = 'https://oauth.secure.pixiv.net/auth/token'
         headers = {
-            'App-Version': '6.0.5',
             'App-OS': 'ios',
             'App-OS-Version': '9.3.2',
-            'User-Agent': 'PixivIOSApp/6.0.5 (iOS 9.3.2; iPhone8,1)',
+            'App-Version': '6.0.7',
+            'User-Agent': 'PixivIOSApp/6.0.7 (iOS 9.3.2; iPhone8,1)',
         }
         data = {
             'get_secure_url': 1,
@@ -447,6 +447,18 @@ class AppPixivAPI(BasePixivAPI):
             'user_id': user_id,
             'type': type,
             'filter': filter,
+        }
+        if (offset):
+            params['offset'] = offset
+        r = self.auth_requests_call('GET', url, params=params)
+        return self.parse_result(r)
+
+    # 关注用户的新作
+    # restrict: [public, private]
+    def illust_follow(self, restrict='public', offset=None):
+        url = 'https://app-api.pixiv.net/v2/illust/follow'
+        params = {
+            'restrict': restrict,
         }
         if (offset):
             params['offset'] = offset

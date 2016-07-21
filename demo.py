@@ -200,6 +200,20 @@ def appapi_users(aapi):
     illust = json_result.illusts[0]
     print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
+def appapi_timeline(aapi):
+    json_result = aapi.illust_follow()
+    print(json_result)
+    illust = json_result.illusts[0]
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+
+    # get next page
+    next_qs = aapi.parse_qs(json_result.next_url)
+    json_result = aapi.illust_follow(**next_qs)
+    # print(json_result)
+    illust = json_result.illusts[0]
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+
+
 def refresh_token(api):
     """Acquire a new bearer token after your current token expires,
     just call auth() or specifies a refresh_token
@@ -233,6 +247,7 @@ def main():
 
     appapi_recommend(aapi)
     appapi_users(aapi)
+    appapi_timeline(aapi)
 
     # Because issues #12, Pixiv return 1508 when use refresh_token
     # Disable refresh_token before found a new solution
