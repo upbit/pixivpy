@@ -425,9 +425,10 @@ class AppPixivAPI(BasePixivAPI):
     def parse_qs(self, next_url):
         if sys.version_info >= (3, 0):
             from urllib.parse import urlparse, parse_qs, unquote
+            unquote_url = unquote(next_url)
         else:
             from urlparse import urlparse, parse_qs, unquote
-        unquote_url = unquote(next_url.encode('utf8')).decode('utf8')
+            unquote_url = unquote(next_url.encode('utf8')).decode('utf8')
         query = urlparse(unquote_url).query
         return dict([(k,v[0]) for k,v in parse_qs(query).items()])
 
