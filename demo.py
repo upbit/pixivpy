@@ -213,6 +213,25 @@ def appapi_timeline(aapi):
     illust = json_result.illusts[0]
     print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
+def appapi_search(aapi):
+    first_tag = None
+    response = aapi.trending_tags_illust()
+    for trend_tag in response.trend_tags[:10]:
+        if not first_tag:
+            first_tag = trend_tag.tag
+        print("%s -  %s(id=%s)" % (trend_tag.tag, trend_tag.illust.title, trend_tag.illust.id))
+
+    json_result = aapi.search_illust(first_tag, search_target='partial_match_for_tags')
+    print(json_result)
+    illust = json_result.illusts[0]
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+
+    # get next page
+    next_qs = aapi.parse_qs(json_result.next_url)
+    json_result = aapi.search_illust(**next_qs)
+    # print(json_result)
+    illust = json_result.illusts[0]
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
 def refresh_token(api):
     """Acquire a new bearer token after your current token expires,
@@ -248,6 +267,7 @@ def main():
     appapi_recommend(aapi)
     appapi_users(aapi)
     appapi_timeline(aapi)
+    appapi_search(aapi)
 
     # Because issues #12, Pixiv return 1508 when use refresh_token
     # Disable refresh_token before found a new solution

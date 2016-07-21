@@ -424,10 +424,11 @@ class AppPixivAPI(BasePixivAPI):
 
     def parse_qs(self, next_url):
         if sys.version_info >= (3, 0):
-            from urllib.parse import urlparse, parse_qs
+            from urllib.parse import urlparse, parse_qs, unquote
         else:
-            from urlparse import urlparse, parse_qs
-        query = urlparse(next_url).query
+            from urlparse import urlparse, parse_qs, unquote
+        unquote_url = unquote(next_url.encode('utf8')).decode('utf8')
+        query = urlparse(unquote_url).query
         return dict([(k,v[0]) for k,v in parse_qs(query).items()])
 
     # 用户详情
@@ -499,6 +500,32 @@ class AppPixivAPI(BasePixivAPI):
         if (include_ranking):
             params['include_ranking'] = include_ranking
 
+        r = self.auth_requests_call('GET', url, params=params)
+        return self.parse_result(r)
+
+    # 趋势标签 (Search - tags)
+    def trending_tags_illust(self, filter='for_ios'):
+        url = 'https://app-api.pixiv.net/v1/trending-tags/illust'
+        params = {
+            'filter': filter,
+        }
+        r = self.auth_requests_call('GET', url, params=params)
+        return self.parse_result(r)
+
+    # 搜索 (Search)
+    # search_target - 搜索类型
+    #   partial_match_for_tags -  标签匹配
+    # sort: [date_desc, date_asc]
+    def search_illust(self, word, search_target='partial_match_for_tags', sort='date_desc', filter='for_ios', offset=None):
+        url = 'https://app-api.pixiv.net/v1/search/illust'
+        params = {
+            'word': word,
+            'search_target': search_target,
+            'sort': sort,
+            'filter': filter,
+        }
+        if (offset):
+            params['offset'] = offset
         r = self.auth_requests_call('GET', url, params=params)
         return self.parse_result(r)
 
