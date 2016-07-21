@@ -164,10 +164,23 @@ def papi_others(api):
 
 ## AppAPI start
 
-def appapi_get_nextpage(api, test_function, next_url):
-    """Helper function for call next_url"""
-    
-    return test_function(**qs)
+def appapi_recommend(aapi):
+    json_result = aapi.illust_recommended()
+    print(json_result)
+    illust = json_result.illusts[0]
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+
+    json_result = aapi.illust_related(57065990)
+    print(json_result)
+    illust = json_result.illusts[0]
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+
+    # get next page
+    next_qs = aapi.parse_qs(json_result.next_url)
+    json_result = aapi.illust_related(**next_qs)
+    # print(json_result)
+    illust = json_result.illusts[0]
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
 def appapi_users(aapi):
     json_result = aapi.user_detail(660788)
@@ -183,24 +196,6 @@ def appapi_users(aapi):
     # get next page
     next_qs = aapi.parse_qs(json_result.next_url)
     json_result = aapi.user_illusts(**next_qs)
-    # print(json_result)
-    illust = json_result.illusts[0]
-    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
-
-def appapi_recommend(aapi):
-    json_result = aapi.illust_recommended()
-    print(json_result)
-    illust = json_result.illusts[0]
-    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
-
-    json_result = aapi.illust_related(57065990)
-    print(json_result)
-    illust = json_result.illusts[0]
-    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
-
-    # get next page
-    next_qs = aapi.parse_qs(json_result.next_url)
-    json_result = aapi.illust_related(**next_qs)
     # print(json_result)
     illust = json_result.illusts[0]
     print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
@@ -236,8 +231,8 @@ def main():
     aapi = AppPixivAPI(**_REQUESTS_KWARGS)
     aapi.login(_USERNAME, _PASSWORD)
 
-    appapi_users(aapi)
     appapi_recommend(aapi)
+    appapi_users(aapi)
 
     # Because issues #12, Pixiv return 1508 when use refresh_token
     # Disable refresh_token before found a new solution

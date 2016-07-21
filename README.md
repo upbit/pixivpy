@@ -75,6 +75,7 @@ class AppPixivAPI(BasePixivAPI):
     """
     Warning: The AppPixivAPI backend is experimental !!!
     """
+
     # 用户详情
     def user_detail(self, user_id):
 
@@ -93,24 +94,8 @@ class AppPixivAPI(BasePixivAPI):
 [Usage](https://github.com/upbit/pixivpy/blob/master/demo.py#L42):
 
 ~~~python
-# 用户详情
-json_result = aapi.user_detail(660788)
-print(json_result)
-user = json_result.user
-print("%s(@%s) region=%s" % (user.name, user.account, json_result.profile.region))
-
-# 用户作品列表
-json_result = aapi.user_illusts(660788)
-print(json_result)
-illust = json_result.illusts[0]
-print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
-
-# 用户作品列表-下一页 (.parse_qs(next_url) 用法)
-next_qs = aapi.parse_qs(json_result.next_url)
-json_result = aapi.user_illusts(**next_qs)
-print(json_result)
-illust = json_result.illusts[0]
-print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+aapi = AppPixivAPI()
+aapi.login(_USERNAME, _PASSWORD)
 
 # 作品推荐
 json_result = aapi.illust_recommended()
@@ -120,6 +105,25 @@ print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
 # 作品相关推荐
 json_result = aapi.illust_related(57065990)
+print(json_result)
+illust = json_result.illusts[0]
+print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+
+# 作品相关推荐-下一页 (.parse_qs(next_url) 用法)
+next_qs = aapi.parse_qs(json_result.next_url)
+json_result = aapi.illust_related(**next_qs)
+print(json_result)
+illust = json_result.illusts[0]
+print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+
+# 用户详情
+json_result = aapi.user_detail(660788)
+print(json_result)
+user = json_result.user
+print("%s(@%s) region=%s" % (user.name, user.account, json_result.profile.region))
+
+# 用户作品列表
+json_result = aapi.user_illusts(660788)
 print(json_result)
 illust = json_result.illusts[0]
 print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
