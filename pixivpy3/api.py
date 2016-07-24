@@ -423,6 +423,7 @@ class AppPixivAPI(BasePixivAPI):
             return 'false'
 
     def parse_qs(self, next_url):
+        if not next_url: return None
         if sys.version_info >= (3, 0):
             from urllib.parse import urlparse, parse_qs, unquote
             unquote_url = unquote(next_url)
@@ -467,6 +468,19 @@ class AppPixivAPI(BasePixivAPI):
         r = self.auth_requests_call('GET', url, params=params)
         return self.parse_result(r)
 
+    # 作品评论
+    def illust_comments(self, illust_id, offset=None, include_total_comments=None):
+        url = 'https://app-api.pixiv.net/v1/illust/comments'
+        params = {
+            'illust_id': illust_id,
+        }
+        if (offset):
+            params['offset'] = offset
+        if (include_total_comments):
+            params['include_total_comments'] = self.format_bool(include_total_comments)
+        r = self.auth_requests_call('GET', url, params=params)
+        return self.parse_result(r)
+
     # 相关作品列表
     def illust_related(self, illust_id, filter='for_ios', seed_illust_ids=None):
         url = 'https://app-api.pixiv.net/v1/illust/related'
@@ -499,7 +513,7 @@ class AppPixivAPI(BasePixivAPI):
         if (offset):
             params['offset'] = offset
         if (include_ranking):
-            params['include_ranking'] = include_ranking
+            params['include_ranking'] = self.format_bool(include_ranking)
 
         r = self.auth_requests_call('GET', url, params=params)
         return self.parse_result(r)

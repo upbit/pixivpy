@@ -182,6 +182,9 @@ def appapi_recommend(aapi):
     illust = json_result.illusts[0]
     print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
+    json_result = aapi.illust_comments(57065990)
+    print(json_result)
+
 def appapi_users(aapi):
     json_result = aapi.user_detail(660788)
     print(json_result)
@@ -212,6 +215,7 @@ def appapi_timeline(aapi):
     # print(json_result)
     illust = json_result.illusts[0]
     print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+
 
 def appapi_search(aapi):
     first_tag = None
