@@ -2,7 +2,8 @@ PixivPy [![Build Status](https://travis-ci.org/upbit/pixivpy.svg)](https://travi
 ======
 _Pixiv API for Python (with Auth supported)_
 
-* [2016/07/20] New **App-API** (Experimental) for `PixivIOSApp/6.0.5`
+* [2016/07/27] Now `AppPixivAPI()` can call **without auth** (thanks [zzycami](https://github.com/zzycami)), check [demo.py](https://github.com/upbit/pixivpy/blob/b83578e066ddcba86295676d931ff3313d138b22/demo.py#L268)
+* [2016/07/20] New **App-API** (Experimental) for `PixivIOSApp/6.0.8`
 * [2016/07/11] Add new [iOS 6.x API](https://github.com/upbit/pixivpy/wiki#6x-api) reference to Wiki
 * [2015/12/02] Add write API for favorite an user / illust, release v3.1
 * [2015/08/11] Remove SPAI and release v3.0 (pixivpy3) (Public-API with Search API)
