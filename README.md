@@ -76,31 +76,37 @@ class AppPixivAPI(BasePixivAPI):
     Warning: The AppPixivAPI backend is experimental !!!
     """
 
-    # 用户详情
+    # 用户详情 (无需登录)
     def user_detail(self, user_id):
 
-    # 用户作品列表
+    # 用户作品列表 (无需登录)
     def user_illusts(self, user_id, type='illust'):
+
+    # 用户收藏作品列表 (无需登录)
+    def user_bookmarks_illust(self, user_id, restrict='public'):
 
     # 关注用户的新作
     # restrict: [public, private]
     def illust_follow(self, restrict='public'):
 
-    # 相关作品列表
+    # 相关作品列表 (无需登录)
     def illust_related(self, illust_id):
 
-    # 插画推荐 (Home - Main)
+    # 插画推荐 (Home - Main) (无需登录)
     # content_type: [illust, manga]
     def illust_recommended(self, content_type='illust'):
 
-    # 趋势标签 (Search - tags)
+    # 趋势标签 (Search - tags) (无需登录)
     def trending_tags_illust(self):
 
-    # 搜索 (Search)
+    # 搜索 (Search) (无需登录)
     # search_target - 搜索类型
-    #   partial_match_for_tags -  标签匹配
+    #   partial_match_for_tags  - 标签部分一致
+    #   exact_match_for_tags    - 标签完全一致
+    #   title_and_caption       - 标题说明文
     # sort: [date_desc, date_asc]
-    def search_illust(self, word, search_target='partial_match_for_tags', sort='date_desc'):
+    # duration: [within_last_day, within_last_week, within_last_month]
+    def search_illust(self, word, search_target='partial_match_for_tags', sort='date_desc', duration=None):
 ~~~
 
 [Usage](https://github.com/upbit/pixivpy/blob/master/demo.py#L42):
@@ -136,6 +142,12 @@ print("%s(@%s) region=%s" % (user.name, user.account, json_result.profile.region
 
 # 用户作品列表
 json_result = aapi.user_illusts(660788)
+print(json_result)
+illust = json_result.illusts[0]
+print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+
+# 用户收藏列表
+json_result = aapi.user_bookmarks_illust(2088434)
 print(json_result)
 illust = json_result.illusts[0]
 print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))

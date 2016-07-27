@@ -165,20 +165,20 @@ def papi_others(api):
 ## AppAPI start
 
 def appapi_recommend(aapi):
-    json_result = aapi.illust_recommended()
-    print(json_result)
-    illust = json_result.illusts[0]
-    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
-
-    json_result = aapi.illust_related(57065990)
+    json_result = aapi.illust_recommended(bookmark_illust_ids=[57065990])
     print(json_result)
     illust = json_result.illusts[0]
     print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
     # get next page
     next_qs = aapi.parse_qs(json_result.next_url)
-    json_result = aapi.illust_related(**next_qs)
+    json_result = aapi.illust_recommended(**next_qs)
     # print(json_result)
+    illust = json_result.illusts[0]
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+
+    json_result = aapi.illust_related(57065990)
+    print(json_result)
     illust = json_result.illusts[0]
     print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
@@ -203,19 +203,10 @@ def appapi_users(aapi):
     illust = json_result.illusts[0]
     print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
-def appapi_timeline(aapi):
-    json_result = aapi.illust_follow()
+    json_result = aapi.user_bookmarks_illust(2088434)
     print(json_result)
     illust = json_result.illusts[0]
     print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
-
-    # get next page
-    next_qs = aapi.parse_qs(json_result.next_url)
-    json_result = aapi.illust_follow(**next_qs)
-    # print(json_result)
-    illust = json_result.illusts[0]
-    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
-
 
 def appapi_search(aapi):
     first_tag = None
@@ -237,16 +228,23 @@ def appapi_search(aapi):
     illust = json_result.illusts[0]
     print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
-def refresh_token(api):
-    """Acquire a new bearer token after your current token expires,
-    just call auth() or specifies a refresh_token
-    """
-    print("refresh_token before: %s" % api.refresh_token)
+def appapi_auth_api(aapi):
+    json_result = aapi.illust_follow(req_auth=True)
+    print(json_result)
+    illust = json_result.illusts[0]
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
-    # api.auth(refresh_token = api.refresh_token)
-    api.auth()
+    # get next page
+    next_qs = aapi.parse_qs(json_result.next_url)
+    json_result = aapi.illust_follow(req_auth=True, **next_qs)
+    # print(json_result)
+    illust = json_result.illusts[0]
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
-    print("refresh_token  after: %s" % api.refresh_token)
+    json_result = aapi.illust_recommended(req_auth=True)
+    print(json_result)
+    illust = json_result.illusts[0]
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
 
 def main():
@@ -266,16 +264,15 @@ def main():
 
     # app-api (experimental)
     aapi = AppPixivAPI(**_REQUESTS_KWARGS)
-    aapi.login(_USERNAME, _PASSWORD)
 
+    # no auth test
     appapi_recommend(aapi)
     appapi_users(aapi)
-    appapi_timeline(aapi)
     appapi_search(aapi)
 
-    # Because issues #12, Pixiv return 1508 when use refresh_token
-    # Disable refresh_token before found a new solution
-    # refresh_token(api)
+    # auth test
+    aapi.login(_USERNAME, _PASSWORD)
+    appapi_auth_api(aapi)
 
 if __name__ == '__main__':
     main()
