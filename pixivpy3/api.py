@@ -538,6 +538,24 @@ class AppPixivAPI(BasePixivAPI):
         r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
         return self.parse_result(r)
 
+    # 作品排行
+    # mode: [day, week, month, day_male, day_female, week_original, week_rookie, day_manga]
+    # date: '2016-08-01'
+    # mode (Past): [day, week, month, day_male, day_female, week_original, week_rookie,
+    #               day_r18, day_male_r18, day_female_r18, week_r18, week_r18g]
+    def illust_ranking(self, mode='day', filter='for_ios', date=None, offset=None, req_auth=False):
+        url = 'https://app-api.pixiv.net/v1/illust/ranking'
+        params = {
+            'mode': mode,
+            'filter': filter,
+        }
+        if (date):
+            params['date'] = date
+        if (offset):
+            params['offset'] = offset
+        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
+        return self.parse_result(r)
+
     # 趋势标签 (Search - tags) (无需登录)
     def trending_tags_illust(self, filter='for_ios', req_auth=False):
         url = 'https://app-api.pixiv.net/v1/trending-tags/illust'

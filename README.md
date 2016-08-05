@@ -114,7 +114,6 @@ class AppPixivAPI(BasePixivAPI):
 
 ~~~python
 aapi = AppPixivAPI()
-aapi.login(_USERNAME, _PASSWORD)
 
 # 作品推荐
 json_result = aapi.illust_recommended()
@@ -153,8 +152,8 @@ print(json_result)
 illust = json_result.illusts[0]
 print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
-# 关注用户的新作
-json_result = aapi.illust_follow()
+# 关注用户的新作 (需要login)
+json_result = aapi.illust_follow(req_auth=True)
 print(json_result)
 illust = json_result.illusts[0]
 print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
