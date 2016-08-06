@@ -228,6 +228,25 @@ def appapi_search(aapi):
     illust = json_result.illusts[0]
     print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
+def appapi_ranking(aapi):
+    json_result = aapi.illust_ranking('day_male')
+    print(json_result)
+    illust = json_result.illusts[0]
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+
+    # get next page
+    next_qs = aapi.parse_qs(json_result.next_url)
+    json_result = aapi.illust_ranking(**next_qs)
+    # print(json_result)
+    illust = json_result.illusts[0]
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+
+    # 2016-07-15 日的过去一周排行
+    json_result = aapi.illust_ranking('week', date='2016-07-15')
+    print(json_result)
+    illust = json_result.illusts[0]
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+
 def appapi_auth_api(aapi):
     json_result = aapi.illust_follow(req_auth=True)
     print(json_result)
@@ -269,6 +288,7 @@ def main():
     appapi_recommend(aapi)
     appapi_users(aapi)
     appapi_search(aapi)
+    appapi_ranking(aapi)
 
     # auth test
     aapi.login(_USERNAME, _PASSWORD)

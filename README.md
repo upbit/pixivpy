@@ -86,6 +86,12 @@ class AppPixivAPI(BasePixivAPI):
     # 用户收藏作品列表 (无需登录)
     def user_bookmarks_illust(self, user_id, restrict='public'):
 
+		# 作品排行
+    # mode: [day, week, month, day_male, day_female, week_original, week_rookie, day_manga]
+    # date: '2016-08-01'
+    # mode(r18榜单需登录): [day_r18, day_male_r18, day_female_r18, week_r18, week_r18g]
+    def illust_ranking(self, mode='day', date=None, offset=None):
+
     # 关注用户的新作
     # restrict: [public, private]
     def illust_follow(self, restrict='public'):
@@ -148,6 +154,12 @@ print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
 # 用户收藏列表
 json_result = aapi.user_bookmarks_illust(2088434)
+print(json_result)
+illust = json_result.illusts[0]
+print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+
+# 2016-07-15 日的过去一周排行
+json_result = aapi.illust_ranking('week', date='2016-07-15')
 print(json_result)
 illust = json_result.illusts[0]
 print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
