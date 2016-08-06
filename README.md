@@ -41,6 +41,57 @@ for illust in ranking.works:
 ### [Sniffer - Public API](https://github.com/upbit/pixivpy/wiki/sniffer)
 ### [Sniffer - App API](https://github.com/upbit/pixivpy/wiki#6x-api)
 
+### [Using AppPixivAPI() to download illusts (without auth)](https://github.com/upbit/pixivpy/blob/master/download_illusts.py#L24)
+
+1. Upgrade pixivpy >= **v3.2.0**: `pip install pixivpy --upgrade`
+2. Call `api.download()` like the below:
+
+~~~python
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import os
+import sys
+if sys.version_info >= (3, 0):
+    import imp
+    imp.reload(sys)
+else:
+    reload(sys)
+    sys.setdefaultencoding('utf8')
+sys.dont_write_bytecode = True
+
+from pixivpy3 import *
+
+_REQUESTS_KWARGS = {
+  # 'proxies': {
+  #   'https': 'http://127.0.0.1:8888',
+  # },
+  # 'verify': False,       # PAPI use https, an easy way is disable requests SSL verify
+}
+
+def main():
+    aapi = AppPixivAPI(**_REQUESTS_KWARGS)
+    json_result = aapi.illust_ranking('day', date='2016-08-01')
+
+    directory = "dl"
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
+    # download top3 day rankings to 'dl' dir
+    for illust in json_result.illusts[:3]:
+        image_url = illust.meta_single_page.get('original_image_url', illust.image_urls.large)
+        print("%s: %s" % (illust.title, image_url))
+				# aapi.download(illust.image_urls.large)
+
+        filename = os.path.basename(image_url)
+        extension = os.path.splitext(filename)[1]
+        path = os.path.join(directory, "illust_id_%d_%s%s" % (illust.id, illust.title, extension))
+        aapi.download(illust.image_urls.large, path=path)
+
+if __name__ == '__main__':
+    main()
+~~~
+
 ### [Migrate pixivpy2 to pixivpy3](https://github.com/upbit/pixivpy/blob/master/demo.py#L15-L25)
 
 1. Replace `api.papi.*` to `api.*`

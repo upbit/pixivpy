@@ -32,6 +32,7 @@ def main():
     for illust in json_result.illusts[:3]:
         image_url = illust.meta_single_page.get('original_image_url', illust.image_urls.large)
         print("%s: %s" % (illust.title, image_url))
+        # aapi.download(illust.image_urls.large)
 
         filename = os.path.basename(image_url)
         extension = os.path.splitext(filename)[1]
