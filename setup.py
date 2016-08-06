@@ -1,5 +1,8 @@
 import re
-from distutils.core import setup
+try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
 
 requires = ['requests']
 
@@ -13,7 +16,7 @@ setup(
     name='PixivPy',
     packages=['pixivpy3'],
     version=version,
-    description='Pixiv API for Python',
+    description='Pixiv API for Python (with 6.x AppAPI supported)',
     author='upbit',
     author_email='rmusique@gmail.com',
     install_requires=requires,

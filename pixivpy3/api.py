@@ -62,8 +62,8 @@ class BasePixivAPI(object):
         headers = {
             'App-OS': 'ios',
             'App-OS-Version': '9.3.3',
-            'App-Version': '6.0.8',
-            'User-Agent': 'PixivIOSApp/6.0.8 (iOS 9.3.3; iPhone8,1)',
+            'App-Version': '6.0.9',
+            'User-Agent': 'PixivIOSApp/6.0.9 (iOS 9.3.3; iPhone8,1)',
         }
         data = {
             'get_secure_url': 1,
@@ -397,8 +397,8 @@ class AppPixivAPI(BasePixivAPI):
     def no_auth_requests_call(self, method, url, headers={}, params=None, data=None, req_auth=False):
         headers['App-OS'] = 'ios'
         headers['App-OS-Version'] = '9.3.3'
-        headers['App-Version'] = '6.0.8'
-        headers['User-Agent'] = 'PixivIOSApp/6.0.8 (iOS 9.3.3; iPhone8,1)'
+        headers['App-Version'] = '6.0.9'
+        headers['User-Agent'] = 'PixivIOSApp/6.0.9 (iOS 9.3.3; iPhone8,1)'
         if (not req_auth):
             return self.requests_call(method, url, headers, params, data)
         else:
