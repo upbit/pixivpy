@@ -32,12 +32,12 @@ def main():
     for illust in json_result.illusts[:3]:
         image_url = illust.meta_single_page.get('original_image_url', illust.image_urls.large)
         print("%s: %s" % (illust.title, image_url))
-        # aapi.download(illust.image_urls.large)
+        # aapi.download(image_url)
 
         filename = os.path.basename(image_url)
         extension = os.path.splitext(filename)[1]
         path = os.path.join(directory, "illust_id_%d_%s%s" % (illust.id, illust.title, extension))
-        aapi.download(illust.image_urls.large, path=path)
+        aapi.download(image_url, path=path)
 
 if __name__ == '__main__':
     main()
