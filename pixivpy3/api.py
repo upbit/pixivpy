@@ -455,7 +455,8 @@ class AppPixivAPI(BasePixivAPI):
         return self.parse_result(r)
 
     # 用户收藏作品列表 (无需登录)
-    def user_bookmarks_illust(self, user_id, restrict='public', filter='for_ios', max_bookmark_id=None, req_auth=False):
+    # tag: 从 user_bookmark_tags_illust 获取的收藏标签
+    def user_bookmarks_illust(self, user_id, restrict='public', filter='for_ios', max_bookmark_id=None, tag=None, req_auth=False):
         url = 'https://app-api.pixiv.net/v1/user/bookmarks/illust'
         params = {
             'user_id': user_id,
@@ -464,6 +465,8 @@ class AppPixivAPI(BasePixivAPI):
         }
         if (max_bookmark_id):
             params['max_bookmark_id'] = max_bookmark_id
+        if (tag):
+            params['tag'] = tag
         r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
         return self.parse_result(r)
 
@@ -583,6 +586,51 @@ class AppPixivAPI(BasePixivAPI):
         }
         if (duration):
             params['duration'] = duration
+        if (offset):
+            params['offset'] = offset
+        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
+        return self.parse_result(r)
+
+    # 作品收藏详情
+    def illust_bookmark_detail(self, illust_id, req_auth=False):
+        url = 'https://app-api.pixiv.net/v2/illust/bookmark/detail'
+        params = {
+            'illust_id': illust_id,
+        }
+        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
+        return self.parse_result(r)
+
+    # 新增收藏
+    def illust_bookmark_add(self, illust_id, restrict='public', tags=None, req_auth=True):
+        url = 'https://app-api.pixiv.net/v1/illust/bookmark/add'
+        params = {
+            'illust_id': illust_id,
+            'restrict': restrict,
+        }
+        ## TODO: tags mast quote like 'tags=%E5%B0%BB%E7%A5%9E%E6%A7%98%20%E8%A3%B8%E8%B6%B3%20Fate%2FGO'
+        # if (type(tags) == str):
+        #     params['tags'] = tags
+        # if (type(tags) == list):
+        #     params['tags'] = " ".join([ str(tag) for tag in tags ])
+
+        r = self.no_auth_requests_call('POST', url, params=params, req_auth=req_auth)
+        return self.parse_result(r)
+
+    # 删除收藏
+    def illust_bookmark_delete(self, illust_id, req_auth=True):
+        url = 'https://app-api.pixiv.net/v1/illust/bookmark/delete'
+        params = {
+            'illust_id': illust_id,
+        }
+        r = self.no_auth_requests_call('POST', url, params=params, req_auth=req_auth)
+        return self.parse_result(r)
+
+    # 用户收藏标签列表
+    def user_bookmark_tags_illust(self, restrict='public', offset=None, req_auth=True):
+        url = 'https://app-api.pixiv.net/v1/user/bookmark-tags/illust'
+        params = {
+            'restrict': restrict,
+        }
         if (offset):
             params['offset'] = offset
         r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
