@@ -262,3 +262,54 @@ class AppPixivAPI(BasePixivAPI):
         r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
         return self.parse_result(r)
 
+    # Following用户列表
+    def user_following(self, user_id, restrict='public', offset=None, req_auth=False):
+        url = 'https://app-api.pixiv.net/v1/user/following'
+        params = {
+            'user_id': user_id,
+            'restrict': restrict,
+        }
+        if (offset):
+            params['offset'] = offset
+
+        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
+        return self.parse_result(r)
+
+    # Followers用户列表
+    def user_follower(self, user_id, filter='for_ios', offset=None, req_auth=False):
+        url = 'https://app-api.pixiv.net/v1/user/follower'
+        params = {
+            'user_id': user_id,
+            'filter': filter,
+        }
+        if (offset):
+            params['offset'] = offset
+
+        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
+        return self.parse_result(r)
+
+    # 好P友
+    def user_mypixiv(self, user_id, offset=None, req_auth=False):
+        url = 'https://app-api.pixiv.net/v1/user/mypixiv'
+        params = {
+            'user_id': user_id,
+        }
+        if (offset):
+            params['offset'] = offset
+
+        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
+        return self.parse_result(r)
+
+    # 黑名单用户
+    def user_list(self, user_id, filter='for_ios', offset=None, req_auth=False):
+        url = 'https://app-api.pixiv.net/v1/user/list'
+        params = {
+            'user_id': user_id,
+            'filter': filter,
+        }
+        if (offset):
+            params['offset'] = offset
+
+        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
+        return self.parse_result(r)
+

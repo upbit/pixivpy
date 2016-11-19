@@ -126,7 +126,7 @@ def papi_user(api):
     print(ref_work.title)
 
     # PAPI.users_following
-    json_result = api.users_following(1184799)
+    json_result = api.users_following(4102577)
     print(json_result)
     user = json_result.response[0]
     print(user.name)
@@ -186,12 +186,12 @@ def appapi_recommend(aapi):
     print(json_result)
 
 def appapi_users(aapi):
-    json_result = aapi.user_detail(660788)
+    json_result = aapi.user_detail(275527)
     print(json_result)
     user = json_result.user
     print("%s(@%s) region=%s" % (user.name, user.account, json_result.profile.region))
 
-    json_result = aapi.user_illusts(660788)
+    json_result = aapi.user_illusts(275527)
     print(json_result)
     illust = json_result.illusts[0]
     print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
@@ -201,12 +201,29 @@ def appapi_users(aapi):
     json_result = aapi.user_illusts(**next_qs)
     # print(json_result)
     illust = json_result.illusts[0]
-    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+    print("  > %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
     json_result = aapi.user_bookmarks_illust(2088434)
     print(json_result)
     illust = json_result.illusts[0]
     print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+
+    json_result = aapi.user_following(7314824)
+    print(json_result)
+    user_preview = json_result.user_previews[0]
+    print(">>> %s illust: %s" % (user_preview.user.name, user_preview.illusts[0].title))
+
+    next_qs = aapi.parse_qs(json_result.next_url)
+    json_result = aapi.user_following(**next_qs)
+    # print(json_result)
+    user_preview = json_result.user_previews[0]
+    print("  > %s illust: %s" % (user_preview.user.name, user_preview.illusts[0].title))
+
+    json_result = aapi.user_follower(275527)
+    print(json_result)
+
+    json_result = aapi.user_mypixiv(275527)
+    print(json_result)
 
 def appapi_search(aapi):
     first_tag = None
@@ -293,6 +310,10 @@ def main():
     # auth test
     aapi.login(_USERNAME, _PASSWORD)
     appapi_auth_api(aapi)
+
+def test():
+    aapi = AppPixivAPI()
+    appapi_users(aapi)
 
 if __name__ == '__main__':
     main()
