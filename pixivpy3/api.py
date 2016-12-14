@@ -101,12 +101,13 @@ class BasePixivAPI(object):
         # return auth/token response
         return token
 
-    def download(self, url, prefix='', path=None, referer='https://app-api.pixiv.net/'):
+    def download(self, url, prefix='', path=None, replace=False, referer='https://app-api.pixiv.net/'):
         """Download image to file (use 6.0 app-api)"""
         if (not path):
             path = prefix + os.path.basename(url)
-        # Write stream to file
-        response = self.requests_call('GET', url, headers={ 'Referer': referer }, stream=True)
-        with open(path, 'wb') as out_file:
-            shutil.copyfileobj(response.raw, out_file)
-        del response
+        if (not os.path.exists(path)) or replace:
+            # Write stream to file
+            response = self.requests_call('GET', url, headers={ 'Referer': referer }, stream=True)
+            with open(path, 'wb') as out_file:
+                shutil.copyfileobj(response.raw, out_file)
+            del response
