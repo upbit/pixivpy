@@ -165,7 +165,7 @@ def papi_others(api):
 ## AppAPI start
 
 def appapi_recommend(aapi):
-    json_result = aapi.illust_recommended(bookmark_illust_ids=[57065990])
+    json_result = aapi.illust_recommended(bookmark_illust_ids=[59580629])
     print(json_result)
     illust = json_result.illusts[0]
     print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
@@ -177,12 +177,12 @@ def appapi_recommend(aapi):
     illust = json_result.illusts[0]
     print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
-    json_result = aapi.illust_related(57065990)
+    json_result = aapi.illust_related(59580629)
     print(json_result)
     illust = json_result.illusts[0]
     print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
-    json_result = aapi.illust_comments(57065990)
+    json_result = aapi.illust_comments(59580629)
     print(json_result)
 
 def appapi_users(aapi):
