@@ -101,10 +101,12 @@ class BasePixivAPI(object):
         # return auth/token response
         return token
 
-    def download(self, url, prefix='', path=os.path.curdir, replace=False, referer='https://app-api.pixiv.net/'):
+    def download(self, url, prefix='', path=os.path.curdir, name=None, replace=False, referer='https://app-api.pixiv.net/'):
         """Download image to file (use 6.0 app-api)"""
-
-        name = prefix + os.path.basename(url)
+        if not name:
+            name = prefix + os.path.basename(url)
+        else:
+            name = prefix + name
 
         img_path = os.path.join(path, name)
         if (not os.path.exists(img_path)) or replace:
