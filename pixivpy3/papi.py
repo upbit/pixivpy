@@ -22,7 +22,9 @@ class PixivAPI(BasePixivAPI):
         headers['Referer'] = 'http://spapi.pixiv.net/'
         headers['User-Agent'] = 'PixivIOSApp/5.8.7'
         headers['Authorization'] = 'Bearer %s' % self.access_token
-        return self.requests_call(method, url, headers, params, data)
+        r = self.requests_call(method, url, headers, params, data)
+        r.encoding = 'utf-8'  # Manually set the encoding due to #11 #18 #26, thanks @Xdynix
+        return r
 
     def parse_result(self, req):
         try:
