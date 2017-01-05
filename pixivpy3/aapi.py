@@ -9,11 +9,8 @@ import requests
 from .api import BasePixivAPI
 from .utils import PixivError, JsonDict
 
-# Experimental App-API (6.x - app-api.pixiv.net)
+# App-API (6.x - app-api.pixiv.net)
 class AppPixivAPI(BasePixivAPI):
-    """
-    Warning: The AppPixivAPI backend is experimental !!!
-    """
 
     def __init__(self, **requests_kwargs):
         """initialize requests kwargs if need be"""
@@ -22,9 +19,9 @@ class AppPixivAPI(BasePixivAPI):
     # Check auth and set BearerToken to headers
     def no_auth_requests_call(self, method, url, headers={}, params=None, data=None, req_auth=False):
         headers['App-OS'] = 'ios'
-        headers['App-OS-Version'] = '9.3.3'
-        headers['App-Version'] = '6.0.9'
-        headers['User-Agent'] = 'PixivIOSApp/6.0.9 (iOS 9.3.3; iPhone8,1)'
+        headers['App-OS-Version'] = '10.2.1'
+        headers['App-Version'] = '6.4.0'
+        headers['User-Agent'] = 'PixivIOSApp/6.0.9 (iOS 10.2.1; iPhone8,1)'
         if (not req_auth):
             return self.requests_call(method, url, headers, params, data)
         else:
@@ -46,6 +43,7 @@ class AppPixivAPI(BasePixivAPI):
         else:
             return 'false'
 
+    # 返回翻页用参数
     def parse_qs(self, next_url):
         if not next_url: return None
         if sys.version_info >= (3, 0):
@@ -105,6 +103,15 @@ class AppPixivAPI(BasePixivAPI):
         }
         if (offset):
             params['offset'] = offset
+        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
+        return self.parse_result(r)
+
+    # 作品详情 (类似PAPI.works()，iOS中未使用)
+    def illust_detail(self, illust_id, req_auth=False):
+        url = 'https://app-api.pixiv.net/v1/illust/detail'
+        params = {
+            'illust_id': illust_id,
+        }
         r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
         return self.parse_result(r)
 
@@ -217,7 +224,7 @@ class AppPixivAPI(BasePixivAPI):
         r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
         return self.parse_result(r)
 
-    # 作品收藏详情
+    # 作品收藏详情 (无需登录)
     def illust_bookmark_detail(self, illust_id, req_auth=False):
         url = 'https://app-api.pixiv.net/v2/illust/bookmark/detail'
         params = {
@@ -262,7 +269,7 @@ class AppPixivAPI(BasePixivAPI):
         r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
         return self.parse_result(r)
 
-    # Following用户列表
+    # Following用户列表 (无需登录)
     def user_following(self, user_id, restrict='public', offset=None, req_auth=False):
         url = 'https://app-api.pixiv.net/v1/user/following'
         params = {
@@ -275,7 +282,7 @@ class AppPixivAPI(BasePixivAPI):
         r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
         return self.parse_result(r)
 
-    # Followers用户列表
+    # Followers用户列表 (无需登录)
     def user_follower(self, user_id, filter='for_ios', offset=None, req_auth=False):
         url = 'https://app-api.pixiv.net/v1/user/follower'
         params = {
@@ -288,7 +295,7 @@ class AppPixivAPI(BasePixivAPI):
         r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
         return self.parse_result(r)
 
-    # 好P友
+    # 好P友 (无需登录)
     def user_mypixiv(self, user_id, offset=None, req_auth=False):
         url = 'https://app-api.pixiv.net/v1/user/mypixiv'
         params = {
@@ -300,7 +307,7 @@ class AppPixivAPI(BasePixivAPI):
         r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
         return self.parse_result(r)
 
-    # 黑名单用户
+    # 黑名单用户 (无需登录)
     def user_list(self, user_id, filter='for_ios', offset=None, req_auth=False):
         url = 'https://app-api.pixiv.net/v1/user/list'
         params = {
@@ -313,3 +320,12 @@ class AppPixivAPI(BasePixivAPI):
         r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
         return self.parse_result(r)
 
+    # 获取ugoira信息 (无需登录)
+    def ugoira_metadata(self, illust_id, req_auth=False):
+        url = 'https://app-api.pixiv.net/v1/ugoira/metadata'
+        params = {
+            'illust_id': illust_id,
+        }
+
+        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
+        return self.parse_result(r)
