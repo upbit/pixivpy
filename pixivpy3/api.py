@@ -108,7 +108,15 @@ class BasePixivAPI(object):
         else:
             name = prefix + name
 
-        img_path = os.path.join(path, name)
+        try:
+            img_path = os.path.join(path, name)
+        except UnicodeDecodeError:
+            if isinstance(path, unicode):
+                name = name.decode('utf-8')
+            else:
+                path = path.decode('utf-8')
+            img_path = os.path.join(path, name)
+
         if (not os.path.exists(img_path)) or replace:
             # Write stream to file
             response = self.requests_call('GET', url, headers={ 'Referer': referer }, stream=True)
