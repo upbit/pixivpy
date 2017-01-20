@@ -96,7 +96,7 @@ class AppPixivAPI(BasePixivAPI):
 
     # 关注用户的新作
     # restrict: [public, private]
-    def illust_follow(self, restrict='public', offset=None, req_auth=False):
+    def illust_follow(self, restrict='public', offset=None, req_auth=True):
         url = 'https://app-api.pixiv.net/v2/illust/follow'
         params = {
             'restrict': restrict,
@@ -106,7 +106,7 @@ class AppPixivAPI(BasePixivAPI):
         r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
         return self.parse_result(r)
 
-    # 作品详情 (类似PAPI.works()，iOS中未使用)
+    # 作品详情 (无需登录，类似PAPI.works()，iOS中未使用)
     def illust_detail(self, illust_id, req_auth=False):
         url = 'https://app-api.pixiv.net/v1/illust/detail'
         params = {
