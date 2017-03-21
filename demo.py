@@ -324,8 +324,8 @@ def main():
     appapi_ranking(aapi)
 
     # auth test
-    # aapi.login(_USERNAME, _PASSWORD)
-    # appapi_auth_api(aapi)
+    aapi.login(_USERNAME, _PASSWORD)
+    appapi_auth_api(aapi)
 
 if __name__ == '__main__':
     main()
