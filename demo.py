@@ -53,12 +53,19 @@ def appapi_recommend(aapi):
     json_result = aapi.illust_recommended(**next_qs)
     # print(json_result)
     illust = json_result.illusts[0]
-    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+    print("  > %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
     json_result = aapi.illust_related(59580629)
     print(json_result)
     illust = json_result.illusts[0]
     print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+
+    # get next page
+    next_qs = aapi.parse_qs(json_result.next_url)
+    json_result = aapi.illust_related(**next_qs)
+    # print(json_result)
+    illust = json_result.illusts[0]
+    print("  > %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
 def appapi_users(aapi):
     json_result = aapi.user_detail(275527)
@@ -317,8 +324,8 @@ def main():
     appapi_ranking(aapi)
 
     # auth test
-    aapi.login(_USERNAME, _PASSWORD)
-    appapi_auth_api(aapi)
+    # aapi.login(_USERNAME, _PASSWORD)
+    # appapi_auth_api(aapi)
 
 if __name__ == '__main__':
     main()

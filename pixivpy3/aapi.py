@@ -2,6 +2,7 @@
 
 import os
 import sys
+import re
 import shutil
 import json
 import requests
@@ -47,13 +48,29 @@ class AppPixivAPI(BasePixivAPI):
     def parse_qs(self, next_url):
         if not next_url: return None
         if sys.version_info >= (3, 0):
-            from urllib.parse import urlparse, parse_qs, unquote
-            unquote_url = unquote(next_url)
+            from urllib.parse import urlparse, unquote
+            safe_unquote = lambda s: unquote(s)
         else:
-            from urlparse import urlparse, parse_qs, unquote
-            unquote_url = unquote(next_url.encode('utf8')).decode('utf8')
-        query = urlparse(unquote_url).query
-        return dict([(k,v[0]) for k,v in parse_qs(query).items()])
+            from urlparse import urlparse, unquote
+            safe_unquote = lambda s: unquote(s.encode('utf8')).decode('utf8')
+
+        result_qs = {}
+        query = urlparse(next_url).query
+        for kv in query.split('&'):
+            # split than unquote() to k,v strings
+            k, v = map(safe_unquote, kv.split('='))
+
+            # merge seed_illust_ids[] liked PHP params to array
+            matched = re.match('(?P<key>[\w]*)\[(?P<idx>[\w]*)\]', k)
+            if matched:
+                mk = matched.group('key')
+                marray = result_qs.get(mk, [])
+                # keep the origin sequence, just ignore group('idx')
+                result_qs[mk] = marray + [v]
+            else:
+                result_qs[k] = v
+
+        return result_qs
 
     # 用户详情 (无需登录)
     def user_detail(self, user_id, filter='for_ios', req_auth=False):
@@ -136,9 +153,9 @@ class AppPixivAPI(BasePixivAPI):
             'filter': filter,
         }
         if type(seed_illust_ids) == str:
-            params['seed_illust_ids'] = seed_illust_ids
+            params['seed_illust_ids[]'] = [seed_illust_ids]
         if type(seed_illust_ids) == list:
-            params['seed_illust_ids'] = ",".join([ str(iid) for iid in seed_illust_ids ])
+            params['seed_illust_ids[]'] = seed_illust_ids
         r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
         return self.parse_result(r)
 
