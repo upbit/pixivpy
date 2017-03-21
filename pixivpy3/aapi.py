@@ -130,7 +130,7 @@ class AppPixivAPI(BasePixivAPI):
 
     # 相关作品列表 (无需登录)
     def illust_related(self, illust_id, filter='for_ios', seed_illust_ids=None, req_auth=False):
-        url = 'https://app-api.pixiv.net/v1/illust/related'
+        url = 'https://app-api.pixiv.net/v2/illust/related'
         params = {
             'illust_id': illust_id,
             'filter': filter,
