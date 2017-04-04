@@ -20,9 +20,9 @@ class AppPixivAPI(BasePixivAPI):
     # Check auth and set BearerToken to headers
     def no_auth_requests_call(self, method, url, headers={}, params=None, data=None, req_auth=False):
         headers['App-OS'] = 'ios'
-        headers['App-OS-Version'] = '10.2.1'
-        headers['App-Version'] = '6.4.0'
-        headers['User-Agent'] = 'PixivIOSApp/6.0.9 (iOS 10.2.1; iPhone8,1)'
+        headers['App-OS-Version'] = '10.3.1'
+        headers['App-Version'] = '6.7.1'
+        headers['User-Agent'] = 'PixivIOSApp/6.7.1 (iOS 10.3.1; iPhone8,1)'
         if (not req_auth):
             return self.requests_call(method, url, headers, params, data)
         else:

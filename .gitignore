@@ -5,5 +5,6 @@ url.txt
 
 # pypi
 dist/
+build/
 PixivPy.egg-info/
 MANIFEST
