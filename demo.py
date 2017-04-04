@@ -93,13 +93,13 @@ def appapi_users(aapi):
     json_result = aapi.user_following(7314824)
     print(json_result)
     user_preview = json_result.user_previews[0]
-    print(">>> %s illust: %s" % (user_preview.user.name, user_preview.illusts[0].title))
+    print(">>> %s(@%s)" % (user_preview.user.name, user_preview.user.account))
 
     next_qs = aapi.parse_qs(json_result.next_url)
     json_result = aapi.user_following(**next_qs)
     # print(json_result)
     user_preview = json_result.user_previews[0]
-    print("  > %s illust: %s" % (user_preview.user.name, user_preview.illusts[0].title))
+    print("  > %s(@%s)" % (user_preview.user.name, user_preview.user.account))
 
     json_result = aapi.user_follower(275527)
     print(json_result)
