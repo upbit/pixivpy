@@ -243,8 +243,8 @@ class AppPixivAPI(BasePixivAPI):
         r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
         return self.parse_result(r)
 
-    # 作品收藏详情 (无需登录)
-    def illust_bookmark_detail(self, illust_id, req_auth=False):
+    # 作品收藏详情
+    def illust_bookmark_detail(self, illust_id, req_auth=True):
         url = 'https://app-api.pixiv.net/v2/illust/bookmark/detail'
         params = {
             'illust_id': illust_id,
@@ -254,27 +254,27 @@ class AppPixivAPI(BasePixivAPI):
 
     # 新增收藏
     def illust_bookmark_add(self, illust_id, restrict='public', tags=None, req_auth=True):
-        url = 'https://app-api.pixiv.net/v1/illust/bookmark/add'
-        params = {
+        url = 'https://app-api.pixiv.net/v2/illust/bookmark/add'
+        data = {
             'illust_id': illust_id,
             'restrict': restrict,
         }
         ## TODO: tags mast quote like 'tags=%E5%B0%BB%E7%A5%9E%E6%A7%98%20%E8%A3%B8%E8%B6%B3%20Fate%2FGO'
         # if (type(tags) == str):
-        #     params['tags'] = tags
+        #     data['tags'] = tags
         # if (type(tags) == list):
-        #     params['tags'] = " ".join([ str(tag) for tag in tags ])
+        #     data['tags'] = " ".join([ str(tag) for tag in tags ])
 
-        r = self.no_auth_requests_call('POST', url, params=params, req_auth=req_auth)
+        r = self.no_auth_requests_call('POST', url, data=data, req_auth=req_auth)
         return self.parse_result(r)
 
     # 删除收藏
     def illust_bookmark_delete(self, illust_id, req_auth=True):
         url = 'https://app-api.pixiv.net/v1/illust/bookmark/delete'
-        params = {
+        data = {
             'illust_id': illust_id,
         }
-        r = self.no_auth_requests_call('POST', url, params=params, req_auth=req_auth)
+        r = self.no_auth_requests_call('POST', url, data=data, req_auth=req_auth)
         return self.parse_result(r)
 
     # 用户收藏标签列表
@@ -328,7 +328,7 @@ class AppPixivAPI(BasePixivAPI):
 
     # 黑名单用户 (无需登录)
     def user_list(self, user_id, filter='for_ios', offset=None, req_auth=False):
-        url = 'https://app-api.pixiv.net/v1/user/list'
+        url = 'https://app-api.pixiv.net/v2/user/list'
         params = {
             'user_id': user_id,
             'filter': filter,
