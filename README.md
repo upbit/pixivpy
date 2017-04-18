@@ -2,6 +2,7 @@ PixivPy [![Build Status](https://travis-ci.org/upbit/pixivpy.svg)](https://travi
 ======
 _Pixiv API for Python (with Auth supported)_
 
+* [2017/04/18] Fix encoder BUG for `illust_bookmark_add()/illust_bookmark_delete()` params (thanks [naplings](https://github.com/naplings))
 * [2017/01/05] Add `PixivAPI().works()` liked API `illust_detail()` for App-API (thanks [Mapaler](https://github.com/Mapaler)), release v3.3
 * [2016/12/17] Fixed encoding BUG for Public-API, see #26 (thanks [Xdynix](https://github.com/Xdynix))
 * [2016/07/27] Now `AppPixivAPI()` can call **without auth** (thanks [zzycami](https://github.com/zzycami)), check [demo.py](https://github.com/upbit/pixivpy/blob/b83578e066ddcba86295676d931ff3313d138b22/demo.py#L268)
@@ -15,7 +16,7 @@ _Pixiv API for Python (with Auth supported)_
 Use pip for installing:
 
 ~~~
-pip install pixivpy
+pip install pixivpy --upgrade
 ~~~
 
 Requirements: [requests](https://pypi.python.org/pypi/requests)
