@@ -69,6 +69,7 @@ class BasePixivAPI(object):
             'get_secure_url': 1,
             'client_id': 'bYGKuGVw91e0NMfPGp44euvGt59s',
             'client_secret': 'HP3RmkgAmEGro0gn1x9ioawQE8WMfvLXDz3ZqxpK',
+            'device_token': 'af014441a5f1a3340952922adeba1c36'
         }
 
         if (username is not None) and (password is not None):
