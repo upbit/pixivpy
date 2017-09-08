@@ -17,18 +17,32 @@ class AppPixivAPI(BasePixivAPI):
         """initialize requests kwargs if need be"""
         super(AppPixivAPI, self).__init__(**requests_kwargs)
 
+    # Issue #45 All public APIs are not accessible
     # Check auth and set BearerToken to headers
-    def no_auth_requests_call(self, method, url, headers={}, params=None, data=None, req_auth=False):
+    # def no_auth_requests_call(self, method, url, headers={}, params=None, data=None):
+    #     headers['App-OS'] = 'ios'
+    #     headers['App-OS-Version'] = '10.3.1'
+    #     headers['App-Version'] = '6.7.1'
+    #     headers['User-Agent'] = 'PixivIOSApp/6.7.1 (iOS 10.3.1; iPhone8,1)'
+    #     if (not req_auth):
+    #         return self.requests_call(method, url, headers, params, data)
+    #     else:
+    #         self.require_auth()
+    #         headers['Authorization'] = 'Bearer %s' % self.access_token
+    #         return self.requests_call(method, url, headers, params, data)
+
+    def auth_requests_call(self, method, url, headers={}, params=None, data=None):
+
+        self.require_auth()
+
         headers['App-OS'] = 'ios'
         headers['App-OS-Version'] = '10.3.1'
         headers['App-Version'] = '6.7.1'
         headers['User-Agent'] = 'PixivIOSApp/6.7.1 (iOS 10.3.1; iPhone8,1)'
-        if (not req_auth):
-            return self.requests_call(method, url, headers, params, data)
-        else:
-            self.require_auth()
-            headers['Authorization'] = 'Bearer %s' % self.access_token
-            return self.requests_call(method, url, headers, params, data)
+        headers['Authorization'] = 'Bearer %s' % self.access_token
+
+        return self.requests_call(method, url, headers, params, data)
+
 
     def parse_result(self, req):
         try:
@@ -72,19 +86,19 @@ class AppPixivAPI(BasePixivAPI):
 
         return result_qs
 
-    # 用户详情 (无需登录)
-    def user_detail(self, user_id, filter='for_ios', req_auth=False):
+    # 用户详情
+    def user_detail(self, user_id, filter='for_ios'):
         url = 'https://app-api.pixiv.net/v1/user/detail'
         params = {
             'user_id': user_id,
             'filter': filter,
         }
-        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
+        r = self.auth_requests_call('GET', url, params=params)
         return self.parse_result(r)
 
-    # 用户作品列表 (无需登录)
+    # 用户作品列表
     # type: [illust, manga]
-    def user_illusts(self, user_id, type='illust', filter='for_ios', offset=None, req_auth=False):
+    def user_illusts(self, user_id, type='illust', filter='for_ios', offset=None):
         url = 'https://app-api.pixiv.net/v1/user/illusts'
         params = {
             'user_id': user_id,
@@ -94,12 +108,12 @@ class AppPixivAPI(BasePixivAPI):
             params['type'] = type
         if (offset):
             params['offset'] = offset
-        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
+        r = self.auth_requests_call('GET', url, params=params)
         return self.parse_result(r)
 
-    # 用户收藏作品列表 (无需登录)
+    # 用户收藏作品列表
     # tag: 从 user_bookmark_tags_illust 获取的收藏标签
-    def user_bookmarks_illust(self, user_id, restrict='public', filter='for_ios', max_bookmark_id=None, tag=None, req_auth=False):
+    def user_bookmarks_illust(self, user_id, restrict='public', filter='for_ios', max_bookmark_id=None, tag=None):
         url = 'https://app-api.pixiv.net/v1/user/bookmarks/illust'
         params = {
             'user_id': user_id,
@@ -110,32 +124,32 @@ class AppPixivAPI(BasePixivAPI):
             params['max_bookmark_id'] = max_bookmark_id
         if (tag):
             params['tag'] = tag
-        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
+        r = self.auth_requests_call('GET', url, params=params)
         return self.parse_result(r)
 
     # 关注用户的新作
     # restrict: [public, private]
-    def illust_follow(self, restrict='public', offset=None, req_auth=True):
+    def illust_follow(self, restrict='public', offset=None):
         url = 'https://app-api.pixiv.net/v2/illust/follow'
         params = {
             'restrict': restrict,
         }
         if (offset):
             params['offset'] = offset
-        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
+        r = self.auth_requests_call('GET', url, params=params)
         return self.parse_result(r)
 
-    # 作品详情 (无需登录，类似PAPI.works()，iOS中未使用)
-    def illust_detail(self, illust_id, req_auth=False):
+    # 作品详情 (类似PAPI.works()，iOS中未使用)
+    def illust_detail(self, illust_id):
         url = 'https://app-api.pixiv.net/v1/illust/detail'
         params = {
             'illust_id': illust_id,
         }
-        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
+        r = self.auth_requests_call('GET', url, params=params)
         return self.parse_result(r)
 
-    # 作品评论 (无需登录)
-    def illust_comments(self, illust_id, offset=None, include_total_comments=None, req_auth=False):
+    # 作品评论
+    def illust_comments(self, illust_id, offset=None, include_total_comments=None):
         url = 'https://app-api.pixiv.net/v1/illust/comments'
         params = {
             'illust_id': illust_id,
@@ -144,11 +158,11 @@ class AppPixivAPI(BasePixivAPI):
             params['offset'] = offset
         if (include_total_comments):
             params['include_total_comments'] = self.format_bool(include_total_comments)
-        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
+        r = self.auth_requests_call('GET', url, params=params)
         return self.parse_result(r)
 
-    # 相关作品列表 (无需登录)
-    def illust_related(self, illust_id, filter='for_ios', seed_illust_ids=None, req_auth=False):
+    # 相关作品列表
+    def illust_related(self, illust_id, filter='for_ios', seed_illust_ids=None):
         url = 'https://app-api.pixiv.net/v2/illust/related'
         params = {
             'illust_id': illust_id,
@@ -158,14 +172,14 @@ class AppPixivAPI(BasePixivAPI):
             params['seed_illust_ids[]'] = [seed_illust_ids]
         if type(seed_illust_ids) == list:
             params['seed_illust_ids[]'] = seed_illust_ids
-        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
+        r = self.auth_requests_call('GET', url, params=params)
         return self.parse_result(r)
 
-    # 插画推荐 (Home - Main) (无需登录)
+    # 插画推荐 (Home - Main)
     # content_type: [illust, manga]
     def illust_recommended(self, content_type='illust', include_ranking_label=True, filter='for_ios',
             max_bookmark_id_for_recommend=None, min_bookmark_id_for_recent_illust=None,
-            offset=None, include_ranking_illusts=None, bookmark_illust_ids=None, req_auth=False):
+            offset=None, include_ranking_illusts=None, bookmark_illust_ids=None):
         if (req_auth):
             url = 'https://app-api.pixiv.net/v1/illust/recommended'
         else:
@@ -190,7 +204,7 @@ class AppPixivAPI(BasePixivAPI):
             if (type(bookmark_illust_ids) == list):
                 params['bookmark_illust_ids'] = ",".join([ str(iid) for iid in bookmark_illust_ids ])
 
-        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
+        r = self.auth_requests_call('GET', url, params=params)
         return self.parse_result(r)
 
     # 作品排行
@@ -198,7 +212,7 @@ class AppPixivAPI(BasePixivAPI):
     # date: '2016-08-01'
     # mode (Past): [day, week, month, day_male, day_female, week_original, week_rookie,
     #               day_r18, day_male_r18, day_female_r18, week_r18, week_r18g]
-    def illust_ranking(self, mode='day', filter='for_ios', date=None, offset=None, req_auth=False):
+    def illust_ranking(self, mode='day', filter='for_ios', date=None, offset=None):
         url = 'https://app-api.pixiv.net/v1/illust/ranking'
         params = {
             'mode': mode,
@@ -208,19 +222,19 @@ class AppPixivAPI(BasePixivAPI):
             params['date'] = date
         if (offset):
             params['offset'] = offset
-        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
+        r = self.auth_requests_call('GET', url, params=params)
         return self.parse_result(r)
 
-    # 趋势标签 (Search - tags) (无需登录)
-    def trending_tags_illust(self, filter='for_ios', req_auth=False):
+    # 趋势标签 (Search - tags)
+    def trending_tags_illust(self, filter='for_ios'):
         url = 'https://app-api.pixiv.net/v1/trending-tags/illust'
         params = {
             'filter': filter,
         }
-        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
+        r = self.auth_requests_call('GET', url, params=params)
         return self.parse_result(r)
 
-    # 搜索 (Search) (无需登录)
+    # 搜索 (Search)
     # search_target - 搜索类型
     #   partial_match_for_tags  - 标签部分一致
     #   exact_match_for_tags    - 标签完全一致
@@ -228,7 +242,7 @@ class AppPixivAPI(BasePixivAPI):
     # sort: [date_desc, date_asc]
     # duration: [within_last_day, within_last_week, within_last_month]
     def search_illust(self, word, search_target='partial_match_for_tags', sort='date_desc', duration=None,
-            filter='for_ios', offset=None, req_auth=False):
+            filter='for_ios', offset=None):
         url = 'https://app-api.pixiv.net/v1/search/illust'
         params = {
             'word': word,
@@ -240,20 +254,20 @@ class AppPixivAPI(BasePixivAPI):
             params['duration'] = duration
         if (offset):
             params['offset'] = offset
-        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
+        r = self.auth_requests_call('GET', url, params=params)
         return self.parse_result(r)
 
     # 作品收藏详情
-    def illust_bookmark_detail(self, illust_id, req_auth=True):
+    def illust_bookmark_detail(self, illust_id):
         url = 'https://app-api.pixiv.net/v2/illust/bookmark/detail'
         params = {
             'illust_id': illust_id,
         }
-        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
+        r = self.auth_requests_call('GET', url, params=params)
         return self.parse_result(r)
 
     # 新增收藏
-    def illust_bookmark_add(self, illust_id, restrict='public', tags=None, req_auth=True):
+    def illust_bookmark_add(self, illust_id, restrict='public', tags=None):
         url = 'https://app-api.pixiv.net/v2/illust/bookmark/add'
         data = {
             'illust_id': illust_id,
@@ -265,31 +279,31 @@ class AppPixivAPI(BasePixivAPI):
         # if (type(tags) == list):
         #     data['tags'] = " ".join([ str(tag) for tag in tags ])
 
-        r = self.no_auth_requests_call('POST', url, data=data, req_auth=req_auth)
+        r = self.auth_requests_call('POST', url, data=data)
         return self.parse_result(r)
 
     # 删除收藏
-    def illust_bookmark_delete(self, illust_id, req_auth=True):
+    def illust_bookmark_delete(self, illust_id):
         url = 'https://app-api.pixiv.net/v1/illust/bookmark/delete'
         data = {
             'illust_id': illust_id,
         }
-        r = self.no_auth_requests_call('POST', url, data=data, req_auth=req_auth)
+        r = self.auth_requests_call('POST', url, data=data)
         return self.parse_result(r)
 
     # 用户收藏标签列表
-    def user_bookmark_tags_illust(self, restrict='public', offset=None, req_auth=True):
+    def user_bookmark_tags_illust(self, restrict='public', offset=None):
         url = 'https://app-api.pixiv.net/v1/user/bookmark-tags/illust'
         params = {
             'restrict': restrict,
         }
         if (offset):
             params['offset'] = offset
-        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
+        r = self.auth_requests_call('GET', url, params=params)
         return self.parse_result(r)
 
-    # Following用户列表 (无需登录)
-    def user_following(self, user_id, restrict='public', offset=None, req_auth=False):
+    # Following用户列表
+    def user_following(self, user_id, restrict='public', offset=None):
         url = 'https://app-api.pixiv.net/v1/user/following'
         params = {
             'user_id': user_id,
@@ -298,11 +312,11 @@ class AppPixivAPI(BasePixivAPI):
         if (offset):
             params['offset'] = offset
 
-        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
+        r = self.auth_requests_call('GET', url, params=params)
         return self.parse_result(r)
 
-    # Followers用户列表 (无需登录)
-    def user_follower(self, user_id, filter='for_ios', offset=None, req_auth=False):
+    # Followers用户列表
+    def user_follower(self, user_id, filter='for_ios', offset=None):
         url = 'https://app-api.pixiv.net/v1/user/follower'
         params = {
             'user_id': user_id,
@@ -311,11 +325,11 @@ class AppPixivAPI(BasePixivAPI):
         if (offset):
             params['offset'] = offset
 
-        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
+        r = self.auth_requests_call('GET', url, params=params)
         return self.parse_result(r)
 
-    # 好P友 (无需登录)
-    def user_mypixiv(self, user_id, offset=None, req_auth=False):
+    # 好P友
+    def user_mypixiv(self, user_id, offset=None):
         url = 'https://app-api.pixiv.net/v1/user/mypixiv'
         params = {
             'user_id': user_id,
@@ -323,11 +337,11 @@ class AppPixivAPI(BasePixivAPI):
         if (offset):
             params['offset'] = offset
 
-        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
+        r = self.auth_requests_call('GET', url, params=params)
         return self.parse_result(r)
 
-    # 黑名单用户 (无需登录)
-    def user_list(self, user_id, filter='for_ios', offset=None, req_auth=False):
+    # 黑名单用户
+    def user_list(self, user_id, filter='for_ios', offset=None):
         url = 'https://app-api.pixiv.net/v2/user/list'
         params = {
             'user_id': user_id,
@@ -336,15 +350,15 @@ class AppPixivAPI(BasePixivAPI):
         if (offset):
             params['offset'] = offset
 
-        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
+        r = self.auth_requests_call('GET', url, params=params)
         return self.parse_result(r)
 
-    # 获取ugoira信息 (无需登录)
-    def ugoira_metadata(self, illust_id, req_auth=False):
+    # 获取ugoira信息
+    def ugoira_metadata(self, illust_id):
         url = 'https://app-api.pixiv.net/v1/ugoira/metadata'
         params = {
             'illust_id': illust_id,
         }
 
-        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
+        r = self.auth_requests_call('GET', url, params=params)
         return self.parse_result(r)
