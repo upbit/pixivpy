@@ -10,6 +10,9 @@ from .utils import PixivError, JsonDict
 
 
 class BasePixivAPI(object):
+    client_id = 'bYGKuGVw91e0NMfPGp44euvGt59s'
+    client_secret = 'HP3RmkgAmEGro0gn1x9ioawQE8WMfvLXDz3ZqxpK'
+
     access_token = None
     user_id = 0
     refresh_token = None
@@ -68,8 +71,8 @@ class BasePixivAPI(object):
         }
         data = {
             'get_secure_url': 1,
-            'client_id': 'bYGKuGVw91e0NMfPGp44euvGt59s',
-            'client_secret': 'HP3RmkgAmEGro0gn1x9ioawQE8WMfvLXDz3ZqxpK',
+            'client_id': self.client_id,
+            'client_secret': self.client_secret,
         }
 
         if (username is not None) and (password is not None):
