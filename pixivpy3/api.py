@@ -16,6 +16,7 @@ class BasePixivAPI(object):
 
     def __init__(self, **requests_kwargs):
         """initialize requests kwargs if need be"""
+        self.requests = requests.Session()
         self.requests_kwargs = requests_kwargs
 
     def parse_json(self, json_str):
@@ -38,11 +39,11 @@ class BasePixivAPI(object):
         """ requests http/https call for Pixiv API """
         try:
             if (method == 'GET'):
-                return requests.get(url, params=params, headers=headers, stream=stream, **self.requests_kwargs)
+                return self.requests.get(url, params=params, headers=headers, stream=stream, **self.requests_kwargs)
             elif (method == 'POST'):
-                return requests.post(url, params=params, data=data, headers=headers, stream=stream, **self.requests_kwargs)
+                return self.requests.post(url, params=params, data=data, headers=headers, stream=stream, **self.requests_kwargs)
             elif (method == 'DELETE'):
-                return requests.delete(url, params=params, data=data, headers=headers, stream=stream, **self.requests_kwargs)
+                return self.requests.delete(url, params=params, data=data, headers=headers, stream=stream, **self.requests_kwargs)
         except Exception as e:
             raise PixivError('requests %s %s error: %s' % (method, url, e))
 
