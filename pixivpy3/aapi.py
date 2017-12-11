@@ -259,11 +259,12 @@ class AppPixivAPI(BasePixivAPI):
             'illust_id': illust_id,
             'restrict': restrict,
         }
-        ## TODO: tags mast quote like 'tags=%E5%B0%BB%E7%A5%9E%E6%A7%98%20%E8%A3%B8%E8%B6%B3%20Fate%2FGO'
+        ## TODO: tags mast quote like 'tags%5B%5D=%E9%A6%99%E9%A2%A8%E6%99%BA%E4%B9%83' tags[]
         # if (type(tags) == str):
         #     data['tags'] = tags
-        # if (type(tags) == list):
-        #     data['tags'] = " ".join([ str(tag) for tag in tags ])
+        if (type(tags) == list):
+            #tags = [urllib.quote(x['name'].encode('utf-8')) for x in json_result.illust.tags]
+            data['tags%5B%5D'] = tags
 
         r = self.no_auth_requests_call('POST', url, data=data, req_auth=req_auth)
         return self.parse_result(r)
