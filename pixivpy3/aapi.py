@@ -126,7 +126,7 @@ class AppPixivAPI(BasePixivAPI):
         return self.parse_result(r)
 
     # 作品详情 (无需登录，类似PAPI.works()，iOS中未使用)
-    def illust_detail(self, illust_id, req_auth=False):
+    def illust_detail(self, illust_id, req_auth=True):
         url = 'https://app-api.pixiv.net/v1/illust/detail'
         params = {
             'illust_id': illust_id,
