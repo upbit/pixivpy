@@ -264,7 +264,7 @@ class AppPixivAPI(BasePixivAPI):
         #     data['tags'] = tags
         if (type(tags) == list):
             #tags = [urllib.quote(x['name'].encode('utf-8')) for x in json_result.illust.tags]
-            data['tags%5B%5D'] = tags
+            data['tags[]'] = tags
 
         r = self.no_auth_requests_call('POST', url, data=data, req_auth=req_auth)
         return self.parse_result(r)
