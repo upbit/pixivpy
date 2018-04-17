@@ -316,15 +316,14 @@ def main():
     # app-api
     aapi = AppPixivAPI(**_REQUESTS_KWARGS)
 
-    # no auth test
+    aapi.login(_USERNAME, _PASSWORD)
+    
     appapi_illust(aapi)
     appapi_recommend(aapi)
     appapi_users(aapi)
     appapi_search(aapi)
     appapi_ranking(aapi)
 
-    # auth test
-    aapi.login(_USERNAME, _PASSWORD)
     appapi_auth_api(aapi)
 
 if __name__ == '__main__':
