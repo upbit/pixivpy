@@ -59,6 +59,10 @@ class BasePixivAPI(object):
     def login(self, username, password):
         return self.auth(username=username, password=password)
 
+    def set_client(self, client_id, client_secret):
+        self.client_id = client_id
+        self.client_secret = client_secret
+
     def auth(self, username=None, password=None, refresh_token=None):
         """Login with password, or use the refresh_token to acquire a new bearer token"""
 
