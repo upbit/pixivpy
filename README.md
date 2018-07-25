@@ -21,6 +21,10 @@ pip install pixivpy --upgrade
 
 Requirements: [requests](https://pypi.python.org/pypi/requests)
 
+### Projects base on pixivpy
+
+1. [Xdynix/PixivPixie](https://github.com/Xdynix/PixivPixie): User-friendly Pixiv API based on PixivPy
+
 ### Example:
 
 ~~~python
