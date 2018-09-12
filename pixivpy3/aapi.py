@@ -165,7 +165,8 @@ class AppPixivAPI(BasePixivAPI):
     # content_type: [illust, manga]
     def illust_recommended(self, content_type='illust', include_ranking_label=True, filter='for_ios',
             max_bookmark_id_for_recommend=None, min_bookmark_id_for_recent_illust=None,
-            offset=None, include_ranking_illusts=None, bookmark_illust_ids=None, req_auth=True):
+            offset=None, include_ranking_illusts=None, bookmark_illust_ids=None,
+            include_privacy_policy=None, req_auth=True):
         if (req_auth):
             url = 'https://app-api.pixiv.net/v1/illust/recommended'
         else:
@@ -189,6 +190,9 @@ class AppPixivAPI(BasePixivAPI):
                 params['bookmark_illust_ids'] = bookmark_illust_ids
             if (type(bookmark_illust_ids) == list):
                 params['bookmark_illust_ids'] = ",".join([ str(iid) for iid in bookmark_illust_ids ])
+
+        if (include_privacy_policy):
+            params['include_privacy_policy'] = include_privacy_policy
 
         r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
         return self.parse_result(r)
