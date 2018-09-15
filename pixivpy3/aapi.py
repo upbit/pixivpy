@@ -352,3 +352,13 @@ class AppPixivAPI(BasePixivAPI):
 
         r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
         return self.parse_result(r)
+
+    # 特辑详情 (无需登录)
+    def showcase_detail(self, showcase_id, req_auth=False):
+        url = 'https://www.pixiv.net/ajax/showcase/article'
+        params = {
+            'article_id': showcase_id,
+        }
+
+        r = self.no_auth_requests_call('GET', url,params=params, req_auth=req_auth)
+        return self.parse_result(r)
