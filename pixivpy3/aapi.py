@@ -19,10 +19,12 @@ class AppPixivAPI(BasePixivAPI):
 
     # Check auth and set BearerToken to headers
     def no_auth_requests_call(self, method, url, headers={}, params=None, data=None, req_auth=True):
-        headers['App-OS'] = 'ios'
-        headers['App-OS-Version'] = '10.3.1'
-        headers['App-Version'] = '6.7.1'
-        headers['User-Agent'] = 'PixivIOSApp/6.7.1 (iOS 10.3.1; iPhone8,1)'
+        if headers.get('User-Agent', None) == None and headers.get('user-agent', None) == None:
+            # Set User-Agent if not provided
+            headers['App-OS'] = 'ios'
+            headers['App-OS-Version'] = '10.3.1'
+            headers['App-Version'] = '6.7.1'
+            headers['User-Agent'] = 'PixivIOSApp/6.7.1 (iOS 10.3.1; iPhone8,1)'
         if (not req_auth):
             return self.requests_call(method, url, headers, params, data)
         else:
@@ -353,12 +355,17 @@ class AppPixivAPI(BasePixivAPI):
         r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
         return self.parse_result(r)
 
-    # 特辑详情 (无需登录)
-    def showcase_detail(self, showcase_id, req_auth=False):
+    # 特辑详情 (无需登录，调用Web API)
+    def showcase_article(self, showcase_id):
         url = 'https://www.pixiv.net/ajax/showcase/article'
+        # Web API，伪造Chrome的User-Agent
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36',
+            'Referer': 'https://www.pixiv.net',
+        }
         params = {
             'article_id': showcase_id,
         }
 
-        r = self.no_auth_requests_call('GET', url,params=params, req_auth=req_auth)
+        r = self.no_auth_requests_call('GET', url, headers=headers, params=params, req_auth=False)
         return self.parse_result(r)
