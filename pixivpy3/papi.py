@@ -38,11 +38,12 @@ class PixivAPI(BasePixivAPI):
         return self.parse_result(r)
 
     # 作品详细
-    def works(self, illust_id):
-        url = 'https://public-api.secure.pixiv.net/v1/works/%d.json' % (illust_id)
+    def works(self, illust_id, include_sanity_level=False):
+        url = f'https://public-api.secure.pixiv.net/v1/works/%d.json' % (illust_id)
         params = {
             'image_sizes': 'px_128x128,small,medium,large,px_480mw',
             'include_stats': 'true',
+            'include_sanity_level': str(include_sanity_level).lower()
         }
         r = self.auth_requests_call('GET', url, params=params)
         return self.parse_result(r)
