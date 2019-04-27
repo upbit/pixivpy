@@ -56,7 +56,7 @@ for illust in json_result.illusts:
 ### [Sniffer - Public API](https://github.com/upbit/pixivpy/wiki/sniffer)
 
 ### [Using AppPixivAPI() to download illusts (without auth)](https://github.com/upbit/pixivpy/blob/master/download_illusts.py#L24)
-### [Using API proxy behind the Great Wall](https://github.com/upbit/pixivpy/blob/master/example_api_proxy.py#L33) `See detail in [Issue#73](https://github.com/upbit/pixivpy/issues/73)`
+### [Using API proxy behind the Great Wall](https://github.com/upbit/pixivpy/blob/master/example_api_proxy.py#L33) See detail in [Issue#73](https://github.com/upbit/pixivpy/issues/73)
 
 1. Upgrade pixivpy >= **v3.2.0**: `pip install pixivpy --upgrade`
 2. Call `api.download()` like the below:
