@@ -16,6 +16,11 @@ class AppPixivAPI(BasePixivAPI):
     def __init__(self, **requests_kwargs):
         """initialize requests kwargs if need be"""
         super(AppPixivAPI, self).__init__(**requests_kwargs)
+        self.hosts = "https://app-api.pixiv.net"
+
+    def set_api_proxy(self, proxy_hosts="http://app-api.pixivlite.com"):
+        """Set proxy hosts: eg pixivlite.com"""
+        self.hosts = proxy_hosts
 
     # Check auth and set BearerToken to headers
     def no_auth_requests_call(self, method, url, headers={}, params=None, data=None, req_auth=True):
@@ -76,7 +81,7 @@ class AppPixivAPI(BasePixivAPI):
 
     # 用户详情
     def user_detail(self, user_id, filter='for_ios', req_auth=True):
-        url = 'https://app-api.pixiv.net/v1/user/detail'
+        url = '%s/v1/user/detail' % self.hosts
         params = {
             'user_id': user_id,
             'filter': filter,
@@ -87,7 +92,7 @@ class AppPixivAPI(BasePixivAPI):
     # 用户作品列表
     # type: [illust, manga]
     def user_illusts(self, user_id, type='illust', filter='for_ios', offset=None, req_auth=True):
-        url = 'https://app-api.pixiv.net/v1/user/illusts'
+        url = '%s/v1/user/illusts' % self.hosts
         params = {
             'user_id': user_id,
             'filter': filter,
@@ -102,7 +107,7 @@ class AppPixivAPI(BasePixivAPI):
     # 用户收藏作品列表
     # tag: 从 user_bookmark_tags_illust 获取的收藏标签
     def user_bookmarks_illust(self, user_id, restrict='public', filter='for_ios', max_bookmark_id=None, tag=None, req_auth=True):
-        url = 'https://app-api.pixiv.net/v1/user/bookmarks/illust'
+        url = '%s/v1/user/bookmarks/illust' % self.hosts
         params = {
             'user_id': user_id,
             'restrict': restrict,
@@ -118,7 +123,7 @@ class AppPixivAPI(BasePixivAPI):
     # 关注用户的新作
     # restrict: [public, private]
     def illust_follow(self, restrict='public', offset=None, req_auth=True):
-        url = 'https://app-api.pixiv.net/v2/illust/follow'
+        url = '%s/v2/illust/follow' % self.hosts
         params = {
             'restrict': restrict,
         }
@@ -129,7 +134,7 @@ class AppPixivAPI(BasePixivAPI):
 
     # 作品详情 (类似PAPI.works()，iOS中未使用)
     def illust_detail(self, illust_id, req_auth=True):
-        url = 'https://app-api.pixiv.net/v1/illust/detail'
+        url = '%s/v1/illust/detail' % self.hosts
         params = {
             'illust_id': illust_id,
         }
@@ -138,7 +143,7 @@ class AppPixivAPI(BasePixivAPI):
 
     # 作品评论
     def illust_comments(self, illust_id, offset=None, include_total_comments=None, req_auth=True):
-        url = 'https://app-api.pixiv.net/v1/illust/comments'
+        url = '%s/v1/illust/comments' % self.hosts
         params = {
             'illust_id': illust_id,
         }
@@ -151,7 +156,7 @@ class AppPixivAPI(BasePixivAPI):
 
     # 相关作品列表
     def illust_related(self, illust_id, filter='for_ios', seed_illust_ids=None, req_auth=True):
-        url = 'https://app-api.pixiv.net/v2/illust/related'
+        url = '%s/v2/illust/related' % self.hosts
         params = {
             'illust_id': illust_id,
             'filter': filter,
@@ -170,9 +175,9 @@ class AppPixivAPI(BasePixivAPI):
             offset=None, include_ranking_illusts=None, bookmark_illust_ids=None,
             include_privacy_policy=None, req_auth=True):
         if (req_auth):
-            url = 'https://app-api.pixiv.net/v1/illust/recommended'
+            url = '%s/v1/illust/recommended' % self.hosts
         else:
-            url = 'https://app-api.pixiv.net/v1/illust/recommended-nologin'
+            url = '%s/v1/illust/recommended-nologin' % self.hosts
         params = {
             'content_type': content_type,
             'include_ranking_label': self.format_bool(include_ranking_label),
@@ -205,7 +210,7 @@ class AppPixivAPI(BasePixivAPI):
     # mode (Past): [day, week, month, day_male, day_female, week_original, week_rookie,
     #               day_r18, day_male_r18, day_female_r18, week_r18, week_r18g]
     def illust_ranking(self, mode='day', filter='for_ios', date=None, offset=None, req_auth=True):
-        url = 'https://app-api.pixiv.net/v1/illust/ranking'
+        url = '%s/v1/illust/ranking' % self.hosts
         params = {
             'mode': mode,
             'filter': filter,
@@ -219,7 +224,7 @@ class AppPixivAPI(BasePixivAPI):
 
     # 趋势标签 (Search - tags)
     def trending_tags_illust(self, filter='for_ios', req_auth=True):
-        url = 'https://app-api.pixiv.net/v1/trending-tags/illust'
+        url = '%s/v1/trending-tags/illust' % self.hosts
         params = {
             'filter': filter,
         }
@@ -235,7 +240,7 @@ class AppPixivAPI(BasePixivAPI):
     # duration: [within_last_day, within_last_week, within_last_month]
     def search_illust(self, word, search_target='partial_match_for_tags', sort='date_desc', duration=None,
             filter='for_ios', offset=None, req_auth=True):
-        url = 'https://app-api.pixiv.net/v1/search/illust'
+        url = '%s/v1/search/illust' % self.hosts
         params = {
             'word': word,
             'search_target': search_target,
@@ -251,7 +256,7 @@ class AppPixivAPI(BasePixivAPI):
 
     # 作品收藏详情
     def illust_bookmark_detail(self, illust_id, req_auth=True):
-        url = 'https://app-api.pixiv.net/v2/illust/bookmark/detail'
+        url = '%s/v2/illust/bookmark/detail' % self.hosts
         params = {
             'illust_id': illust_id,
         }
@@ -260,7 +265,7 @@ class AppPixivAPI(BasePixivAPI):
 
     # 新增收藏
     def illust_bookmark_add(self, illust_id, restrict='public', tags=None, req_auth=True):
-        url = 'https://app-api.pixiv.net/v2/illust/bookmark/add'
+        url = '%s/v2/illust/bookmark/add' % self.hosts
         data = {
             'illust_id': illust_id,
             'restrict': restrict,
@@ -276,7 +281,7 @@ class AppPixivAPI(BasePixivAPI):
 
     # 删除收藏
     def illust_bookmark_delete(self, illust_id, req_auth=True):
-        url = 'https://app-api.pixiv.net/v1/illust/bookmark/delete'
+        url = '%s/v1/illust/bookmark/delete' % self.hosts
         data = {
             'illust_id': illust_id,
         }
@@ -285,7 +290,7 @@ class AppPixivAPI(BasePixivAPI):
 
     # 用户收藏标签列表
     def user_bookmark_tags_illust(self, restrict='public', offset=None, req_auth=True):
-        url = 'https://app-api.pixiv.net/v1/user/bookmark-tags/illust'
+        url = '%s/v1/user/bookmark-tags/illust' % self.hosts
         params = {
             'restrict': restrict,
         }
@@ -296,7 +301,7 @@ class AppPixivAPI(BasePixivAPI):
 
     # Following用户列表
     def user_following(self, user_id, restrict='public', offset=None, req_auth=True):
-        url = 'https://app-api.pixiv.net/v1/user/following'
+        url = '%s/v1/user/following' % self.hosts
         params = {
             'user_id': user_id,
             'restrict': restrict,
@@ -309,7 +314,7 @@ class AppPixivAPI(BasePixivAPI):
 
     # Followers用户列表
     def user_follower(self, user_id, filter='for_ios', offset=None, req_auth=True):
-        url = 'https://app-api.pixiv.net/v1/user/follower'
+        url = '%s/v1/user/follower' % self.hosts
         params = {
             'user_id': user_id,
             'filter': filter,
@@ -322,7 +327,7 @@ class AppPixivAPI(BasePixivAPI):
 
     # 好P友
     def user_mypixiv(self, user_id, offset=None, req_auth=True):
-        url = 'https://app-api.pixiv.net/v1/user/mypixiv'
+        url = '%s/v1/user/mypixiv' % self.hosts
         params = {
             'user_id': user_id,
         }
@@ -334,7 +339,7 @@ class AppPixivAPI(BasePixivAPI):
 
     # 黑名单用户
     def user_list(self, user_id, filter='for_ios', offset=None, req_auth=True):
-        url = 'https://app-api.pixiv.net/v2/user/list'
+        url = '%s/v2/user/list' % self.hosts
         params = {
             'user_id': user_id,
             'filter': filter,
@@ -347,7 +352,7 @@ class AppPixivAPI(BasePixivAPI):
 
     # 获取ugoira信息
     def ugoira_metadata(self, illust_id, req_auth=True):
-        url = 'https://app-api.pixiv.net/v1/ugoira/metadata'
+        url = '%s/v1/ugoira/metadata' % self.hosts
         params = {
             'illust_id': illust_id,
         }
