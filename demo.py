@@ -17,7 +17,7 @@ _USERNAME = "userbay"
 _PASSWORD = "userpay"
 _TEST_WRITE = False
 
-## If a special network environment is met, please configure requests as you need.
+## If a special network environment is meet, please configure requests as you need.
 ## Otherwise, just keep it empty.
 _REQUESTS_KWARGS = {
   # 'proxies': {

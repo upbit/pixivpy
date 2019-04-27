@@ -22,9 +22,9 @@ class AppPixivAPI(BasePixivAPI):
         if headers.get('User-Agent', None) == None and headers.get('user-agent', None) == None:
             # Set User-Agent if not provided
             headers['App-OS'] = 'ios'
-            headers['App-OS-Version'] = '10.3.1'
-            headers['App-Version'] = '6.7.1'
-            headers['User-Agent'] = 'PixivIOSApp/6.7.1 (iOS 10.3.1; iPhone8,1)'
+            headers['App-OS-Version'] = '12.2'
+            headers['App-Version'] = '7.6.2'
+            headers['User-Agent'] = 'PixivIOSApp/7.6.2 (iOS 12.2; iPhone9,1)'
         if (not req_auth):
             return self.requests_call(method, url, headers, params, data)
         else:
