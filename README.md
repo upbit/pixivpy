@@ -2,6 +2,7 @@ PixivPy [![Build Status](https://travis-ci.org/upbit/pixivpy.svg)](https://travi
 ======
 _Pixiv API for Python (with Auth supported)_
 
+* [2019/04/27] Support hosts proxy for AppAPI, which can use behind the Great Wall (See [example_api_proxy.py](https://github.com/upbit/pixivpy/blob/master/example_api_proxy.py))
 * [2017/04/18] Fix encoder BUG for `illust_bookmark_add()/illust_bookmark_delete()` params (thanks [naplings](https://github.com/naplings))
 * [2017/01/05] Add `PixivAPI().works()` liked API `illust_detail()` for App-API (thanks [Mapaler](https://github.com/Mapaler)), release v3.3
 * [2016/12/17] Fixed encoding BUG for Public-API, see #26 (thanks [Xdynix](https://github.com/Xdynix))
@@ -55,6 +56,7 @@ for illust in json_result.illusts:
 ### [Sniffer - Public API](https://github.com/upbit/pixivpy/wiki/sniffer)
 
 ### [Using AppPixivAPI() to download illusts (without auth)](https://github.com/upbit/pixivpy/blob/master/download_illusts.py#L24)
+### [Using API proxy behind the Great Wall](https://github.com/upbit/pixivpy/blob/master/example_api_proxy.py#L33) `See detail in [Issue#73](https://github.com/upbit/pixivpy/issues/73)`
 
 1. Upgrade pixivpy >= **v3.2.0**: `pip install pixivpy --upgrade`
 2. Call `api.download()` like the below:
