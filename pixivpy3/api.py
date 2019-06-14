@@ -21,6 +21,11 @@ class BasePixivAPI(object):
         """initialize requests kwargs if need be"""
         self.requests = requests.Session()
         self.requests_kwargs = requests_kwargs
+        self.additional_headers = {}
+
+    def set_additional_headers(self, headers):
+        """manually specify additional headers. will overwrite API default headers in case of collision"""
+        self.additional_headers = headers
 
     def parse_json(self, json_str):
         """parse str into JsonDict"""
@@ -40,6 +45,7 @@ class BasePixivAPI(object):
 
     def requests_call(self, method, url, headers={}, params=None, data=None, stream=False):
         """ requests http/https call for Pixiv API """
+        headers.update(self.additional_headers)
         try:
             if (method == 'GET'):
                 return self.requests.get(url, params=params, headers=headers, stream=stream, **self.requests_kwargs)
