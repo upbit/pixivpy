@@ -27,6 +27,12 @@ class BasePixivAPI(object):
         """manually specify additional headers. will overwrite API default headers in case of collision"""
         self.additional_headers = headers
 
+    # 设置HTTP的Accept-Language (用于获取tags的对应语言translated_name)
+    # language: en-us, zh-cn, ...
+    def set_accept_language(self, language):
+        """set header Accept-Language for all requests (useful for get tags.translated_name)"""
+        self.additional_headers['Accept-Language'] = language
+
     def parse_json(self, json_str):
         """parse str into JsonDict"""
 

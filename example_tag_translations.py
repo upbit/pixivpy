@@ -20,7 +20,9 @@ _PASSWORD = "userpay"
 
 def main():
     aapi = AppPixivAPI()
-    aapi.set_additional_headers({'Accept-Language':'en-US'})
+    # aapi.set_additional_headers({'Accept-Language':'en-US'})
+    aapi.set_accept_language('en-us') # zh-cn
+
     aapi.login(_USERNAME, _PASSWORD)
     json_result = aapi.illust_ranking('day', date=(datetime.now() - timedelta(days=5)).strftime('%Y-%m-%d'))
 
