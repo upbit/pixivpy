@@ -55,7 +55,7 @@ for illust in json_result.illusts:
 ### [Sniffer - App API](https://github.com/upbit/pixivpy/wiki#6x-api)
 ### [Sniffer - Public API](https://github.com/upbit/pixivpy/wiki/sniffer)
 
-### [Using AppPixivAPI() to download illusts (without auth)](https://github.com/upbit/pixivpy/blob/master/download_illusts.py#L24)
+
 ### [Using API proxy behind the Great Wall](https://github.com/upbit/pixivpy/blob/master/example_api_proxy.py#L33) See detail in [Issue#73](https://github.com/upbit/pixivpy/issues/73)
 
 1. Upgrade pixivpy >= **v3.2.0**: `pip install pixivpy --upgrade`
@@ -104,13 +104,13 @@ class AppPixivAPI(BasePixivAPI):
     # 返回翻页用参数
     def parse_qs(self, next_url):
 
-    # 用户详情 (无需登录)
+    # 用户详情 
     def user_detail(self, user_id):
 
-    # 用户作品列表 (无需登录)
+    # 用户作品列表 
     def user_illusts(self, user_id, type='illust'):
 
-    # 用户收藏作品列表 (无需登录)
+    # 用户收藏作品列表 
     def user_bookmarks_illust(self, user_id, restrict='public'):
 
     # 关注用户的新作
@@ -120,10 +120,10 @@ class AppPixivAPI(BasePixivAPI):
     # 作品详情 (无需登录，同PAPI.works)
     def illust_detail(self, illust_id):
 
-    # 相关作品列表 (无需登录)
+    # 相关作品列表 
     def illust_related(self, illust_id):
 
-    # 插画推荐 (Home - Main) (无需登录)
+    # 插画推荐 (Home - Main) 
     # content_type: [illust, manga]
     def illust_recommended(self, content_type='illust'):
 
@@ -133,10 +133,10 @@ class AppPixivAPI(BasePixivAPI):
     # mode(r18榜单需登录): [day_r18, day_male_r18, day_female_r18, week_r18, week_r18g]
     def illust_ranking(self, mode='day', date=None, offset=None):
 
-    # 趋势标签 (Search - tags) (无需登录)
+    # 趋势标签 (Search - tags) 
     def trending_tags_illust(self):
 
-    # 搜索 (Search) (无需登录)
+    # 搜索 (Search) 
     # search_target - 搜索类型
     #   partial_match_for_tags  - 标签部分一致
     #   exact_match_for_tags    - 标签完全一致
@@ -145,7 +145,7 @@ class AppPixivAPI(BasePixivAPI):
     # duration: [within_last_day, within_last_week, within_last_month]
     def search_illust(self, word, search_target='partial_match_for_tags', sort='date_desc', duration=None):
 
-    # 作品收藏详情 (无需登录)
+    # 作品收藏详情 
     def illust_bookmark_detail(self, illust_id):
 
     # 新增收藏
@@ -157,16 +157,16 @@ class AppPixivAPI(BasePixivAPI):
     # 用户收藏标签列表
     def user_bookmark_tags_illust(self, restrict='public', offset=None):
 
-    # Following用户列表 (无需登录)
+    # Following用户列表 
     def user_following(self, user_id, restrict='public', offset=None):
 
-    # Followers用户列表 (无需登录)
+    # Followers用户列表 
     def user_follower(self, user_id, filter='for_ios', offset=None):
 
-    # 好P友 (无需登录)
+    # 好P友 
     def user_mypixiv(self, user_id, offset=None):
 
-    # 黑名单用户 (无需登录)
+    # 黑名单用户 
     def user_list(self, user_id, filter='for_ios', offset=None):
 
     # 获取ugoira信息
