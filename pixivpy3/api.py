@@ -1,9 +1,10 @@
 # -*- coding:utf-8 -*-
-
-import os
-import sys
-import shutil
+import hashlib
 import json
+import os
+import shutil
+from datetime import datetime
+
 import requests
 
 from .utils import PixivError, JsonDict
@@ -12,6 +13,7 @@ from .utils import PixivError, JsonDict
 class BasePixivAPI(object):
     client_id = 'MOBrBDS8blbauoSck0ZfDbtuzpyT'
     client_secret = 'lsACyCD94FhDUtGTXi3QzcFE2uU1hqtDaKeqrdwj'
+    hash_secret = '28c1fdd170a5204386cb1313c7077b34f83e4aaf4aa829ce78c231e05b0bae2c'
 
     access_token = None
     user_id = 0
@@ -79,8 +81,11 @@ class BasePixivAPI(object):
         """Login with password, or use the refresh_token to acquire a new bearer token"""
 
         url = 'https://oauth.secure.pixiv.net/auth/token'
+        local_time = datetime.now().isoformat()
         headers = {
             'User-Agent': 'PixivAndroidApp/5.0.64 (Android 6.0)',
+            'X-Client-Time': local_time,
+            'X-Client-Hash': hashlib.md5((local_time+self.hash_secret).encode('utf-8')).hexdigest(),
         }
         data = {
             'get_secure_url': 1,
