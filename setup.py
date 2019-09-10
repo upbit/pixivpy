@@ -27,6 +27,7 @@ setup(
     download_url='https://github.com/upbit/pixivpy/releases',
     keywords=['pixiv', 'api', 'pixivpy'],
         classifiers=[
+        "Programming Language :: Python :: 2",
         "Programming Language :: Python :: 3",
         "Operating System :: OS Independent",
     ],
