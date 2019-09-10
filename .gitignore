@@ -1,3 +1,6 @@
+core/
+
+.idea
 *.pyc
 test.py
 dumpObj.py
@@ -8,3 +11,6 @@ dist/
 build/
 PixivPy.egg-info/
 MANIFEST
+
+example/
+demo_debug.py

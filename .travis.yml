@@ -1,15 +1,31 @@
 language: python
 
-python:
-  - "2.7"
-  - "3.4"
-
-# command to install dependencies
-install: pip install -r requirements.txt
+cache: pip
 
 # command to run tests
-script: python demo.py
-
+jobs:
+  include:
+    - stage: demo_async_3.7
+      python: "3.7"
+      install: pip install -r requirements-3.7.txt
+      script: python demo_async.py
+    - python: "3.7"
+      install: pip install -r requirements-3.7.txt
+      script: python demo_download_async.py
+    - stage: demo_2.7
+      python: "2.7"
+      install: pip install -r requirements-2.7.txt
+      script: python demo.py
+    - python: "2.7"
+      install: pip install -r requirements-2.7.txt
+      script: python download_illusts.py
+    - stage: demo_3.4
+      python: "3.4"
+      install: pip install -r requirements-3.4.txt
+      script: python demo.py
+    - python: "3.4"
+      install: pip install -r requirements-3.4.txt
+      script: python download_illusts.py
 branches:
   only:
     - master
