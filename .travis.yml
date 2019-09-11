@@ -29,3 +29,4 @@ jobs:
 branches:
   only:
     - master
+    - async
