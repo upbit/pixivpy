@@ -2,10 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import sys
-
 if sys.version_info >= (3, 0):
     import imp
-
     imp.reload(sys)
 else:
     reload(sys)
@@ -22,12 +20,11 @@ _TEST_WRITE = False
 ## If a special network environment is meet, please configure requests as you need.
 ## Otherwise, just keep it empty.
 _REQUESTS_KWARGS = {
-    # 'proxies': {
-    #   'https': 'http://127.0.0.1:1087',
-    # },
-    # 'verify': False,       # PAPI use https, an easy way is disable requests SSL verify
+  # 'proxies': {
+  #   'https': 'http://127.0.0.1:1087',
+  # },
+  # 'verify': False,       # PAPI use https, an easy way is disable requests SSL verify
 }
-
 
 ## AppAPI start
 
@@ -44,7 +41,6 @@ def appapi_illust(aapi):
     print(json_result)
     metadata = json_result.ugoira_metadata
     print(">>> frames=%d %s" % (len(metadata.frames), metadata.zip_urls.medium))
-
 
 def appapi_recommend(aapi):
     json_result = aapi.illust_recommended(bookmark_illust_ids=[59580629])
@@ -70,7 +66,6 @@ def appapi_recommend(aapi):
     # print(json_result)
     illust = json_result.illusts[0]
     print("  > %s, origin url: %s" % (illust.title, illust.image_urls['large']))
-
 
 def appapi_users(aapi):
     json_result = aapi.user_detail(275527)
@@ -112,7 +107,6 @@ def appapi_users(aapi):
     json_result = aapi.user_mypixiv(275527)
     print(json_result)
 
-
 def appapi_search(aapi):
     first_tag = None
     response = aapi.trending_tags_illust()
@@ -133,7 +127,6 @@ def appapi_search(aapi):
     illust = json_result.illusts[0]
     print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
-
 def appapi_ranking(aapi):
     json_result = aapi.illust_ranking('day_male')
     print(json_result)
@@ -152,7 +145,6 @@ def appapi_ranking(aapi):
     print(json_result)
     illust = json_result.illusts[0]
     print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
-
 
 def appapi_auth_api(aapi):
     json_result = aapi.illust_follow(req_auth=True)
@@ -201,7 +193,6 @@ def papi_base(api):
     user = json_result.response[0]
     print(user.profile.introduction)
 
-
 def papi_me(api):
     # PAPI.me_feeds
     json_result = api.me_feeds(show_r18=0)
@@ -233,7 +224,6 @@ def papi_me(api):
         json_result = api.me_favorite_works_delete(favorite_id, publicity='private')
         print(json_result)
 
-
 def papi_me_user(api):
     # PAPI.me_following
     json_result = api.me_following()
@@ -252,7 +242,6 @@ def papi_me_user(api):
         # PAPI.me_favorite_users_unfollow
         json_result = api.me_favorite_users_unfollow(user_id)
         print(json_result)
-
 
 def papi_user(api):
     # PAPI.users_works
@@ -279,7 +268,6 @@ def papi_user(api):
     user = json_result.response[0]
     print(user.name)
 
-
 def papi_ranking(api):
     # PAPI.ranking
     json_result = api.ranking('illust', 'weekly', 1)
@@ -293,7 +281,6 @@ def papi_ranking(api):
     illust = json_result.response[0].works[0].work
     print(">>> %s origin url: %s" % (illust.title, illust.image_urls['large']))
 
-
 def papi_search(api):
     # PAPI.search_works
     json_result = api.search_works("五航戦 姉妹", page=1, mode='text')
@@ -301,7 +288,6 @@ def papi_search(api):
     print(json_result)
     illust = json_result.response[0]
     print(">>> %s origin url: %s" % (illust.title, illust.image_urls['large']))
-
 
 def papi_others(api):
     # PAPI.latest_works (New -> Everyone)
@@ -326,13 +312,12 @@ def old_main():
     papi_search(api)
     papi_others(api)
 
-
 def main():
     # app-api
     aapi = AppPixivAPI(**_REQUESTS_KWARGS)
 
     aapi.login(_USERNAME, _PASSWORD)
-
+    
     appapi_illust(aapi)
     appapi_recommend(aapi)
     appapi_users(aapi)
@@ -340,7 +325,6 @@ def main():
     appapi_ranking(aapi)
 
     appapi_auth_api(aapi)
-
 
 if __name__ == '__main__':
     main()
