@@ -34,12 +34,6 @@ class AppPixivAPI(BasePixivAPI):
             headers['Authorization'] = 'Bearer %s' % self.access_token
             return self.requests_call(method, url, headers, params, data)
 
-    def parse_result(self, req):
-        try:
-            return self.parse_json(req.text)
-        except Exception as e:
-            raise PixivError("parse_json() error: %s" % (e), header=req.headers, body=req.text)
-
     def format_bool(self, bool_value):
         if type(bool_value) == bool:
             return 'true' if bool_value else 'false'
@@ -83,8 +77,7 @@ class AppPixivAPI(BasePixivAPI):
             'user_id': user_id,
             'filter': filter,
         }
-        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
-        return self.parse_result(r)
+        return self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
 
     # 用户作品列表
     # type: [illust, manga]
@@ -98,8 +91,7 @@ class AppPixivAPI(BasePixivAPI):
             params['type'] = type
         if (offset):
             params['offset'] = offset
-        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
-        return self.parse_result(r)
+        return self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
 
     # 用户收藏作品列表
     # tag: 从 user_bookmark_tags_illust 获取的收藏标签
@@ -115,8 +107,7 @@ class AppPixivAPI(BasePixivAPI):
             params['max_bookmark_id'] = max_bookmark_id
         if (tag):
             params['tag'] = tag
-        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
-        return self.parse_result(r)
+        return self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
 
     # 关注用户的新作
     # restrict: [public, private]
@@ -127,8 +118,7 @@ class AppPixivAPI(BasePixivAPI):
         }
         if (offset):
             params['offset'] = offset
-        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
-        return self.parse_result(r)
+        return self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
 
     # 作品详情 (类似PAPI.works()，iOS中未使用)
     def illust_detail(self, illust_id, req_auth=True):
@@ -136,8 +126,7 @@ class AppPixivAPI(BasePixivAPI):
         params = {
             'illust_id': illust_id,
         }
-        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
-        return self.parse_result(r)
+        return self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
 
     # 作品评论
     def illust_comments(self, illust_id, offset=None, include_total_comments=None, req_auth=True):
@@ -149,8 +138,7 @@ class AppPixivAPI(BasePixivAPI):
             params['offset'] = offset
         if (include_total_comments):
             params['include_total_comments'] = self.format_bool(include_total_comments)
-        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
-        return self.parse_result(r)
+        return self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
 
     # 相关作品列表
     def illust_related(self, illust_id, filter='for_ios', seed_illust_ids=None, offset=None, req_auth=True):
@@ -158,14 +146,14 @@ class AppPixivAPI(BasePixivAPI):
         params = {
             'illust_id': illust_id,
             'filter': filter,
-            'offset': offset,
         }
+        if (offset):
+            params['offset'] = offset
         if type(seed_illust_ids) == str:
-            params['seed_illust_ids[]'] = [seed_illust_ids]
+            params['seed_illust_ids[]'] = int(seed_illust_ids)
         if type(seed_illust_ids) == list:
-            params['seed_illust_ids[]'] = seed_illust_ids
-        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
-        return self.parse_result(r)
+            params['seed_illust_ids[]'] = ",".join([str(id) for id in seed_illust_ids])
+        return self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
 
     # 插画推荐 (Home - Main)
     # content_type: [illust, manga]
@@ -200,8 +188,7 @@ class AppPixivAPI(BasePixivAPI):
         if (include_privacy_policy):
             params['include_privacy_policy'] = include_privacy_policy
 
-        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
-        return self.parse_result(r)
+        return self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
 
     # 作品排行
     # mode: [day, week, month, day_male, day_female, week_original, week_rookie, day_manga]
@@ -218,8 +205,7 @@ class AppPixivAPI(BasePixivAPI):
             params['date'] = date
         if (offset):
             params['offset'] = offset
-        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
-        return self.parse_result(r)
+        return self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
 
     # 趋势标签 (Search - tags)
     def trending_tags_illust(self, filter='for_ios', req_auth=True):
@@ -227,8 +213,7 @@ class AppPixivAPI(BasePixivAPI):
         params = {
             'filter': filter,
         }
-        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
-        return self.parse_result(r)
+        return self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
 
     # 搜索 (Search)
     # search_target - 搜索类型
@@ -250,8 +235,7 @@ class AppPixivAPI(BasePixivAPI):
             params['duration'] = duration
         if (offset):
             params['offset'] = offset
-        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
-        return self.parse_result(r)
+        return self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
 
     # 作品收藏详情
     def illust_bookmark_detail(self, illust_id, req_auth=True):
@@ -259,8 +243,7 @@ class AppPixivAPI(BasePixivAPI):
         params = {
             'illust_id': illust_id,
         }
-        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
-        return self.parse_result(r)
+        return self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
 
     # 新增收藏
     def illust_bookmark_add(self, illust_id, restrict='public', tags=None, req_auth=True):
@@ -275,8 +258,7 @@ class AppPixivAPI(BasePixivAPI):
         # if (type(tags) == list):
         #     data['tags'] = " ".join([ str(tag) for tag in tags ])
 
-        r = self.no_auth_requests_call('POST', url, data=data, req_auth=req_auth)
-        return self.parse_result(r)
+        return self.no_auth_requests_call('POST', url, data=data, req_auth=req_auth)
 
     # 删除收藏
     def illust_bookmark_delete(self, illust_id, req_auth=True):
@@ -284,8 +266,7 @@ class AppPixivAPI(BasePixivAPI):
         data = {
             'illust_id': illust_id,
         }
-        r = self.no_auth_requests_call('POST', url, data=data, req_auth=req_auth)
-        return self.parse_result(r)
+        return self.no_auth_requests_call('POST', url, data=data, req_auth=req_auth)
 
     # 用户收藏标签列表
     def user_bookmark_tags_illust(self, restrict='public', offset=None, req_auth=True):
@@ -295,8 +276,7 @@ class AppPixivAPI(BasePixivAPI):
         }
         if (offset):
             params['offset'] = offset
-        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
-        return self.parse_result(r)
+        return self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
 
     # Following用户列表
     def user_following(self, user_id, restrict='public', offset=None, req_auth=True):
@@ -307,9 +287,7 @@ class AppPixivAPI(BasePixivAPI):
         }
         if (offset):
             params['offset'] = offset
-
-        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
-        return self.parse_result(r)
+        return self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
 
     # Followers用户列表
     def user_follower(self, user_id, filter='for_ios', offset=None, req_auth=True):
@@ -321,8 +299,7 @@ class AppPixivAPI(BasePixivAPI):
         if (offset):
             params['offset'] = offset
 
-        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
-        return self.parse_result(r)
+        return self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
 
     # 好P友
     def user_mypixiv(self, user_id, offset=None, req_auth=True):
@@ -332,9 +309,7 @@ class AppPixivAPI(BasePixivAPI):
         }
         if (offset):
             params['offset'] = offset
-
-        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
-        return self.parse_result(r)
+        return self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
 
     # 黑名单用户
     def user_list(self, user_id, filter='for_ios', offset=None, req_auth=True):
@@ -346,8 +321,7 @@ class AppPixivAPI(BasePixivAPI):
         if (offset):
             params['offset'] = offset
 
-        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
-        return self.parse_result(r)
+        return self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
 
     # 获取ugoira信息
     def ugoira_metadata(self, illust_id, req_auth=True):
@@ -356,20 +330,19 @@ class AppPixivAPI(BasePixivAPI):
             'illust_id': illust_id,
         }
 
-        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
-        return self.parse_result(r)
+        return self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
 
     # 特辑详情 (无需登录，调用Web API)
     def showcase_article(self, showcase_id):
         url = 'https://www.pixiv.net/ajax/showcase/article'
         # Web API，伪造Chrome的User-Agent
         headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) '
+                          'Chrome/63.0.3239.132 Safari/537.36',
             'Referer': 'https://www.pixiv.net',
         }
         params = {
             'article_id': showcase_id,
         }
 
-        r = self.no_auth_requests_call('GET', url, headers=headers, params=params, req_auth=False)
-        return self.parse_result(r)
+        return self.no_auth_requests_call('GET', url, headers=headers, params=params, req_auth=False)
