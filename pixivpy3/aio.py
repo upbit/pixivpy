@@ -43,7 +43,6 @@ async def async_requests_call(self, method, url, headers=None, params=None, data
         headers = {}
     w = await self.req(method, url, headers, params, data, stream)
     w.encoding = 'utf-8'
-    print(w.url)
     return self.parse_result(w)
 
 
@@ -58,12 +57,12 @@ async def download(self, url, prefix='', path=os.path.curdir, name=None, replace
     if (not os.path.exists(img_path)) or replace:
         # Write stream to file
         r = await self.req('GET', url, headers={'Referer': referer}, stream=True)
-        try:
-            async for chunk in r.stream():
-                with open(img_path, 'wb') as out_file:
-                    shutil.copyfileobj(r.raw, out_file)
-        finally:
-            await r.close()
+        with open(img_path, 'wb') as out_file:
+            try:
+                async for chunk in r.stream():
+                    out_file.write(chunk)
+            finally:
+                await r.close()
 
 
 async def async_req(self, method, url, headers=None, params=None, data=None, stream=False, retr=0):

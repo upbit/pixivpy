@@ -54,7 +54,6 @@ class BasePixivAPI(object):
     def requests_call(self, method, url, headers={}, params=None, data=None, stream=False):
         w = self.req(method, url, headers, params, data, stream)
         w.encoding = 'utf-8'
-        print(w.url)
         return self.parse_result(w)
 
     def req(self, method, url, headers={}, params=None, data=None, stream=False):
