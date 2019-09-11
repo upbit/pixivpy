@@ -71,6 +71,29 @@ class BasePixivAPI(object):
 
         raise PixivError('Unknow method: %s' % method)
 
+    def auth_req(self, url, headers, data):
+        r = self.req('POST', url, headers=headers, data=data)
+        if (r.status_code not in [200, 301, 302]):
+            if data['grant_type'] == 'password':
+                raise PixivError(
+                    '[ERROR] auth() failed! check username and password.\nHTTP %s: %s' % (r.status_code, r.text),
+                    header=r.headers, body=r.text)
+            else:
+                raise PixivError('[ERROR] auth() failed! check refresh_token.\nHTTP %s: %s' % (r.status_code, r.text),
+                                 header=r.headers, body=r.text)
+
+        token = None
+        try:
+            # get access_token
+            token = self.parse_json(r.text)
+            self.access_token = token.response.access_token
+            self.user_id = token.response.user.id
+            self.refresh_token = token.response.refresh_token
+        except:
+            raise PixivError('Get access_token error! Response: %s' % (token), header=r.headers, body=r.text)
+
+        return token
+
     def set_auth(self, access_token, refresh_token=None):
         self.access_token = access_token
         self.refresh_token = refresh_token
@@ -108,25 +131,8 @@ class BasePixivAPI(object):
         else:
             raise PixivError('[ERROR] auth() but no password or refresh_token is set.')
 
-        r = self.req('POST', url, headers=headers, data=data)
-        if (r.status_code not in [200, 301, 302]):
-            if data['grant_type'] == 'password':
-                raise PixivError('[ERROR] auth() failed! check username and password.\nHTTP %s: %s' % (r.status_code, r.text), header=r.headers, body=r.text)
-            else:
-                raise PixivError('[ERROR] auth() failed! check refresh_token.\nHTTP %s: %s' % (r.status_code, r.text), header=r.headers, body=r.text)
-
-        token = None
-        try:
-            # get access_token
-            token = self.parse_json(r.text)
-            self.access_token = token.response.access_token
-            self.user_id = token.response.user.id
-            self.refresh_token = token.response.refresh_token
-        except:
-            raise PixivError('Get access_token error! Response: %s' % (token), header=r.headers, body=r.text)
-
         # return auth/token response
-        return token
+        return self.auth_req(url, headers, data)
 
     def download(self, url, prefix='', path=os.path.curdir, name=None, replace=False, referer='https://app-api.pixiv.net/'):
         """Download image to file (use 6.0 app-api)"""
