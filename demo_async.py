@@ -40,16 +40,16 @@ async def appapi_recommend(aapi):
     # print("  > %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
     json_result = await aapi.illust_related(59580629)
-    print(json_result)
+    # print(json_result)
     illust = json_result.illusts[0]
-    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+    # print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
     # get next page
     next_qs = aapi.parse_qs(json_result.next_url)
     json_result = await aapi.illust_related(**next_qs)
-    print(json_result)
+    # print(json_result)
     illust = json_result.illusts[0]
-    print("  > %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+    # print("  > %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
 
 async def appapi_users(aapi):
