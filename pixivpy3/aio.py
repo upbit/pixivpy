@@ -60,7 +60,7 @@ async def download(self, url, prefix='', path=os.path.curdir, name=None, replace
         try:
             async for chunk in r.stream():
                 with open(img_path, 'wb') as out_file:
-                    shutil.copyfileobj(r.raw, out_file)
+                    shutil.copyfileobj(chunk, out_file)
         finally:
             await r.close()
 
