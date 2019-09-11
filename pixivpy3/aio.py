@@ -62,7 +62,7 @@ async def async_req(self, method, url, headers=None, params=None, data=None, str
                                        headers=headers, stream=stream, **self.requests_kwargs)
     except httpx.exceptions.ConnectTimeout:
         """Retry for timeout"""
-        logging.warning('requests %s %s  timeout. retry %s time...' % (method, retr, url))
+        logging.warning('requests %s %s  timeout. retry %s time...' % (method, url, retr + 1))
         await asyncio.sleep(random.randint(1, 3))
         if retr < 5:
             return await self.req(method, url, headers=headers, params=params,
