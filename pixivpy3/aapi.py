@@ -150,9 +150,9 @@ class AppPixivAPI(BasePixivAPI):
         if (offset):
             params['offset'] = offset
         if type(seed_illust_ids) == str:
-            params['seed_illust_ids[]'] = [int(seed_illust_ids)]
+            params['seed_illust_ids[]'] = int(seed_illust_ids)
         if type(seed_illust_ids) == list:
-            params['seed_illust_ids[]'] = seed_illust_ids
+            params['seed_illust_ids[]'] = ",".join([str(id) for id in seed_illust_ids])
         return self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
 
     # 插画推荐 (Home - Main)
