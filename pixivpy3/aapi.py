@@ -298,8 +298,7 @@ class AppPixivAPI(BasePixivAPI):
         if (offset):
             params['offset'] = offset
 
-        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
-        return self.parse_result(r)
+        return self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
 
     # 好P友
     def user_mypixiv(self, user_id, offset=None, req_auth=True):
