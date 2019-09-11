@@ -58,7 +58,7 @@ async def download(self, url, prefix='', path=os.path.curdir, name=None, replace
         # Write stream to file
         r = await self.req('GET', url, headers={'Referer': referer}, stream=True)
         with open(img_path, 'wb') as out_file:
-            shutil.copyfileobj(r.raw(), out_file)
+            shutil.copyfileobj(await r.raw(), out_file)
 
 
 async def async_req(self, method, url, headers=None, params=None, data=None, stream=False, retr=0):
