@@ -62,11 +62,13 @@ async def async_req(self, method, url, headers=None, params=None, data=None, str
                                        headers=headers, stream=stream, **self.requests_kwargs)
     except httpx.exceptions.ConnectTimeout:
         """Retry for timeout"""
-        logging.warning('requests %s %s  timeout. retry 1 time...' % (method, url))
+        logging.warning('requests %s %s  timeout. retry %s time...' % (method, retr, url))
         await asyncio.sleep(random.randint(1, 3))
         if retr < 5:
-            return await self.async_req(method, url, headers=headers, params=params,
-                                        data=data, stream=stream, retr=retr + 1)
+            return await self.req(method, url, headers=headers, params=params,
+                                  data=data, stream=stream, retr=retr + 1)
+        else:
+            raise PixivError('requests %s %s timeout error' % (method, url))
     except Exception as e:
         raise PixivError('requests %s %s error: %s' % (method, url, e))
 
