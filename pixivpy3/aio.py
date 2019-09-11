@@ -1,3 +1,4 @@
+import random
 import sys
 from .utils import PixivError
 
@@ -44,7 +45,7 @@ async def async_requests_call(self, method, url, headers=None, params=None, data
     return self.parse_result(w)
 
 
-async def async_req(self, method, url, headers=None, params=None, data=None, stream=False):
+async def async_req(self, method, url, headers=None, params=None, data=None, stream=False, retr=0):
     if headers is None:
         headers = {}
     client = httpx.AsyncClient()
@@ -62,16 +63,10 @@ async def async_req(self, method, url, headers=None, params=None, data=None, str
     except httpx.exceptions.ConnectTimeout:
         """Retry for timeout"""
         logging.warning('requests %s %s  timeout. retry 1 time...' % (method, url))
-        await asyncio.sleep(1)
-        if method == 'GET':
-            return await client.get(url, params=params, headers=headers, stream=stream,
-                                    **self.requests_kwargs)
-        elif method == 'POST':
-            return await client.post(url, params=params, data=data, headers=headers, stream=stream,
-                                     **self.requests_kwargs)
-        elif method == 'DELETE':
-            return await client.delete(url, params=params, data=data, headers=headers, stream=stream,
-                                       **self.requests_kwargs)
+        await asyncio.sleep(random.randint(1, 3))
+        if retr < 5:
+            return await self.async_req(method, url, headers=headers, params=params,
+                                        data=data, stream=stream, retr=retr + 1)
     except Exception as e:
         raise PixivError('requests %s %s error: %s' % (method, url, e))
 
