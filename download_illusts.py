@@ -19,9 +19,12 @@ _REQUESTS_KWARGS = {
   # },
   # 'verify': False,       # PAPI use https, an easy way is disable requests SSL verify
 }
+_USERNAME = "userbay"
+_PASSWORD = "userpay"
 
 def main():
     aapi = AppPixivAPI(**_REQUESTS_KWARGS)
+    aapi.login(_USERNAME, _PASSWORD)
     json_result = aapi.illust_ranking('day', date='2016-08-01')
 
     directory = "dl"
