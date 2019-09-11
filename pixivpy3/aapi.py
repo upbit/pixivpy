@@ -146,8 +146,9 @@ class AppPixivAPI(BasePixivAPI):
         params = {
             'illust_id': illust_id,
             'filter': filter,
-            'offset': offset,
         }
+        if (offset):
+            params['offset'] = offset
         if type(seed_illust_ids) == str:
             params['seed_illust_ids[]'] = [seed_illust_ids]
         if type(seed_illust_ids) == list:
