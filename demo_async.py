@@ -15,7 +15,7 @@ async def appapi_illust(aapi):
     json_result = await aapi.illust_detail(59580629)
     # print(json_result)
     illust = json_result.illust
-    # print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
     json_result = await aapi.illust_comments(59580629)
     # print(json_result)
@@ -23,14 +23,14 @@ async def appapi_illust(aapi):
     json_result = await aapi.ugoira_metadata(51815717)
     # print(json_result)
     metadata = json_result.ugoira_metadata
-    # print(">>> frames=%d %s" % (len(metadata.frames), metadata.zip_urls.medium))
+    print(">>> frames=%d %s" % (len(metadata.frames), metadata.zip_urls.medium))
 
 
 async def appapi_recommend(aapi):
     json_result = await aapi.illust_recommended(bookmark_illust_ids=[59580629])
     # print(json_result)
     illust = json_result.illusts[0]
-    # print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
     # get next page
     next_qs = aapi.parse_qs(json_result.next_url)
@@ -42,7 +42,7 @@ async def appapi_recommend(aapi):
     json_result = await aapi.illust_related(59580629)
     # print(json_result)
     illust = json_result.illusts[0]
-    # print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
     # get next page
     next_qs = aapi.parse_qs(json_result.next_url)
@@ -61,7 +61,7 @@ async def appapi_users(aapi):
     json_result = await aapi.user_illusts(275527)
     # print(json_result)
     illust = json_result.illusts[0]
-    # print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
     # get next page
     next_qs = aapi.parse_qs(json_result.next_url)
@@ -73,12 +73,12 @@ async def appapi_users(aapi):
     json_result = await aapi.user_bookmarks_illust(2088434)
     # print(json_result)
     illust = json_result.illusts[0]
-    # print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
     json_result = await aapi.user_following(7314824)
     # print(json_result)
     user_preview = json_result.user_previews[0]
-    # print(">>> %s(@%s)" % (user_preview.user.name, user_preview.user.account))
+    print(">>> %s(@%s)" % (user_preview.user.name, user_preview.user.account))
 
     next_qs = aapi.parse_qs(json_result.next_url)
     json_result = await aapi.user_following(**next_qs)
@@ -104,53 +104,53 @@ async def appapi_search(aapi):
     json_result = await aapi.search_illust(first_tag, search_target='partial_match_for_tags')
     # print(json_result)
     illust = json_result.illusts[0]
-    # print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
     # get next page
     next_qs = aapi.parse_qs(json_result.next_url)
     json_result = await aapi.search_illust(**next_qs)
     # # print(json_result)
     illust = json_result.illusts[0]
-    # print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
 
 async def appapi_ranking(aapi):
     json_result = await aapi.illust_ranking('day_male')
     # print(json_result)
     illust = json_result.illusts[0]
-    # print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
     # get next page
     next_qs = aapi.parse_qs(json_result.next_url)
     json_result = await aapi.illust_ranking(**next_qs)
     # # print(json_result)
     illust = json_result.illusts[0]
-    # print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
     # 2016-07-15 日的过去一周排行
     json_result = await aapi.illust_ranking('week', date='2016-07-15')
     # print(json_result)
     illust = json_result.illusts[0]
-    # print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
 
 async def appapi_auth_api(aapi):
     json_result = await aapi.illust_follow(req_auth=True)
     # print(json_result)
     illust = json_result.illusts[0]
-    # print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
     # get next page
     next_qs = aapi.parse_qs(json_result.next_url)
     json_result = await aapi.illust_follow(req_auth=True, **next_qs)
     # # print(json_result)
     illust = json_result.illusts[0]
-    # print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
     json_result = await aapi.illust_recommended(req_auth=True)
     # print(json_result)
     illust = json_result.illusts[0]
-    # print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
 
 async def papi_base(api):
@@ -158,7 +158,7 @@ async def papi_base(api):
     json_result = await api.works(46363414)
     # print(json_result)
     illust = json_result.response[0]
-    # print(">>> %s, origin url: %s" % (illust.caption, illust.image_urls['large']))
+    print(">>> %s, origin url: %s" % (illust.caption, illust.image_urls['large']))
 
     # PAPI.users
     json_result = await api.users(1184799)
@@ -184,7 +184,7 @@ async def papi_me(api):
     json_result = await api.me_following_works()
     # print(json_result)
     illust = json_result.response[0]
-    # print(">>> %s, origin url: %s" % (illust.caption, illust.image_urls['large']))
+    print(">>> %s, origin url: %s" % (illust.caption, illust.image_urls['large']))
 
 
 async def papi_me_user(api):
@@ -200,13 +200,13 @@ async def papi_user(api):
     json_result = await api.users_works(1184799)
     # print(json_result)
     illust = json_result.response[0]
-    # print(">>> %s, origin url: %s" % (illust.caption, illust.image_urls['large']))
+    print(">>> %s, origin url: %s" % (illust.caption, illust.image_urls['large']))
 
     # PAPI.users_favorite_works
     json_result = await api.users_favorite_works(1184799)
     # print(json_result)
     illust = json_result.response[0].work
-    # print(">>> %s origin url: %s" % (illust.caption, illust.image_urls['large']))
+    print(">>> %s origin url: %s" % (illust.caption, illust.image_urls['large']))
 
     # PAPI.users_feeds
     json_result = await api.users_feeds(1184799, show_r18=0)
@@ -226,13 +226,13 @@ async def papi_ranking(api):
     json_result = await api.ranking('illust', 'weekly', 1)
     # print(json_result)
     illust = json_result.response[0].works[0].work
-    # print(">>> %s origin url: %s" % (illust.title, illust.image_urls['large']))
+    print(">>> %s origin url: %s" % (illust.title, illust.image_urls['large']))
 
     # PAPI.ranking(2015-05-01)
     json_result = await api.ranking(ranking_type='all', mode='daily', page=1, date='2015-05-01')
     # print(json_result)
     illust = json_result.response[0].works[0].work
-    # print(">>> %s origin url: %s" % (illust.title, illust.image_urls['large']))
+    print(">>> %s origin url: %s" % (illust.title, illust.image_urls['large']))
 
 
 async def papi_search(api):
@@ -241,7 +241,7 @@ async def papi_search(api):
     # json_result = await api.search_works("水遊び", page=1, mode='exact_tag')
     # print(json_result)
     illust = json_result.response[0]
-    # print(">>> %s origin url: %s" % (illust.title, illust.image_urls['large']))
+    print(">>> %s origin url: %s" % (illust.title, illust.image_urls['large']))
 
 
 async def papi_others(api):
@@ -249,7 +249,7 @@ async def papi_others(api):
     json_result = await api.latest_works()
     # print(json_result)
     illust = json_result.response[0]
-    # print(">>> %s url: %s" % (illust.title, illust.image_urls.px_480mw))
+    print(">>> %s url: %s" % (illust.title, illust.image_urls.px_480mw))
 
 
 async def _login(aapi):

@@ -1,17 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+import asyncio
 import os
-from pixivpy3 import *
+
+from pixivpy3.aio import AppPixivAPI
 
 _USERNAME = "userbay"
 _PASSWORD = "userpay"
 
 
-def main():
-    aapi = AppPixivAPI()
-    aapi.login(_USERNAME, _PASSWORD)
-    json_result = aapi.illust_ranking('day', date='2016-08-01')
+async def _main(aapi):
+    await aapi.login(_USERNAME, _PASSWORD)
+    json_result = await aapi.illust_ranking('day', date='2016-08-01')
 
     directory = "dl"
     if not os.path.exists(directory):
@@ -26,7 +26,12 @@ def main():
         url_basename = os.path.basename(image_url)
         extension = os.path.splitext(url_basename)[1]
         name = "illust_id_%d_%s%s" % (illust.id, illust.title, extension)
-        aapi.download(image_url, path=directory, name=name)
+        await aapi.download(image_url, path=directory, name=name)
+
+
+def main():
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(_main(AppPixivAPI()))
 
 
 if __name__ == '__main__':
