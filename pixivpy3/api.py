@@ -54,6 +54,7 @@ class BasePixivAPI(object):
     def requests_call(self, method, url, headers={}, params=None, data=None, stream=False):
         w = self.req(method, url, headers, params, data, stream)
         w.encoding = 'utf-8'
+        print(w.url)
         return self.parse_result(w)
 
     def req(self, method, url, headers={}, params=None, data=None, stream=False):
@@ -61,11 +62,14 @@ class BasePixivAPI(object):
         headers.update(self.additional_headers)
         try:
             if (method == 'GET'):
-                return self.requests.get(url, params=params, headers=headers, stream=stream, **self.requests_kwargs)
+                return self.requests.get(url, params=params, headers=headers,
+                                         stream=stream, **self.requests_kwargs)
             elif (method == 'POST'):
-                return self.requests.post(url, params=params, data=data, headers=headers, stream=stream, **self.requests_kwargs)
+                return self.requests.post(url, params=params, data=data, headers=headers,
+                                          stream=stream, **self.requests_kwargs)
             elif (method == 'DELETE'):
-                return self.requests.delete(url, params=params, data=data, headers=headers, stream=stream, **self.requests_kwargs)
+                return self.requests.delete(url, params=params, data=data, headers=headers,
+                                            stream=stream, **self.requests_kwargs)
         except Exception as e:
             raise PixivError('requests %s %s error: %s' % (method, url, e))
 

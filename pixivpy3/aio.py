@@ -40,6 +40,7 @@ async def async_requests_call(self, method, url, headers=None, params=None, data
         headers = {}
     w = await self.req(method, url, headers, params, data, stream)
     w.encoding = 'utf-8'
+    print(w.url)
     return self.parse_result(w)
 
 
@@ -50,14 +51,14 @@ async def async_req(self, method, url, headers=None, params=None, data=None, str
     headers.update(self.additional_headers)
     try:
         if method == 'GET':
-            return await client.get(url, params=params, headers=headers, stream=stream,
-                                    **self.requests_kwargs)
+            return await client.get(url, params=params, headers=headers,
+                                    stream=stream, **self.requests_kwargs)
         elif method == 'POST':
-            return await client.post(url, params=params, data=data, headers=headers, stream=stream,
-                                     **self.requests_kwargs)
+            return await client.post(url, params=params, data=data,
+                                     headers=headers, stream=stream, **self.requests_kwargs)
         elif method == 'DELETE':
-            return await client.delete(url, params=params, data=data, headers=headers, stream=stream,
-                                       **self.requests_kwargs)
+            return await client.delete(url, params=params, data=data,
+                                       headers=headers, stream=stream, **self.requests_kwargs)
     except httpx.exceptions.ConnectTimeout:
         """Retry for timeout"""
         logging.warning('requests %s %s  timeout. retry 1 time...' % (method, url))
