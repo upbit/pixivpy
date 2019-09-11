@@ -52,6 +52,11 @@ class BasePixivAPI(object):
             raise PixivError('Authentication required! Call login() or set_auth() first!')
 
     def requests_call(self, method, url, headers={}, params=None, data=None, stream=False):
+        w = self.req(method, url, headers, params, data, stream)
+        w.encoding = 'utf-8'
+        return self.parse_result(w)
+
+    def req(self, method, url, headers={}, params=None, data=None, stream=False):
         """ requests http/https call for Pixiv API """
         headers.update(self.additional_headers)
         try:
@@ -103,7 +108,7 @@ class BasePixivAPI(object):
         else:
             raise PixivError('[ERROR] auth() but no password or refresh_token is set.')
 
-        r = self.requests_call('POST', url, headers=headers, data=data)
+        r = self.req('POST', url, headers=headers, data=data)
         if (r.status_code not in [200, 301, 302]):
             if data['grant_type'] == 'password':
                 raise PixivError('[ERROR] auth() failed! check username and password.\nHTTP %s: %s' % (r.status_code, r.text), header=r.headers, body=r.text)
@@ -133,7 +138,16 @@ class BasePixivAPI(object):
         img_path = os.path.join(path, name)
         if (not os.path.exists(img_path)) or replace:
             # Write stream to file
-            response = self.requests_call('GET', url, headers={ 'Referer': referer }, stream=True)
+            response = self.req('GET', url, headers={ 'Referer': referer }, stream=True)
             with open(img_path, 'wb') as out_file:
                 shutil.copyfileobj(response.raw, out_file)
             del response
+
+    def parse_result(self, req):
+        try:
+            return self.parse_json(req.text)
+        except Exception as e:
+            raise PixivError("parse_json() error: %s" % (e), header=req.headers, body=req.text)
+
+
+

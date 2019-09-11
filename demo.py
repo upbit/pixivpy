@@ -3,8 +3,8 @@
 
 import sys
 if sys.version_info >= (3, 0):
-    import imp
-    imp.reload(sys)
+    import importlib
+    importlib.reload(sys)
 else:
     reload(sys)
     sys.setdefaultencoding('utf8')

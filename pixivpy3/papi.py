@@ -9,6 +9,7 @@ import requests
 from .api import BasePixivAPI
 from .utils import PixivError, JsonDict
 
+
 # Public-API
 class PixivAPI(BasePixivAPI):
 
@@ -22,20 +23,13 @@ class PixivAPI(BasePixivAPI):
         headers['Referer'] = 'http://spapi.pixiv.net/'
         headers['User-Agent'] = 'PixivIOSApp/5.8.7'
         headers['Authorization'] = 'Bearer %s' % self.access_token
-        r = self.requests_call(method, url, headers, params, data)
-        r.encoding = 'utf-8'  # Manually set the encoding due to #11 #18 #26, thanks @Xdynix
-        return r
-
-    def parse_result(self, req):
-        try:
-            return self.parse_json(req.text)
-        except Exception as e:
-            raise PixivError("parse_json() error: %s" % (e), header=req.headers, body=req.text)
+        # Temporary disabled encoding change
+        # r.encoding = 'utf-8'  # Manually set the encoding due to #11 #18 #26, thanks @Xdynix
+        return self.requests_call(method, url, headers, params, data)
 
     def bad_words(self):
         url = 'https://public-api.secure.pixiv.net/v1.1/bad_words.json'
-        r = self.auth_requests_call('GET', url)
-        return self.parse_result(r)
+        return self.auth_requests_call('GET', url)
 
     # 作品详细
     def works(self, illust_id, include_sanity_level=False):
@@ -45,8 +39,7 @@ class PixivAPI(BasePixivAPI):
             'include_stats': 'true',
             'include_sanity_level': str(include_sanity_level).lower()
         }
-        r = self.auth_requests_call('GET', url, params=params)
-        return self.parse_result(r)
+        return self.auth_requests_call('GET', url, params=params)
 
     # 用户资料
     def users(self, author_id):
@@ -59,8 +52,7 @@ class PixivAPI(BasePixivAPI):
             'include_workspace': 1,
             'include_contacts': 1,
         }
-        r = self.auth_requests_call('GET', url, params=params)
-        return self.parse_result(r)
+        return self.auth_requests_call('GET', url, params=params)
 
     # 我的订阅
     def me_feeds(self, show_r18=1, max_id=None):
@@ -72,12 +64,12 @@ class PixivAPI(BasePixivAPI):
         }
         if max_id:
             params['max_id'] = max_id
-        r = self.auth_requests_call('GET', url, params=params)
-        return self.parse_result(r)
+        return self.auth_requests_call('GET', url, params=params)
 
     # 获取收藏夹
     # publicity: public, private
-    def me_favorite_works(self, page=1, per_page=50, publicity='public', image_sizes=['px_128x128', 'px_480mw', 'large']):
+    def me_favorite_works(self, page=1, per_page=50, publicity='public',
+                          image_sizes=['px_128x128', 'px_480mw', 'large']):
         url = 'https://public-api.secure.pixiv.net/v1/me/favorite_works.json'
         params = {
             'page': page,
@@ -85,8 +77,7 @@ class PixivAPI(BasePixivAPI):
             'publicity': publicity,
             'image_sizes': ','.join(image_sizes),
         }
-        r = self.auth_requests_call('GET', url, params=params)
-        return self.parse_result(r)
+        return self.auth_requests_call('GET', url, params=params)
 
     # 添加收藏
     # publicity: public, private
@@ -96,8 +87,7 @@ class PixivAPI(BasePixivAPI):
             'work_id': work_id,
             'publicity': publicity,
         }
-        r = self.auth_requests_call('POST', url, params=params)
-        return self.parse_result(r)
+        return self.auth_requests_call('POST', url, params=params)
 
     # 删除收藏
     # publicity: public, private
@@ -107,8 +97,7 @@ class PixivAPI(BasePixivAPI):
             params = {'ids': ",".join(map(str, ids)), 'publicity': publicity}
         else:
             params = {'ids': ids, 'publicity': publicity}
-        r = self.auth_requests_call('DELETE', url, params=params)
-        return self.parse_result(r)
+        return self.auth_requests_call('DELETE', url, params=params)
 
     # 关注的新作品 (New -> Follow)
     def me_following_works(self, page=1, per_page=30,
@@ -122,8 +111,7 @@ class PixivAPI(BasePixivAPI):
             'include_stats': include_stats,
             'include_sanity_level': include_sanity_level,
         }
-        r = self.auth_requests_call('GET', url, params=params)
-        return self.parse_result(r)
+        return self.auth_requests_call('GET', url, params=params)
 
     # 获取关注用户
     def me_following(self, page=1, per_page=30, publicity='public'):
@@ -133,8 +121,7 @@ class PixivAPI(BasePixivAPI):
             'per_page': per_page,
             'publicity': publicity,
         }
-        r = self.auth_requests_call('GET', url, params=params)
-        return self.parse_result(r)
+        return self.auth_requests_call('GET', url, params=params)
 
     # 关注用户
     # publicity:  public, private
@@ -144,8 +131,7 @@ class PixivAPI(BasePixivAPI):
             'target_user_id': user_id,
             'publicity': publicity
         }
-        r = self.auth_requests_call('POST', url, params=params)
-        return self.parse_result(r)
+        return self.auth_requests_call('POST', url, params=params)
 
     # 解除关注用户
     def me_favorite_users_unfollow(self, user_ids, publicity='public'):
@@ -154,8 +140,7 @@ class PixivAPI(BasePixivAPI):
             params = {'delete_ids': ",".join(map(str, user_ids)), 'publicity': publicity}
         else:
             params = {'delete_ids': user_ids, 'publicity': publicity}
-        r = self.auth_requests_call('DELETE', url, params=params)
-        return self.parse_result(r)
+        return self.auth_requests_call('DELETE', url, params=params)
 
     # 用户作品列表
     def users_works(self, author_id, page=1, per_page=30,
@@ -169,8 +154,7 @@ class PixivAPI(BasePixivAPI):
             'include_sanity_level': include_sanity_level,
             'image_sizes': ','.join(image_sizes),
         }
-        r = self.auth_requests_call('GET', url, params=params)
-        return self.parse_result(r)
+        return self.auth_requests_call('GET', url, params=params)
 
     # 用户收藏
     def users_favorite_works(self, author_id, page=1, per_page=30,
@@ -183,8 +167,7 @@ class PixivAPI(BasePixivAPI):
             'include_sanity_level': include_sanity_level,
             'image_sizes': ','.join(image_sizes),
         }
-        r = self.auth_requests_call('GET', url, params=params)
-        return self.parse_result(r)
+        return self.auth_requests_call('GET', url, params=params)
 
     # 用户活动
     def users_feeds(self, author_id, show_r18=1, max_id=None):
@@ -196,8 +179,7 @@ class PixivAPI(BasePixivAPI):
         }
         if max_id:
             params['max_id'] = max_id
-        r = self.auth_requests_call('GET', url, params=params)
-        return self.parse_result(r)
+        return self.auth_requests_call('GET', url, params=params)
 
     # 用户关注的用户
     def users_following(self, author_id, page=1, per_page=30):
@@ -206,8 +188,7 @@ class PixivAPI(BasePixivAPI):
             'page': page,
             'per_page': per_page,
         }
-        r = self.auth_requests_call('GET', url, params=params)
-        return self.parse_result(r)
+        return self.auth_requests_call('GET', url, params=params)
 
     # 排行榜/过去排行榜
     # ranking_type: [all, illust, manga, ugoira]
@@ -232,8 +213,7 @@ class PixivAPI(BasePixivAPI):
         }
         if date:
             params['date'] = date
-        r = self.auth_requests_call('GET', url, params=params)
-        return self.parse_result(r)
+        return self.auth_requests_call('GET', url, params=params)
 
     # alias for old API ranking_all()
     def ranking_all(self, mode='daily', page=1, per_page=50, date=None,
@@ -264,8 +244,7 @@ class PixivAPI(BasePixivAPI):
             'include_sanity_level': include_sanity_level,
             'image_sizes': ','.join(image_sizes),
         }
-        r = self.auth_requests_call('GET', url, params=params)
-        return self.parse_result(r)
+        return self.auth_requests_call('GET', url, params=params)
 
     # 最新作品 (New -> Everyone)
     def latest_works(self, page=1, per_page=30,
@@ -281,5 +260,4 @@ class PixivAPI(BasePixivAPI):
             'image_sizes': ','.join(image_sizes),
             'profile_image_sizes': ','.join(profile_image_sizes),
         }
-        r = self.auth_requests_call('GET', url, params=params)
-        return self.parse_result(r)
+        return self.auth_requests_call('GET', url, params=params)
