@@ -43,7 +43,6 @@ async def async_requests_call(self, method, url, headers=None, params=None, data
         headers = {}
     w = await self.req(method, url, headers, params, data, stream)
     w.encoding = 'utf-8'
-    print(w.url)
     return self.parse_result(w)
 
 
