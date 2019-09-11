@@ -1,4 +1,6 @@
+import os
 import random
+import shutil
 import sys
 from .utils import PixivError
 
@@ -45,6 +47,25 @@ async def async_requests_call(self, method, url, headers=None, params=None, data
     return self.parse_result(w)
 
 
+async def download(self, url, prefix='', path=os.path.curdir, name=None, replace=False, referer='https://app-api.pixiv.net/'):
+    """Download image to file (use 6.0 app-api)"""
+    if not name:
+        name = prefix + os.path.basename(url)
+    else:
+        name = prefix + name
+
+    img_path = os.path.join(path, name)
+    if (not os.path.exists(img_path)) or replace:
+        # Write stream to file
+        r = await self.req('GET', url, headers={'Referer': referer}, stream=True)
+        try:
+            async for chunk in r.stream():
+                with open(img_path, 'wb') as out_file:
+                    shutil.copyfileobj(r.raw, out_file)
+        finally:
+            await r.close()
+
+
 async def async_req(self, method, url, headers=None, params=None, data=None, stream=False, retr=0):
     if headers is None:
         headers = {}
@@ -62,7 +83,7 @@ async def async_req(self, method, url, headers=None, params=None, data=None, str
                                        headers=headers, stream=stream, **self.requests_kwargs)
     except httpx.exceptions.ConnectTimeout:
         """Retry for timeout"""
-        logging.warning('requests %s %s  timeout. retry %s time...' % (method, url, retr + 1))
+        logging.warning('requests %s %s  timeout. retrying %s time(s)...' % (method, url, retr + 1))
         await asyncio.sleep(random.randint(1, 3))
         if retr < 5:
             return await self.req(method, url, headers=headers, params=params,
@@ -81,5 +102,7 @@ setattr(AppPixivAPI, 'requests_call', async_requests_call)
 setattr(PixivAPI, 'requests_call', async_requests_call)
 setattr(AppPixivAPI, 'req', async_req)
 setattr(PixivAPI, 'req', async_req)
+setattr(AppPixivAPI, 'download', download)
+setattr(PixivAPI, 'download', download)
 
 __all__ = ["PixivAPI", "AppPixivAPI", "PixivError"]
