@@ -16,7 +16,7 @@ class AppPixivAPI(BasePixivAPI):
     def __init__(self, **requests_kwargs):
         """initialize requests kwargs if need be"""
         super(AppPixivAPI, self).__init__(**requests_kwargs)
-        self.hosts = "https://app-api.pixiv.net"
+        self.hosts = "https://210.140.131.219"
 
     def set_api_proxy(self, proxy_hosts="http://app-api.pixivlite.com"):
         """Set proxy hosts: eg pixivlite.com"""
@@ -24,6 +24,7 @@ class AppPixivAPI(BasePixivAPI):
 
     # Check auth and set BearerToken to headers
     def no_auth_requests_call(self, method, url, headers={}, params=None, data=None, req_auth=True):
+        headers['host'] = 'app-api.pixiv.net'
         if headers.get('User-Agent', None) == None and headers.get('user-agent', None) == None:
             # Set User-Agent if not provided
             headers['App-OS'] = 'ios'
