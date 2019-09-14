@@ -6,7 +6,6 @@ import shutil
 from datetime import datetime
 
 import requests
-from requests_toolbelt.adapters import host_header_ssl
 
 from .utils import PixivError, JsonDict
 
@@ -22,9 +21,7 @@ class BasePixivAPI(object):
 
     def __init__(self, **requests_kwargs):
         """initialize requests kwargs if need be"""
-        s = requests.Session()
-        s.mount('https://', host_header_ssl.HostHeaderSSLAdapter())
-        self.requests = s
+        self.requests = requests.Session()
         self.requests_kwargs = requests_kwargs
         self.additional_headers = {}
 
@@ -83,14 +80,12 @@ class BasePixivAPI(object):
     def auth(self, username=None, password=None, refresh_token=None):
         """Login with password, or use the refresh_token to acquire a new bearer token"""
 
-        #url = 'https://oauth.secure.pixiv.net/auth/token'
-        url = 'https://210.140.131.219/auth/token'
+        url = 'https://oauth.secure.pixiv.net/auth/token'
         local_time = datetime.now().isoformat()
         headers = {
             'User-Agent': 'PixivAndroidApp/5.0.64 (Android 6.0)',
             'X-Client-Time': local_time,
             'X-Client-Hash': hashlib.md5((local_time+self.hash_secret).encode('utf-8')).hexdigest(),
-            'host': 'oauth.secure.pixiv.net'
         }
         data = {
             'get_secure_url': 1,
