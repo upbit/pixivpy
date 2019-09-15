@@ -17,9 +17,19 @@ class ByPassSniApi(AppPixivAPI):
         s = requests.Session()
         s.mount('https://', host_header_ssl.HostHeaderSSLAdapter())
         self.requests = s
+    def require_hostsip(self, hostname="app-api.pixiv.net"):
+        """
+        可选方法
+        通过1.0.0.1请求真实的ip地址
+        """
+        url = "https://1.0.0.1/dns-query?ct=application/dns-json&name=%s&type=A&do=false&cd=false" % hostname
+        response = requests.get(url)
+        print(response.json())
+        t = response.json()['Answer'][0]['data']
+        self.hosts = "https://"+t
 
-    def set_api_ipadress(self, ipadress="https://210.140.131.219"):
-        self.hosts = ipadress
+    def set_api_ipadress(self, ipaddress="https://210.140.131.219"):
+        self.hosts = ipaddress
 
     def auth(self, username=None, password=None, refresh_token=None):
         """Login with password, or use the refresh_token to acquire a new bearer token"""

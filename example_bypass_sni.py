@@ -13,10 +13,11 @@ print(response.json())
 from pixivpy3.bapi import ByPassSniApi
 
 api = ByPassSniApi()
-api.login("username", "password")
+#请求真实的ip地址
+api.require_hostsip()
 #自行指定pixiv的ip地址
-#api.set_api_ipadress(ipadress="https://210.140.131.220")
-
+#api.set_api_ipaddress(ipaddress="https://210.140.131.220")
+api.login("username", "password")
 # get origin url
 json_result = api.illust_detail(59580629)
 illust = json_result.illust
