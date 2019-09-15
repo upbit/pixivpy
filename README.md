@@ -1,4 +1,4 @@
-PixivPy [![Build Status](https://travis-ci.org/upbit/pixivpy.svg)](https://travis-ci.org/upbit/pixivpy)
+PixivPy [![Build Status](https://travis-ci.org/upbit/pixivpy.svg)](https://travis-ci.org/upbit/pixivpy) [![PyPI version](https://badge.fury.io/py/PixivPy.svg)](https://badge.fury.io/py/PixivPy)
 ======
 _Pixiv API for Python (with Auth supported)_
 
@@ -22,6 +22,8 @@ pip install pixivpy --upgrade
 ~~~
 
 Requirements: [requests](https://pypi.python.org/pypi/requests)
+
+### [Mikubill/PixivPy-Async](https://github.com/Mikubill/pixivpy-async): Async Pixiv API for Python 3
 
 ### Projects base on pixivpy
 
