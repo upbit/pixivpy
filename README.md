@@ -25,6 +25,37 @@ Requirements: [requests](https://pypi.python.org/pypi/requests)
 
 ### [Mikubill/PixivPy-Async](https://github.com/Mikubill/pixivpy-async): Async Pixiv API for Python 3
 
+性能对比（需要高性能访问场景，可以参考[这个脚本](https://github.com/Mikubill/pixivpy-async/blob/master/Perf.py)）
+
+@Mikubill: 简单进行了一下并发测试。（撞了N次Rate Limit...)
+
+`sg -> Singapore, jp -> Japan, unit -> second`
+
+| Method | Sync(10,sg)  |  Async(10,sg)   |  Sync(200,sg)  |  Async(200,sg)   |
+| ----  | ----  |  ----  | ----  |  ----  | 
+|  illust_detail  | 1.1209 | 0.8641 | 31.7041 | 2.4580 |
+| illust_ranking  | 1.0697 | 0.7936 | 28.4539 | 2.0693 |
+|   user_illusts  | 0.8824 | 0.7505 | 28.3981 | 1.8199 |
+|    user_detail  | 0.9628 | 0.7550 | 28.3055 | 1.7738 |
+| ugoira_metadata | 0.8509 | 0.7459 | 29.5566 | 2.2331 |
+| works           | 1.1204 | 0.8912 | 32.2068 | 2.8513 |
+| me_following_works | 1.1253 | 0.7845 | 39.3142 | 2.2785 |
+| ranking             | 1.0946 | 0.7944 | 39.6509 | 2.6548 |
+| latest_works        | 1.0483 | 0.8667 | 36.1992 | 2.5066 |
+
+
+| Method |  Sync(500,jp)  |  Async(500,jp)   |  
+| ----  |  ----  |  ----  | 
+|  illust_detail  |6.2178 | 0.6400 |
+| illust_ranking  |6.4046 | 0.6119 |
+|   user_illusts  |7.6093 | 1.5266 |
+|    user_detail  |6.6759 | 0.5952 |
+| ugoira_metadata |6.5155 | 0.7577 |
+| works           | 13.3074| 0.8619|
+| me_following_works | 24.2693|2.0835|
+| ranking             | 21.4119|3.2805|
+| latest_works        | 17.3502|2.7029|
+
 ### Projects base on pixivpy
 
 1. [Xdynix/PixivPixie](https://github.com/Xdynix/PixivPixie): User-friendly Pixiv API based on PixivPy
