@@ -1,28 +1,39 @@
-# -*- coding:utf-8 -*-
-"""
-@author: Perol_Notsf
-"""
+# -*- coding: utf-8 -*-
+import sys
+
 from pixivpy3.bapi import ByPassSniApi
 
-api = ByPassSniApi()
-# 请求真实的ip地址
-api.require_hosts_ip()
-# 自行指定pixiv的ip地址
-# api.set_api_ip_address(ip_address="https://210.140.131.220")
-api.login("username", "password")
-# get origin url
-json_result = api.illust_detail(59580629)
-illust = json_result.illust
-print(">>> origin url: %s" % illust.image_urls['large'])
+if sys.version_info >= (3, 0):
+    import imp
 
-# get ranking: 1-30
-# mode: [day, week, month, day_male, day_female, week_original, week_rookie, day_manga]
-json_result = api.illust_ranking('day')
-for illust in json_result.illusts:
-    print(" p1 [%s] %s" % (illust.title, illust.image_urls.medium))
+    imp.reload(sys)
+else:
+    reload(sys)
+    sys.setdefaultencoding('utf8')
+sys.dont_write_bytecode = True
 
-# next page: 31-60
-next_qs = api.parse_qs(json_result.next_url)
-json_result = api.illust_ranking(**next_qs)
-for illust in json_result.illusts:
-    print(" p2 [%s] %s" % (illust.title, illust.image_urls.medium))
+from pixivpy3 import *
+from datetime import *
+
+# change _USERNAME,_PASSWORD first!
+_USERNAME = "userbay"
+_PASSWORD = "userpay"
+
+
+def main():
+    bapi = ByPassSniApi()
+    bapi.require_appapi_hosts()
+    # bapi.set_additional_headers({'Accept-Language':'en-US'})
+    bapi.set_accept_language('en-us')  # zh-cn
+
+    bapi.login(_USERNAME, _PASSWORD)
+    json_result = bapi.illust_ranking('day', date=(datetime.now() - timedelta(days=5)).strftime('%Y-%m-%d'))
+
+    print("Printing image titles and tags with English tag translations present when available")
+
+    for illust in json_result.illusts[:3]:
+        print("Illustration: \"" + str(illust.title) + "\"\nTags: " + str(illust.tags) + "\n")
+
+
+if __name__ == '__main__':
+    main()
