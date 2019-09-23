@@ -58,9 +58,11 @@ class BasePixivAPI(object):
             if (method == 'GET'):
                 return self.requests.get(url, params=params, headers=headers, stream=stream, **self.requests_kwargs)
             elif (method == 'POST'):
-                return self.requests.post(url, params=params, data=data, headers=headers, stream=stream, **self.requests_kwargs)
+                return self.requests.post(url, params=params, data=data, headers=headers, stream=stream,
+                                          **self.requests_kwargs)
             elif (method == 'DELETE'):
-                return self.requests.delete(url, params=params, data=data, headers=headers, stream=stream, **self.requests_kwargs)
+                return self.requests.delete(url, params=params, data=data, headers=headers, stream=stream,
+                                            **self.requests_kwargs)
         except Exception as e:
             raise PixivError('requests %s %s error: %s' % (method, url, e))
 
@@ -79,14 +81,18 @@ class BasePixivAPI(object):
 
     def auth(self, username=None, password=None, refresh_token=None):
         """Login with password, or use the refresh_token to acquire a new bearer token"""
-
-        url = 'https://oauth.secure.pixiv.net/auth/token'
         local_time = datetime.now().isoformat()
         headers = {
             'User-Agent': 'PixivAndroidApp/5.0.64 (Android 6.0)',
             'X-Client-Time': local_time,
-            'X-Client-Hash': hashlib.md5((local_time+self.hash_secret).encode('utf-8')).hexdigest(),
+            'X-Client-Hash': hashlib.md5((local_time + self.hash_secret).encode('utf-8')).hexdigest(),
         }
+        if self.hosts == "https://app-api.pixiv.net":
+            auth_hosts = "https://oauth.secure.pixiv.net"
+        else:
+            auth_hosts = self.hosts  # BAPI解析成IP的场景
+            headers['host'] = 'oauth.secure.pixiv.net'
+        url = '%s/auth/token' % auth_hosts
         data = {
             'get_secure_url': 1,
             'client_id': self.client_id,
@@ -106,9 +112,12 @@ class BasePixivAPI(object):
         r = self.requests_call('POST', url, headers=headers, data=data)
         if (r.status_code not in [200, 301, 302]):
             if data['grant_type'] == 'password':
-                raise PixivError('[ERROR] auth() failed! check username and password.\nHTTP %s: %s' % (r.status_code, r.text), header=r.headers, body=r.text)
+                raise PixivError(
+                    '[ERROR] auth() failed! check username and password.\nHTTP %s: %s' % (r.status_code, r.text),
+                    header=r.headers, body=r.text)
             else:
-                raise PixivError('[ERROR] auth() failed! check refresh_token.\nHTTP %s: %s' % (r.status_code, r.text), header=r.headers, body=r.text)
+                raise PixivError('[ERROR] auth() failed! check refresh_token.\nHTTP %s: %s' % (r.status_code, r.text),
+                                 header=r.headers, body=r.text)
 
         token = None
         try:
@@ -123,7 +132,8 @@ class BasePixivAPI(object):
         # return auth/token response
         return token
 
-    def download(self, url, prefix='', path=os.path.curdir, name=None, replace=False, referer='https://app-api.pixiv.net/'):
+    def download(self, url, prefix='', path=os.path.curdir, name=None, replace=False,
+                 referer='https://app-api.pixiv.net/'):
         """Download image to file (use 6.0 app-api)"""
         if not name:
             name = prefix + os.path.basename(url)
@@ -133,7 +143,7 @@ class BasePixivAPI(object):
         img_path = os.path.join(path, name)
         if (not os.path.exists(img_path)) or replace:
             # Write stream to file
-            response = self.requests_call('GET', url, headers={ 'Referer': referer }, stream=True)
+            response = self.requests_call('GET', url, headers={'Referer': referer}, stream=True)
             with open(img_path, 'wb') as out_file:
                 shutil.copyfileobj(response.raw, out_file)
             del response

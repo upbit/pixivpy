@@ -10,6 +10,7 @@ import requests
 from .api import BasePixivAPI
 from .utils import PixivError, JsonDict
 
+
 # App-API (6.x - app-api.pixiv.net)
 class AppPixivAPI(BasePixivAPI):
 
@@ -24,12 +25,15 @@ class AppPixivAPI(BasePixivAPI):
 
     # Check auth and set BearerToken to headers
     def no_auth_requests_call(self, method, url, headers={}, params=None, data=None, req_auth=True):
+        if self.hosts != "https://app-api.pixiv.net":
+            headers['host'] = 'app-api.pixiv.net'
         if headers.get('User-Agent', None) == None and headers.get('user-agent', None) == None:
             # Set User-Agent if not provided
             headers['App-OS'] = 'ios'
             headers['App-OS-Version'] = '12.2'
             headers['App-Version'] = '7.6.2'
             headers['User-Agent'] = 'PixivIOSApp/7.6.2 (iOS 12.2; iPhone9,1)'
+
         if (not req_auth):
             return self.requests_call(method, url, headers, params, data)
         else:
@@ -106,7 +110,8 @@ class AppPixivAPI(BasePixivAPI):
 
     # 用户收藏作品列表
     # tag: 从 user_bookmark_tags_illust 获取的收藏标签
-    def user_bookmarks_illust(self, user_id, restrict='public', filter='for_ios', max_bookmark_id=None, tag=None, req_auth=True):
+    def user_bookmarks_illust(self, user_id, restrict='public', filter='for_ios', max_bookmark_id=None, tag=None,
+                              req_auth=True):
         url = '%s/v1/user/bookmarks/illust' % self.hosts
         params = {
             'user_id': user_id,
@@ -172,9 +177,9 @@ class AppPixivAPI(BasePixivAPI):
     # 插画推荐 (Home - Main)
     # content_type: [illust, manga]
     def illust_recommended(self, content_type='illust', include_ranking_label=True, filter='for_ios',
-            max_bookmark_id_for_recommend=None, min_bookmark_id_for_recent_illust=None,
-            offset=None, include_ranking_illusts=None, bookmark_illust_ids=None,
-            include_privacy_policy=None, req_auth=True):
+                           max_bookmark_id_for_recommend=None, min_bookmark_id_for_recent_illust=None,
+                           offset=None, include_ranking_illusts=None, bookmark_illust_ids=None,
+                           include_privacy_policy=None, req_auth=True):
         if (req_auth):
             url = '%s/v1/illust/recommended' % self.hosts
         else:
@@ -197,7 +202,7 @@ class AppPixivAPI(BasePixivAPI):
             if (type(bookmark_illust_ids) == str):
                 params['bookmark_illust_ids'] = bookmark_illust_ids
             if (type(bookmark_illust_ids) == list):
-                params['bookmark_illust_ids'] = ",".join([ str(iid) for iid in bookmark_illust_ids ])
+                params['bookmark_illust_ids'] = ",".join([str(iid) for iid in bookmark_illust_ids])
 
         if (include_privacy_policy):
             params['include_privacy_policy'] = include_privacy_policy
@@ -240,7 +245,7 @@ class AppPixivAPI(BasePixivAPI):
     # sort: [date_desc, date_asc]
     # duration: [within_last_day, within_last_week, within_last_month]
     def search_illust(self, word, search_target='partial_match_for_tags', sort='date_desc', duration=None,
-            filter='for_ios', offset=None, req_auth=True):
+                      filter='for_ios', offset=None, req_auth=True):
         url = '%s/v1/search/illust' % self.hosts
         params = {
             'word': word,
