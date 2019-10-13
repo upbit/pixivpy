@@ -2,6 +2,7 @@ PixivPy [![Build Status](https://travis-ci.org/upbit/pixivpy.svg)](https://travi
 ======
 _Pixiv API for Python (with Auth supported)_
 
+* [2019/09/23] 增加大陆地区AppAPI的免翻墙访问支持, release v3.5 (See [example_bypass_sni.py](https://github.com/upbit/pixivpy/blob/master/example_bypass_sni.py), thanks [@Notsfsssf](https://github.com/Notsfsssf))
 * [2019/09/03] Support new auth() check `X-Client-Time/X-Client-Hash` (thanks [DaRealFreak](https://github.com/DaRealFreak), [#83](https://github.com/upbit/pixivpy/issues/83))
 * [2019/04/27] Support hosts proxy for AppAPI, which can use behind the Great Wall (See [example_api_proxy.py](https://github.com/upbit/pixivpy/blob/master/example_api_proxy.py))
 * [2017/04/18] Fix encoder BUG for `illust_bookmark_add()/illust_bookmark_delete()` params (thanks [naplings](https://github.com/naplings))
