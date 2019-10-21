@@ -87,7 +87,7 @@ class BasePixivAPI(object):
             'X-Client-Time': local_time,
             'X-Client-Hash': hashlib.md5((local_time + self.hash_secret).encode('utf-8')).hexdigest(),
         }
-        if self.hosts == "https://app-api.pixiv.net":
+        if not hasattr(self, 'hosts') or self.hosts == "https://app-api.pixiv.net":
             auth_hosts = "https://oauth.secure.pixiv.net"
         else:
             auth_hosts = self.hosts  # BAPI解析成IP的场景
