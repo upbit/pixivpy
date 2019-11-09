@@ -1,19 +1,17 @@
 # -*- coding: utf-8 -*-
-import sys
 
-from pixivpy3.bapi import ByPassSniApi
+import sys
+from datetime import datetime, timedelta
+from pixivpy3 import *
 
 if sys.version_info >= (3, 0):
     import imp
-
     imp.reload(sys)
 else:
     reload(sys)
     sys.setdefaultencoding('utf8')
 sys.dont_write_bytecode = True
 
-from pixivpy3 import *
-from datetime import *
 
 # change _USERNAME,_PASSWORD first!
 _USERNAME = "userbay"
@@ -21,13 +19,13 @@ _PASSWORD = "userpay"
 
 
 def main():
-    bapi = ByPassSniApi()
-    bapi.require_appapi_hosts()
-    # bapi.set_additional_headers({'Accept-Language':'en-US'})
-    bapi.set_accept_language('en-us')  # zh-cn
+    api = ByPassSniApi()  # Same as AppPixivAPI, but bypass the GFW
+    api.require_appapi_hosts()
+    # api.set_additional_headers({'Accept-Language':'en-US'})
+    api.set_accept_language('en-us')
 
-    bapi.login(_USERNAME, _PASSWORD)
-    json_result = bapi.illust_ranking('day', date=(datetime.now() - timedelta(days=5)).strftime('%Y-%m-%d'))
+    api.login(_USERNAME, _PASSWORD)
+    json_result = api.illust_ranking('day', date=(datetime.now() - timedelta(days=5)).strftime('%Y-%m-%d'))
 
     print("Printing image titles and tags with English tag translations present when available")
 

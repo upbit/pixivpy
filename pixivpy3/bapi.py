@@ -7,6 +7,7 @@ from .aapi import AppPixivAPI
 
 
 class ByPassSniApi(AppPixivAPI):
+
     def __init__(self, **requests_kwargs):
         """initialize requests kwargs if need be"""
         super(AppPixivAPI, self).__init__(**requests_kwargs)
