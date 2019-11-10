@@ -147,3 +147,6 @@ class BasePixivAPI(object):
             with open(img_path, 'wb') as out_file:
                 shutil.copyfileobj(response.raw, out_file)
             del response
+            return True
+        else:
+            return False
