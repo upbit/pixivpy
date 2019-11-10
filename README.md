@@ -441,6 +441,16 @@ illust = json_result.response[0]
 print(">>> %s url: %s" % (illust.title, illust.image_urls.px_480mw))
 ~~~
 
+## Make a release
+
+> Bump version in `pixivpy3/__init__.py`, rebuild dist/*
+
+```bash
+python3 setup.py sdist bdist_wheel
+python2 setup.py bdist_wheel
+twine upload dist/*
+```
+
 ## License
 
 Feel free to use, reuse and abuse the code in this project.
