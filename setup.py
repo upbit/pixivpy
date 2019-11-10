@@ -4,7 +4,7 @@ try:
 except ImportError:
     from distutils.core import setup
 
-requires = ['requests']
+requires = ['requests', 'requests-toolbelt']
 
 version = ''
 with open('pixivpy3/__init__.py', 'r') as fd:
@@ -18,7 +18,7 @@ setup(
     packages=['pixivpy3'],
     version=version,
     description='Pixiv API for Python (with 6.x AppAPI supported)',
-    long_description="Pixiv API for Python (with 6.x AppAPI supported): https://github.com/upbit/pixivpy",
+    long_description=open('README.md', 'r').read(),
     long_description_content_type="text/markdown",
     author='upbit',
     author_email='rmusique@gmail.com',
