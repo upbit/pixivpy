@@ -9,6 +9,11 @@ import requests
 
 from .utils import PixivError, JsonDict
 
+try:
+    basestring
+except NameError:
+    basestring = str
+
 
 class BasePixivAPI(object):
     client_id = 'MOBrBDS8blbauoSck0ZfDbtuzpyT'
@@ -132,21 +137,26 @@ class BasePixivAPI(object):
         # return auth/token response
         return token
 
-    def download(self, url, prefix='', path=os.path.curdir, name=None, replace=False,
+    def download(self, url, prefix='', path=os.path.curdir, name=None, replace=False, fname=None,
                  referer='https://app-api.pixiv.net/'):
         """Download image to file (use 6.0 app-api)"""
-        if not name:
-            name = prefix + os.path.basename(url)
-        else:
-            name = prefix + name
+        if fname is None and name is None:
+            name = os.path.basename(url)
+        elif isinstance(fname, basestring):
+            name = fname
 
-        img_path = os.path.join(path, name)
-        if (not os.path.exists(img_path)) or replace:
-            # Write stream to file
-            response = self.requests_call('GET', url, headers={'Referer': referer}, stream=True)
+        if name:
+            name = prefix + name
+            img_path = os.path.join(path, name)
+
+            if os.path.exists(img_path) and not replace:
+                return False
+
+        response = self.requests_call('GET', url, headers={'Referer': referer}, stream=True)
+        if name:
             with open(img_path, 'wb') as out_file:
                 shutil.copyfileobj(response.raw, out_file)
-            del response
-            return True
         else:
-            return False
+            shutil.copyfileobj(response.raw, fname)
+        del response
+        return True
