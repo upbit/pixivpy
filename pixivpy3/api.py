@@ -4,6 +4,7 @@ import json
 import os
 import shutil
 from datetime import datetime
+from pathlib import Path
 
 import requests
 
@@ -132,19 +133,21 @@ class BasePixivAPI(object):
         # return auth/token response
         return token
 
-    def download(self, url, prefix='', path=os.path.curdir, name=None, replace=False,
+    def download(self, url, prefix='', path=None, name=None, replace=False,
                  referer='https://app-api.pixiv.net/'):
         """Download image to file (use 6.0 app-api)"""
+        path = Path(path or '')
+
         if not name:
             name = prefix + os.path.basename(url)
         else:
             name = prefix + name
 
-        img_path = os.path.join(path, name)
-        if (not os.path.exists(img_path)) or replace:
+        img_path = path / name
+        if not img_path.is_file() or replace:
             # Write stream to file
             response = self.requests_call('GET', url, headers={'Referer': referer}, stream=True)
-            with open(img_path, 'wb') as out_file:
+            with img_path.open('wb') as out_file:
                 shutil.copyfileobj(response.raw, out_file)
             del response
             return True
