@@ -13,31 +13,45 @@ sys.dont_write_bytecode = True
 
 from pixivpy3 import *
 
-_REQUESTS_KWARGS = {
-  # 'proxies': {
-  #   'https': 'http://127.0.0.1:8888',
-  # },
-  # 'verify': False,       # PAPI use https, an easy way is disable requests SSL verify
-}
+_USERNAME = "userbay"
+_PASSWORD = "userpay"
+
 
 def main():
-    aapi = AppPixivAPI(**_REQUESTS_KWARGS)
-    json_result = aapi.illust_ranking('day', date='2016-08-01')
+    sni = False
+    if not sni:
+        api = AppPixivAPI()
+    else:
+        api = ByPassSniApi()  # Same as AppPixivAPI, but bypass the GFW
+        api.require_appapi_hosts()
+    api.login(_USERNAME, _PASSWORD)
 
-    directory = "dl"
+    # get rankings
+    json_result = api.illust_ranking('day', date='2019-01-01')
+
+    directory = "illusts"
     if not os.path.exists(directory):
         os.makedirs(directory)
 
-    # download top3 day rankings to 'dl' dir
-    for illust in json_result.illusts[:3]:
+    # download top3 day rankings to 'illusts' dir
+    for idx, illust in enumerate(json_result.illusts[:4]):
         image_url = illust.meta_single_page.get('original_image_url', illust.image_urls.large)
         print("%s: %s" % (illust.title, image_url))
-        # aapi.download(image_url)
+        
+        # try four args in MR#102
+        if idx == 0:
+            api.download(image_url, path=directory, name=None)
+        elif idx == 1:
+            url_basename = os.path.basename(image_url)
+            extension = os.path.splitext(url_basename)[1]
+            name = "illust_id_%d_%s%s" % (illust.id, illust.title, extension)
+            api.download(image_url, path=directory, name=name)
+        elif idx == 2:
+            api.download(image_url, path=directory, fname='illust_%s.jpg' % (illust.id))
+        else:
+            # path will not work due to fname is a handler
+            api.download(image_url, path='/foo/bar', fname=open('%s/illust_%s.jpg' % (directory, illust.id), 'wb'))
 
-        url_basename = os.path.basename(image_url)
-        extension = os.path.splitext(url_basename)[1]
-        name = "illust_id_%d_%s%s" % (illust.id, illust.title, extension)
-        aapi.download(image_url, path=directory, name=name)
 
 if __name__ == '__main__':
     main()
