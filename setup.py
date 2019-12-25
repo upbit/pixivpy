@@ -4,7 +4,7 @@ try:
 except ImportError:
     from distutils.core import setup
 
-requires = ['requests', 'requests-toolbelt']
+requires = [pkg.strip() for pkg in open('requirements.txt', 'r').readlines()]
 
 version = ''
 with open('pixivpy3/__init__.py', 'r') as fd:
