@@ -2,7 +2,7 @@
 
 import requests
 from requests_toolbelt.adapters import host_header_ssl
-
+import re
 from .aapi import AppPixivAPI
 
 
@@ -17,8 +17,19 @@ class ByPassSniApi(AppPixivAPI):
 
     def require_appapi_hosts(self, hostname="app-api.pixiv.net"):
         """
-        通过1.0.0.1请求真实的ip地址
+        请求真实的ip地址
         """
-        url = "https://1.0.0.1/dns-query?ct=application/dns-json&name=%s&type=A&do=false&cd=false" % hostname
-        response = requests.get(url)
-        self.hosts = "https://" + response.json()['Answer'][0]['data']
+        header = {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36'
+                }
+        response = requests.get("https://tools.ipip.net/dns.php?a=dig&host=%s&custom_dns=&area[]=north_america"%hostname,headers=header)
+        pattern = re.compile(r"parent.call_dns\((.*?)\);")
+        r = pattern.findall(response.text)
+        r = eval("["+r[0]+"]")
+        for i in r[3]["ips"]:
+            try:
+                requests.get("http://" + i)
+                self.hosts = "https://" + i
+                return i
+            except:
+                pass
