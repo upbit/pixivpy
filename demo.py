@@ -39,10 +39,11 @@ def appapi_illust(aapi):
     json_result = aapi.illust_comments(59580629)
     print(json_result)
 
-    json_result = aapi.ugoira_metadata(51815717)
-    print(json_result)
-    metadata = json_result.ugoira_metadata
-    print(">>> frames=%d %s" % (len(metadata.frames), metadata.zip_urls.medium))
+    # (2020/01/28) Comment because 51815717 is deleted
+    # json_result = aapi.ugoira_metadata(51815717)
+    # print(json_result)
+    # metadata = json_result.ugoira_metadata
+    # print(">>> frames=%d %s" % (len(metadata.frames), metadata.zip_urls.medium))
 
 
 def appapi_recommend(aapi):
