@@ -1,3 +1,4 @@
+import io
 import re
 try:
     from setuptools import setup
@@ -18,7 +19,7 @@ setup(
     packages=['pixivpy3'],
     version=version,
     description='Pixiv API for Python (with 6.x AppAPI supported)',
-    long_description=open('README.md', 'r').read(),
+    long_description=io.open('README.md', mode='r', encoding='utf-8').read(),
     long_description_content_type="text/markdown",
     author='upbit',
     author_email='rmusique@gmail.com',
