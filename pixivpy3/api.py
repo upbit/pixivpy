@@ -146,7 +146,7 @@ class BasePixivAPI(object):
             name = fname
 
         if name:
-            name = prefix + name
+            name = name + prefix
             img_path = os.path.join(path, name)
 
             if os.path.exists(img_path) and not replace:
