@@ -133,6 +133,30 @@ def appapi_search(aapi):
     illust = json_result.illusts[0]
     print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
+def appapi_user_search(aapi):
+    json_result = aapi.illust_ranking('day_male')
+    name = json_result.illusts[0].user.name
+    print(">>> %s" % name)
+
+    json_result = aapi.search_user(name)
+    print(json_result)
+    illust = json_result.user_previews[0].illusts[0]
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+
+    # Generic name so there's a next page
+    json_result = aapi.search_user('mery')
+    print(json_result)
+    illust = json_result.user_previews[0].illusts[0]
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+
+    # get next page
+    next_qs = aapi.parse_qs(json_result.next_url)
+    json_result = aapi.search_user(**next_qs)
+    # print(json_result)
+    illust = json_result.user_previews[0].illusts[0]
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+
+
 
 def appapi_ranking(aapi):
     json_result = aapi.illust_ranking('day_male')
@@ -337,6 +361,7 @@ def main():
     appapi_recommend(aapi)
     appapi_users(aapi)
     appapi_search(aapi)
+    appapi_user_search(aapi)
     appapi_ranking(aapi)
 
     appapi_auth_api(aapi)
