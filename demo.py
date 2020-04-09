@@ -133,6 +133,7 @@ def appapi_search(aapi):
     illust = json_result.illusts[0]
     print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
+
 def appapi_user_search(aapi):
     json_result = aapi.illust_ranking('day_male')
     name = json_result.illusts[0].user.name

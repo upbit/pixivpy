@@ -181,6 +181,9 @@ class AppPixivAPI(BasePixivAPI):
     # duration: [within_last_day, within_last_week, within_last_month]
     def search_illust(self, word, search_target='partial_match_for_tags', sort='date_desc', duration=None):
 
+    # 用户搜索
+    def search_user(self, word, sort='date_desc', duration=None, filter='for_ios', offset=None, req_auth=True):
+
     # 作品收藏详情 
     def illust_bookmark_detail(self, illust_id):
 
@@ -267,6 +270,12 @@ print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 json_result = aapi.search_illust('水着', search_target='partial_match_for_tags')
 print(json_result)
 illust = json_result.illusts[0]
+print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+
+# 用户 "gomzi" 搜索
+json_result = aapi.search_user("gomzi")
+print(json_result)
+illust = json_result.user_previews[0].illusts[0]
 print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 ~~~
 
