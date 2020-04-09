@@ -260,6 +260,21 @@ class AppPixivAPI(BasePixivAPI):
         r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
         return self.parse_result(r)
 
+    def search_user(self, word, sort='date_desc', duration=None,
+                      filter='for_ios', offset=None, req_auth=True):
+        url = '%s/v1/search/user' % self.hosts
+        params = {
+            'word': word,
+            'sort': sort,
+            'filter': filter,
+        }
+        if (duration):
+            params['duration'] = duration
+        if (offset):
+            params['offset'] = offset
+        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
+        return self.parse_result(r)
+
     # 作品收藏详情
     def illust_bookmark_detail(self, illust_id, req_auth=True):
         url = '%s/v2/illust/bookmark/detail' % self.hosts
