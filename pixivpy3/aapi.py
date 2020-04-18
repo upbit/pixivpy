@@ -8,7 +8,7 @@ import json
 import requests
 
 if sys.version_info >= (3, 0):
-    from urllib.parse import urlparse, unquote, quote
+    from urllib.parse import urlparse, unquote
 else:
     import urlparse
     urlparse = urlparse.urlparse
@@ -301,7 +301,7 @@ class AppPixivAPI(BasePixivAPI):
         if isinstance(tags, list):
             tags = " ".join(str(tag) for tag in tags)
         if tags:
-            data['tags'] = quote(tags)
+            data['tags[]'] = tags
 
         r = self.no_auth_requests_call('POST', url, data=data, req_auth=req_auth)
         return self.parse_result(r)

@@ -158,7 +158,6 @@ def appapi_user_search(aapi):
     print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
 
-
 def appapi_ranking(aapi):
     json_result = aapi.illust_ranking('day_male')
     print(json_result)
@@ -196,6 +195,15 @@ def appapi_auth_api(aapi):
     print(json_result)
     illust = json_result.illusts[0]
     print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+
+
+def appapi_bookmark_add(aapi):
+    illust_id = 74187223
+    tags = ['Fate/GO', '50000users入り', '私服']
+    json_result = aapi.illust_bookmark_add(illust_id, tags=tags)
+    json_result = aapi.illust_bookmark_detail(illust_id)
+    print(json_result.bookmark_detail)
+    print(">>> %s, tags added: %s" % (illust_id, [tag.name for tag in json_result.bookmark_detail.tags if tag.is_registered]))
 
 
 # PAPI start
@@ -364,6 +372,7 @@ def main():
     appapi_search(aapi)
     appapi_user_search(aapi)
     appapi_ranking(aapi)
+    appapi_bookmark_add(aapi)
 
     appapi_auth_api(aapi)
 
