@@ -7,6 +7,18 @@ import shutil
 import json
 import requests
 
+if sys.version_info >= (3, 0):
+    from urllib.parse import urlparse, unquote, quote
+else:
+    import urlparse
+    urlparse = urlparse.urlparse
+
+    def unquote(s):
+        return urlparse.unquote(s.encode('utf8')).decode('utf8')
+
+    def quote(s):
+        return urlparse.quote(s.encode('utf8')).decode('utf8')
+
 from .api import BasePixivAPI
 from .utils import PixivError, JsonDict
 
@@ -58,18 +70,12 @@ class AppPixivAPI(BasePixivAPI):
     # 返回翻页用参数
     def parse_qs(self, next_url):
         if not next_url: return None
-        if sys.version_info >= (3, 0):
-            from urllib.parse import urlparse, unquote
-            safe_unquote = lambda s: unquote(s)
-        else:
-            from urlparse import urlparse, unquote
-            safe_unquote = lambda s: unquote(s.encode('utf8')).decode('utf8')
 
         result_qs = {}
         query = urlparse(next_url).query
         for kv in query.split('&'):
             # split than unquote() to k,v strings
-            k, v = map(safe_unquote, kv.split('='))
+            k, v = map(unquote, kv.split('='))
 
             # merge seed_illust_ids[] liked PHP params to array
             matched = re.match('(?P<key>[\w]*)\[(?P<idx>[\w]*)\]', k)
@@ -291,11 +297,11 @@ class AppPixivAPI(BasePixivAPI):
             'illust_id': illust_id,
             'restrict': restrict,
         }
-        ## TODO: tags mast quote like 'tags=%E5%B0%BB%E7%A5%9E%E6%A7%98%20%E8%A3%B8%E8%B6%B3%20Fate%2FGO'
-        # if (type(tags) == str):
-        #     data['tags'] = tags
-        # if (type(tags) == list):
-        #     data['tags'] = " ".join([ str(tag) for tag in tags ])
+
+        if isinstance(tags, list):
+            tags = " ".join(str(tag) for tag in tags)
+        if tags:
+            data['tags'] = quote(tags)
 
         r = self.no_auth_requests_call('POST', url, data=data, req_auth=req_auth)
         return self.parse_result(r)
