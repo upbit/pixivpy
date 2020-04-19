@@ -64,11 +64,15 @@ class AppPixivAPI(BasePixivAPI):
     def parse_qs(self, next_url):
         if not next_url: return None
 
+        result_qs = {}
         query = up.urlparse(next_url).query
-        result_qs = up.parse_qs(query)
-        for key in result_qs:
-            if len(result_qs[key]) == 1:
-                result_qs[key] = result_qs[key][0]
+        for key, value in up.parse_qs(query).items():
+            # merge seed_illust_ids[] liked PHP params to array
+            if '[' in key and key.endswith(']'):
+                # keep the origin sequence, just ignore array length
+                result_qs[key.split('[')[0]] = value
+            else:
+                result_qs[key] = value[-1]
 
         return result_qs
 
