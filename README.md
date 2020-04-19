@@ -1,4 +1,4 @@
-PixivPy [![Build Status](https://travis-ci.org/upbit/pixivpy.svg)](https://travis-ci.org/upbit/pixivpy) [![PyPI version](https://badge.fury.io/py/PixivPy.svg)](https://badge.fury.io/py/PixivPy)
+PixivPy ![Build Status](https://github.com/upbit/pixivpy/workflows/pixivpy/badge.svg?branch=master) [![PyPI version](https://badge.fury.io/py/PixivPy.svg)](https://badge.fury.io/py/PixivPy)
 ======
 _Pixiv API for Python (with Auth supported)_
 
