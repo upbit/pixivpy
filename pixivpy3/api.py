@@ -42,7 +42,7 @@ class BasePixivAPI(object):
 
     def parse_json(self, json_str):
         """parse str into JsonDict"""
-        return json.loads(json_str, object_hook=lambda obj: JsonDict(obj))
+        return json.loads(json_str, object_hook=JsonDict)
 
     def require_auth(self):
         if self.access_token is None:

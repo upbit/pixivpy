@@ -8,16 +8,9 @@ import json
 import requests
 
 if sys.version_info >= (3, 0):
-    from urllib.parse import urlparse, unquote
+    import urllib.parse as up
 else:
-    import urlparse
-    urlparse = urlparse.urlparse
-
-    def unquote(s):
-        return urlparse.unquote(s.encode('utf8')).decode('utf8')
-
-    def quote(s):
-        return urlparse.quote(s.encode('utf8')).decode('utf8')
+    import urlparse as up
 
 from .api import BasePixivAPI
 from .utils import PixivError, JsonDict
@@ -71,21 +64,11 @@ class AppPixivAPI(BasePixivAPI):
     def parse_qs(self, next_url):
         if not next_url: return None
 
-        result_qs = {}
-        query = urlparse(next_url).query
-        for kv in query.split('&'):
-            # split than unquote() to k,v strings
-            k, v = map(unquote, kv.split('='))
-
-            # merge seed_illust_ids[] liked PHP params to array
-            matched = re.match('(?P<key>[\w]*)\[(?P<idx>[\w]*)\]', k)
-            if matched:
-                mk = matched.group('key')
-                marray = result_qs.get(mk, [])
-                # keep the origin sequence, just ignore group('idx')
-                result_qs[mk] = marray + [v]
-            else:
-                result_qs[k] = v
+        query = up.urlparse(next_url).query
+        result_qs = up.parse_qs(query)
+        for key in result_qs:
+            if len(result_qs[key]) == 1:
+                result_qs[key] = result_qs[key][0]
 
         return result_qs
 
