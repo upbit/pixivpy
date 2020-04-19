@@ -8,3 +8,7 @@ dist/
 build/
 PixivPy.egg-info/
 MANIFEST
+
+# mac
+.DS_Store
+

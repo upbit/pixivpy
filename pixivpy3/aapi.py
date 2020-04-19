@@ -66,13 +66,32 @@ class AppPixivAPI(BasePixivAPI):
 
         result_qs = {}
         query = up.urlparse(next_url).query
-        for key, value in up.parse_qs(query).items():
-            # merge seed_illust_ids[] liked PHP params to array
-            if '[' in key and key.endswith(']'):
-                # keep the origin sequence, just ignore array length
-                result_qs[key.split('[')[0]] = value
-            else:
-                result_qs[key] = value[-1]
+
+        if sys.version_info >= (3, 0):
+            for key, value in up.parse_qs(query).items():
+                # merge seed_illust_ids[] liked PHP params to array
+                if '[' in key and key.endswith(']'):
+                    # keep the origin sequence, just ignore array length
+                    result_qs[key.split('[')[0]] = value
+                else:
+                    result_qs[key] = value[-1]
+
+        else:
+            # Python2 unquote may return utf8 instand unicode
+            safe_unquote = lambda s: up.unquote(s.encode('utf8')).decode('utf8')
+            for kv in query.split('&'):
+                # split than unquote() to k,v strings
+                k, v = map(safe_unquote, kv.split('='))
+
+                # merge seed_illust_ids[] liked PHP params to array
+                matched = re.match('(?P<key>[\w]*)\[(?P<idx>[\w]*)\]', k)
+                if matched:
+                    mk = matched.group('key')
+                    marray = result_qs.get(mk, [])
+                    # keep the origin sequence, just ignore group('idx')
+                    result_qs[mk] = marray + [v]
+                else:
+                    result_qs[k] = v
 
         return result_qs
 
