@@ -144,12 +144,6 @@ def appapi_user_search(aapi):
     illust = json_result.user_previews[0].illusts[0]
     print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
-    # Generic name so there's a next page
-    json_result = aapi.search_user('mery')
-    print(json_result)
-    illust = json_result.user_previews[0].illusts[0]
-    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
-
     # get next page
     next_qs = aapi.parse_qs(json_result.next_url)
     json_result = aapi.search_user(**next_qs)
