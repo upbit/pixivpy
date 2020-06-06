@@ -158,11 +158,11 @@ def appapi_user_search(aapi):
     print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
     # get next page
-    next_qs = aapi.parse_qs(json_result.next_url)
-    json_result = aapi.search_user(**next_qs)
-    # print(json_result)
-    illust = json_result.user_previews[0].illusts[0]
-    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+    # next_qs = aapi.parse_qs(json_result.next_url)
+    # json_result = aapi.search_user(**next_qs)
+    # # print(json_result)
+    # illust = json_result.user_previews[0].illusts[0]
+    # print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
 
 def appapi_ranking(aapi):
