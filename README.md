@@ -2,6 +2,7 @@ PixivPy ![Build Status](https://github.com/upbit/pixivpy/workflows/pixivpy/badge
 ======
 _Pixiv API for Python (with Auth supported)_
 
+* [2020/06/06] Add `AppPixivAPI().search_novel()` for novel search
 * [2019/09/23] 增加大陆地区AppAPI的免翻墙访问支持, release v3.5 (See [example_bypass_sni.py](https://github.com/upbit/pixivpy/blob/master/example_bypass_sni.py), thanks [@Notsfsssf](https://github.com/Notsfsssf))
 * [2019/09/03] Support new auth() check `X-Client-Time/X-Client-Hash` (thanks [DaRealFreak](https://github.com/DaRealFreak), [#83](https://github.com/upbit/pixivpy/issues/83))
 * [2019/04/27] Support hosts proxy for AppAPI, which can use behind the Great Wall (See [example_api_proxy.py](https://github.com/upbit/pixivpy/blob/master/example_api_proxy.py))
@@ -181,8 +182,18 @@ class AppPixivAPI(BasePixivAPI):
     # duration: [within_last_day, within_last_week, within_last_month]
     def search_illust(self, word, search_target='partial_match_for_tags', sort='date_desc', duration=None):
 
+    # 搜索小说 (Search Novel)
+    # search_target - 搜索类型
+    #   partial_match_for_tags  - 标签部分一致
+    #   exact_match_for_tags    - 标签完全一致
+    #   text                    - 正文
+    #   keyword                 - 关键词
+    # sort: [date_desc, date_asc]
+    # start_date/end_date: 2020-06-01 (最长1年)
+    def search_novel(self, word, search_target='partial_match_for_tags', sort='date_desc', start_date=None, end_date=None):
+
     # 用户搜索
-    def search_user(self, word, sort='date_desc', duration=None, filter='for_ios', offset=None, req_auth=True):
+    def search_user(self, word, sort='date_desc', duration=None):
 
     # 作品收藏详情 
     def illust_bookmark_detail(self, illust_id):
