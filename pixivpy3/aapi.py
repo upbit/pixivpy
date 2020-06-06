@@ -272,6 +272,37 @@ class AppPixivAPI(BasePixivAPI):
         r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
         return self.parse_result(r)
 
+    # 搜索小说 (Search Novel)
+    # search_target - 搜索类型
+    #   partial_match_for_tags  - 标签部分一致
+    #   exact_match_for_tags    - 标签完全一致
+    #   text                    - 正文
+    #   keyword                 - 关键词
+    # sort: [date_desc, date_asc]
+    # start_date/end_date: 2020-06-01
+    def search_novel(self, word, search_target='partial_match_for_tags', sort='date_desc',
+                     merge_plain_keyword_results='true', include_translated_tag_results='true',
+                     start_date=None, end_date=None, filter=None, offset=None, req_auth=True):
+        url = '%s/v1/search/novel' % self.hosts
+        params = {
+            'word': word,
+            'search_target': search_target,
+            'merge_plain_keyword_results': merge_plain_keyword_results,
+            'include_translated_tag_results': include_translated_tag_results,
+            'sort': sort,
+            'filter': filter,
+        }
+        if (start_date):
+            params['start_date'] = start_date
+        if (end_date):
+            params['end_date'] = end_date
+        if (offset):
+            params['offset'] = offset
+        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
+        print(r.url)
+        print(r.text)
+        return self.parse_result(r)
+
     def search_user(self, word, sort='date_desc', duration=None,
                     filter='for_ios', offset=None, req_auth=True):
         url = '%s/v1/search/user' % self.hosts

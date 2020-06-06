@@ -22,7 +22,7 @@ _TEST_WRITE = False
 # Otherwise, just keep it empty.
 _REQUESTS_KWARGS = {
     # 'proxies': {
-    #   'https': 'http://127.0.0.1:1087',
+    #     'https': 'http://127.0.0.1:1087',
     # },
     # 'verify': False,       # PAPI use https, an easy way is disable requests SSL verify
 }
@@ -133,6 +133,19 @@ def appapi_search(aapi):
     illust = json_result.illusts[0]
     print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
+    # novel
+    json_result = aapi.search_novel('FGO', search_target='keyword')
+    print(json_result)
+    novel = json_result.novels[0]
+    print(">>> %s, origin url: %s" % (novel.title, novel.image_urls['large']))
+
+    # get next page
+    next_qs = aapi.parse_qs(json_result.next_url)
+    json_result = aapi.search_novel(**next_qs)
+    # print(json_result)
+    novel = json_result.novels[0]
+    print(">>> %s, origin url: %s" % (novel.title, novel.image_urls['large']))
+
 
 def appapi_user_search(aapi):
     json_result = aapi.illust_ranking('day_male')
@@ -197,7 +210,8 @@ def appapi_bookmark_add(aapi):
     json_result = aapi.illust_bookmark_add(illust_id, tags=tags)
     json_result = aapi.illust_bookmark_detail(illust_id)
     print(json_result.bookmark_detail)
-    print(">>> %s, tags added: %s" % (illust_id, [tag.name for tag in json_result.bookmark_detail.tags if tag.is_registered]))
+    print(">>> %s, tags added: %s" %
+          (illust_id, [tag.name for tag in json_result.bookmark_detail.tags if tag.is_registered]))
 
 
 # PAPI start
