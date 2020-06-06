@@ -78,7 +78,7 @@ class BasePixivAPI(object):
 
     def auth(self, username=None, password=None, refresh_token=None):
         """Login with password, or use the refresh_token to acquire a new bearer token"""
-        local_time = datetime.utcnow().strftime( '%Y-%m-%dT%H:%M:%S+00:00' )
+        local_time = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S+00:00')
         headers = {
             'User-Agent': 'PixivAndroidApp/5.0.64 (Android 6.0)',
             'X-Client-Time': local_time,
