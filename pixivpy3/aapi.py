@@ -256,7 +256,9 @@ class AppPixivAPI(BasePixivAPI):
     #   title_and_caption       - 标题说明文
     # sort: [date_desc, date_asc]
     # duration: [within_last_day, within_last_week, within_last_month]
+    # start_date, end_date: '2020-07-01'
     def search_illust(self, word, search_target='partial_match_for_tags', sort='date_desc', duration=None,
+                      start_date=None, end_date=None,
                       filter='for_ios', offset=None, req_auth=True):
         url = '%s/v1/search/illust' % self.hosts
         params = {
@@ -265,6 +267,10 @@ class AppPixivAPI(BasePixivAPI):
             'sort': sort,
             'filter': filter,
         }
+        if (start_date):
+            params['start_date'] = start_date
+        if (end_date):
+            params['end_date'] = end_date
         if (duration):
             params['duration'] = duration
         if (offset):
