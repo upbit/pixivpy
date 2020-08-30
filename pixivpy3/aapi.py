@@ -260,13 +260,16 @@ class AppPixivAPI(BasePixivAPI):
     def search_illust(self, word, search_target='partial_match_for_tags', sort='date_desc', duration=None,
                       start_date=None, end_date=None,
                       filter='for_ios', offset=None, req_auth=True):
-        url = '%s/v1/search/illust' % self.hosts
         params = {
             'word': word,
             'search_target': search_target,
-            'sort': sort,
             'filter': filter,
         }
+        if sort == "popular":
+            url = '%s/v1/search/popular-preview/illust' % self.hosts
+        else:
+            url = '%s/v1/search/illust' % self.hosts
+            params['sort'] = sort
         if (start_date):
             params['start_date'] = start_date
         if (end_date):
