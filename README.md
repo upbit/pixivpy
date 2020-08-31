@@ -35,7 +35,7 @@ Requirements: [requests](https://pypi.python.org/pypi/requests)
 `sg -> Singapore, jp -> Japan, unit -> second`
 
 | Method | Sync(10,sg)  |  Async(10,sg)   |  Sync(200,sg)  |  Async(200,sg)   |
-| ----  | ----  |  ----  | ----  |  ----  | 
+| ----  | ----  |  ----  | ----  |  ----  |
 |  illust_detail  | 1.1209 | 0.8641 | 31.7041 | 2.4580 |
 | illust_ranking  | 1.0697 | 0.7936 | 28.4539 | 2.0693 |
 |   user_illusts  | 0.8824 | 0.7505 | 28.3981 | 1.8199 |
@@ -47,8 +47,8 @@ Requirements: [requests](https://pypi.python.org/pypi/requests)
 | latest_works        | 1.0483 | 0.8667 | 36.1992 | 2.5066 |
 
 
-| Method |  Sync(500,jp)  |  Async(500,jp)   |  
-| ----  |  ----  |  ----  | 
+| Method |  Sync(500,jp)  |  Async(500,jp)   |
+| ----  |  ----  |  ----  |
 |  illust_detail  |6.2178 | 0.6400 |
 | illust_ranking  |6.4046 | 0.6119 |
 |   user_illusts  |7.6093 | 1.5266 |
@@ -179,7 +179,7 @@ class AppPixivAPI(BasePixivAPI):
     #   partial_match_for_tags  - 标签部分一致
     #   exact_match_for_tags    - 标签完全一致
     #   title_and_caption       - 标题说明文
-    # sort: [date_desc, date_asc]
+    # sort: [date_desc, date_asc, popular_desc] - popular_desc为会员的热门排序
     # duration: [within_last_day, within_last_week, within_last_month]
     # start_date, end_date: '2020-07-01'
     def search_illust(self, word, search_target='partial_match_for_tags', sort='date_desc', duration=None):
