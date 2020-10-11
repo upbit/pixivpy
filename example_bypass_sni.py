@@ -20,7 +20,7 @@ _PASSWORD = "userpay"
 
 def main():
     api = ByPassSniApi()  # Same as AppPixivAPI, but bypass the GFW
-    api.require_appapi_hosts()
+    api.require_appapi_hosts(hostname="public-api.secure.pixiv.net")
     # api.set_additional_headers({'Accept-Language':'en-US'})
     api.set_accept_language('en-us')
 
