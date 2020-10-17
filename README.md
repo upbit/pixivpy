@@ -2,6 +2,7 @@ PixivPy ![Build Status](https://github.com/upbit/pixivpy/workflows/pixivpy/badge
 ======
 _Pixiv API for Python (with Auth supported)_
 
+* [2020/10/17] Use [cloudscraper](https://github.com/VeNoMouS/cloudscraper) to bypass Cloudflare, fixed issue #140 (thanks [@lllusion3469](https://github.com/lllusion3469))
 * [2020/07/19] Add date specification for `search_illust()` (thanks [Xdynix](https://github.com/Xdynix))
 * [2020/06/06] Add `AppPixivAPI().search_novel()` for novel search
 * [2019/09/23] 增加大陆地区AppAPI的免翻墙访问支持, release v3.5 (See [example_bypass_sni.py](https://github.com/upbit/pixivpy/blob/master/example_bypass_sni.py), thanks [@Notsfsssf](https://github.com/Notsfsssf))
