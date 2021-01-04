@@ -14,7 +14,7 @@ sys.dont_write_bytecode = True
 from pixivpy3 import *
 
 _USERNAME = "userbay"
-_PASSWORD = "userpay"
+_PASSWORD = "UserPay"
 
 
 def main():

@@ -15,7 +15,7 @@ sys.dont_write_bytecode = True
 
 # change _USERNAME,_PASSWORD first!
 _USERNAME = "userbay"
-_PASSWORD = "userpay"
+_PASSWORD = "UserPay"
 
 
 def main():

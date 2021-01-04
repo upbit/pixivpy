@@ -15,7 +15,7 @@ from datetime import *
 
 # change _USERNAME,_PASSWORD first!
 _USERNAME = "userbay"
-_PASSWORD = "userpay"
+_PASSWORD = "UserPay"
 
 
 def main():
