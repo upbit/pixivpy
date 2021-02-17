@@ -1,7 +1,8 @@
 PixivPy ![Build Status](https://github.com/upbit/pixivpy/workflows/pixivpy/badge.svg?branch=master) [![PyPI version](https://badge.fury.io/py/PixivPy.svg)](https://badge.fury.io/py/PixivPy)
 ======
 
-> Due to #158 reason, password login no longer exist. Please use `api.auth(refresh_token=REFRESH_TOKEN)` instead
+> Due to [#158](https://github.com/upbit/pixivpy/issues) reason, password login no longer exist. Please use `api.auth(refresh_token=REFRESH_TOKEN)` instead
+>
 > To get `refresh_token`, see [@ZipFile Pixiv OAuth Flow](https://gist.github.com/ZipFile/c9ebedb224406f4f11845ab700124362) or [OAuth with Selenium/ChromeDriver]( https://gist.github.com/upbit/6edda27cb1644e94183291109b8a5fde)
 
 _Pixiv API for Python (with Auth supported)_
