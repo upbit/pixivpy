@@ -358,6 +358,25 @@ class AppPixivAPI(BasePixivAPI):
         r = self.no_auth_requests_call('POST', url, data=data, req_auth=req_auth)
         return self.parse_result(r)
 
+    # 关注用户
+    def user_follow_add(self, user_id, restrict='public', req_auth=True):
+        url = '%s/v1/user/follow/add' % self.hosts
+        data = {
+            'user_id': user_id,
+            'restrict': restrict
+        }
+        r = self.no_auth_requests_call('POST', url, data=data, req_auth=req_auth)
+        return self.parse_result(r)
+
+    # 取消关注用户
+    def user_follow_delete(self, user_id, req_auth=True):
+        url = '%s/v1/user/follow/delete' % self.hosts
+        data = {
+            'user_id': user_id
+        }
+        r = self.no_auth_requests_call('POST', url, data=data, req_auth=req_auth)
+        return self.parse_result(r)
+
     # 用户收藏标签列表
     def user_bookmark_tags_illust(self, restrict='public', offset=None, req_auth=True):
         url = '%s/v1/user/bookmark-tags/illust' % self.hosts
