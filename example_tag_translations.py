@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from datetime import *
+from pixivpy3 import *
 import sys
+
 if sys.version_info >= (3, 0):
     import imp
     imp.reload(sys)
@@ -10,20 +13,18 @@ else:
     sys.setdefaultencoding('utf8')
 sys.dont_write_bytecode = True
 
-from pixivpy3 import *
-from datetime import *
 
-# change _USERNAME,_PASSWORD first!
-_USERNAME = "userbay"
-_PASSWORD = "UserPay"
+# get your refresh_token, and replace _REFRESH_TOKEN
+#  https://github.com/upbit/pixivpy/issues/158#issuecomment-778919084
+_REFRESH_TOKEN = "uXooTT7xz9v4mflnZqJUO7po9W5ciouhKrIDnI2Dv3c"
 
 
 def main():
     aapi = AppPixivAPI()
     # aapi.set_additional_headers({'Accept-Language':'en-US'})
-    aapi.set_accept_language('en-us') # zh-cn
+    aapi.set_accept_language('en-us')  # zh-cn
 
-    aapi.login(_USERNAME, _PASSWORD)
+    aapi.auth(refresh_token=_REFRESH_TOKEN)
     json_result = aapi.illust_ranking('day', date=(datetime.now() - timedelta(days=5)).strftime('%Y-%m-%d'))
 
     print("Printing image titles and tags with English tag translations present when available")
@@ -32,8 +33,5 @@ def main():
         print("Illustration: \"" + str(illust.title) + "\"\nTags: " + str(illust.tags) + "\n")
 
 
-
-
 if __name__ == '__main__':
     main()
-

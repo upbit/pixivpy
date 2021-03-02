@@ -13,9 +13,9 @@ else:
 sys.dont_write_bytecode = True
 
 
-# change _USERNAME,_PASSWORD first!
-_USERNAME = "userbay"
-_PASSWORD = "UserPay"
+# get your refresh_token, and replace _REFRESH_TOKEN
+#  https://github.com/upbit/pixivpy/issues/158#issuecomment-778919084
+_REFRESH_TOKEN = "uXooTT7xz9v4mflnZqJUO7po9W5ciouhKrIDnI2Dv3c"
 _TEST_WRITE = False
 
 # If a special network environment is meet, please configure requests as you need.
@@ -372,7 +372,7 @@ def main():
     # app-api
     aapi = AppPixivAPI(**_REQUESTS_KWARGS)
 
-    aapi.login(_USERNAME, _PASSWORD)
+    aapi.auth(refresh_token=_REFRESH_TOKEN)
 
     appapi_illust(aapi)
     appapi_recommend(aapi)
