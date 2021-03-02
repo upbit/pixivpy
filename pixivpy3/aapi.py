@@ -305,8 +305,6 @@ class AppPixivAPI(BasePixivAPI):
         if (offset):
             params['offset'] = offset
         r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
-        print(r.url)
-        print(r.text)
         return self.parse_result(r)
 
     def search_user(self, word, sort='date_desc', duration=None,
@@ -425,6 +423,50 @@ class AppPixivAPI(BasePixivAPI):
         url = '%s/v1/ugoira/metadata' % self.hosts
         params = {
             'illust_id': illust_id,
+        }
+
+        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
+        return self.parse_result(r)
+
+    # 用户小说列表
+    def user_novels(self, user_id, filter='for_ios', offset=None, req_auth=True):
+        url = '%s/v1/user/novels' % self.hosts
+        params = {
+            'user_id': user_id,
+            'filter': filter,
+        }
+        if (offset):
+            params['offset'] = offset
+        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
+        return self.parse_result(r)
+
+    # 小说系列详情
+    def novel_series(self, series_id, filter='for_ios', last_order=None, req_auth=True):
+        url = '%s/v2/novel/series' % self.hosts
+        params = {
+            'series_id': series_id,
+            'filter': filter,
+        }
+        if (last_order):
+            params['last_order'] = last_order
+        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
+        return self.parse_result(r)
+
+    # 小说详情
+    def novel_detail(self, novel_id, req_auth=True):
+        url = '%s/v2/novel/detail' % self.hosts
+        params = {
+            'novel_id': novel_id,
+        }
+
+        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
+        return self.parse_result(r)
+
+    # 小说正文
+    def novel_text(self, novel_id, req_auth=True):
+        url = '%s/v1/novel/text' % self.hosts
+        params = {
+            'novel_id': novel_id,
         }
 
         r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
