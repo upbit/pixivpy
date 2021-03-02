@@ -214,6 +214,40 @@ def appapi_bookmark_add(aapi):
           (illust_id, [tag.name for tag in json_result.bookmark_detail.tags if tag.is_registered]))
 
 
+def appapi_novel(aapi):
+    json_result = aapi.user_novels(59216290)
+    print(json_result)
+    novel = json_result.novels[0]
+    print(">>> %s, text_length: %s, series: %s" % (novel.title, novel.text_length, novel.series))
+
+    # get next page
+    next_qs = aapi.parse_qs(json_result.next_url)
+    json_result = aapi.user_novels(**next_qs)
+    novel = json_result.novels[0]
+    print(">>> %s, text_length: %s, series: %s" % (novel.title, novel.text_length, novel.series))
+
+    json_result = aapi.novel_series(1276963)
+    print(json_result)
+    detail = json_result.novel_series_detail
+    print(">>> %s, total_character_count: %s" % (detail.title, detail.total_character_count))
+
+    # get next page
+    next_qs = aapi.parse_qs(json_result.next_url)
+    json_result = aapi.novel_series(**next_qs)
+    detail = json_result.novel_series_detail
+    print(">>> %s, total_character_count: %s" % (detail.title, detail.total_character_count))
+
+    novel_id = 14357107
+    json_result = aapi.novel_detail(novel_id)
+    print(json_result)
+    novel = json_result.novel
+    print(">>> %s, text_length: %s, series: %s" % (novel.title, novel.text_length, novel.series))
+
+    json_result = aapi.novel_text(novel_id)
+    print(json_result)
+    print(">>> %s, novel_text: %s" % (novel.title, json_result.novel_text))
+
+
 # PAPI start
 
 def migrate_rev2_to_papi(api):
@@ -381,6 +415,7 @@ def main():
     appapi_user_search(aapi)
     appapi_ranking(aapi)
     appapi_bookmark_add(aapi)
+    appapi_novel(aapi)
 
     appapi_auth_api(aapi)
 
