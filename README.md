@@ -7,6 +7,7 @@ PixivPy ![Build Status](https://github.com/upbit/pixivpy/workflows/pixivpy/badge
 
 _Pixiv API for Python (with Auth supported)_
 
+* [2021/03/02] Add user `follow/unfollow`, add `novel` API, see [!161](https://github.com/upbit/pixivpy/pull/161/files) (thanks [@y-young](https://github.com/y-young), [@invobzvr](https://github.com/invobzvr))
 * [2020/10/17] Use [cloudscraper](https://github.com/VeNoMouS/cloudscraper) to bypass Cloudflare, fixed issue #140 (thanks [@lllusion3469](https://github.com/lllusion3469))
 * [2020/07/19] Add date specification for `search_illust()` (thanks [Xdynix](https://github.com/Xdynix))
 * [2020/06/06] Add `AppPixivAPI().search_novel()` for novel search
