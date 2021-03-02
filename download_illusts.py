@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from pixivpy3 import *
 import os
 import sys
+
 if sys.version_info >= (3, 0):
     import imp
     imp.reload(sys)
@@ -11,10 +13,10 @@ else:
     sys.setdefaultencoding('utf8')
 sys.dont_write_bytecode = True
 
-from pixivpy3 import *
 
-_USERNAME = "userbay"
-_PASSWORD = "UserPay"
+# get your refresh_token, and replace _REFRESH_TOKEN
+#  https://github.com/upbit/pixivpy/issues/158#issuecomment-778919084
+_REFRESH_TOKEN = "uXooTT7xz9v4mflnZqJUO7po9W5ciouhKrIDnI2Dv3c"
 
 
 def main():
@@ -24,7 +26,7 @@ def main():
     else:
         api = ByPassSniApi()  # Same as AppPixivAPI, but bypass the GFW
         api.require_appapi_hosts()
-    api.login(_USERNAME, _PASSWORD)
+    api.auth(refresh_token=_REFRESH_TOKEN)
 
     # get rankings
     json_result = api.illust_ranking('day', date='2019-01-01')
@@ -37,7 +39,7 @@ def main():
     for idx, illust in enumerate(json_result.illusts[:4]):
         image_url = illust.meta_single_page.get('original_image_url', illust.image_urls.large)
         print("%s: %s" % (illust.title, image_url))
-        
+
         # try four args in MR#102
         if idx == 0:
             api.download(image_url, path=directory, name=None)

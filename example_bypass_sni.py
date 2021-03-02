@@ -13,9 +13,9 @@ else:
 sys.dont_write_bytecode = True
 
 
-# change _USERNAME,_PASSWORD first!
-_USERNAME = "userbay"
-_PASSWORD = "UserPay"
+# get your refresh_token, and replace _REFRESH_TOKEN
+#  https://github.com/upbit/pixivpy/issues/158#issuecomment-778919084
+_REFRESH_TOKEN = "uXooTT7xz9v4mflnZqJUO7po9W5ciouhKrIDnI2Dv3c"
 
 
 def main():
@@ -24,7 +24,8 @@ def main():
     # api.set_additional_headers({'Accept-Language':'en-US'})
     api.set_accept_language('en-us')
 
-    api.login(_USERNAME, _PASSWORD)
+    # api.login(_USERNAME, _PASSWORD)
+    print(api.auth(refresh_token=_REFRESH_TOKEN))
     json_result = api.illust_ranking('day', date=(datetime.now() - timedelta(days=5)).strftime('%Y-%m-%d'))
 
     print("Printing image titles and tags with English tag translations present when available")
