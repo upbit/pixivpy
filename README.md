@@ -212,6 +212,12 @@ class AppPixivAPI(BasePixivAPI):
     # 删除收藏
     def illust_bookmark_delete(self, illust_id):
 
+    # 关注用户
+    def user_follow_add(self, user_id, restrict='public'):
+
+    # 取消关注用户
+    def user_follow_delete(self, user_id):
+
     # 用户收藏标签列表
     def user_bookmark_tags_illust(self, restrict='public', offset=None):
 
