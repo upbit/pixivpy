@@ -147,16 +147,6 @@ class AppPixivAPI(BasePixivAPI):
         r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
         return self.parse_result(r)
 
-    def user_related(self, seed_user_id, filter="for_ios", offset=None, req_auth=True):
-        url = '%s/v1/user/related' % self.hosts
-        params = {
-            'filter': filter,
-            'offset': offset if offset else 0,  # Pixiv warns to put seed_user_id at the end -> put offset here
-            'seed_user_id': seed_user_id
-        }
-        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
-        return self.parse_result(r)
-
     # 关注用户的新作
     # restrict: [public, private]
     def illust_follow(self, restrict='public', offset=None, req_auth=True):
