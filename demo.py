@@ -112,6 +112,11 @@ def appapi_users(aapi):
     json_result = aapi.user_mypixiv(275527)
     print(json_result)
 
+    json_result = aapi.user_related(275527)
+    # print(json_result)
+    users = [x["id"] for x in json_result.user_previews]
+    print(">>> user IDs: %s", users)
+
 
 def appapi_search(aapi):
     first_tag = None
