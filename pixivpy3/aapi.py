@@ -1,43 +1,45 @@
 # -*- coding:utf-8 -*-
 
-import os
-import sys
 import re
-import shutil
-import json
-import requests
-from .utils import PixivError, JsonDict  # nopep8
+import sys
+
 from .api import BasePixivAPI  # nopep8
+from .utils import PixivError  # nopep8
 
 if sys.version_info >= (3, 0):
     import urllib.parse as up
 else:
     import urlparse as up
 
+from requests.structures import CaseInsensitiveDict
+
 
 # App-API (6.x - app-api.pixiv.net)
+# noinspection PyShadowingBuiltins
 class AppPixivAPI(BasePixivAPI):
 
     def __init__(self, **requests_kwargs):
         """initialize requests kwargs if need be"""
         super(AppPixivAPI, self).__init__(**requests_kwargs)
-        self.hosts = "https://app-api.pixiv.net"
+        self.hosts = 'https://app-api.pixiv.net'
 
-    def set_api_proxy(self, proxy_hosts="http://app-api.pixivlite.com"):
+    # noinspection HttpUrlsUsage
+    def set_api_proxy(self, proxy_hosts='http://app-api.pixivlite.com'):
         """Set proxy hosts: eg pixivlite.com"""
         self.hosts = proxy_hosts
 
     # Check auth and set BearerToken to headers
-    def no_auth_requests_call(self, method, url, headers={}, params=None, data=None, req_auth=True):
-        if self.hosts != "https://app-api.pixiv.net":
+    def no_auth_requests_call(self, method, url, headers=None, params=None, data=None, req_auth=True):
+        headers = CaseInsensitiveDict(headers or {})
+        if self.hosts != 'https://app-api.pixiv.net':
             headers['host'] = 'app-api.pixiv.net'
-        if headers.get('User-Agent', None) == None and headers.get('user-agent', None) == None:
+        if 'user-agent' not in headers:
             # Set User-Agent if not provided
             headers['app-os'] = 'ios'
             headers['app-os-version'] = '14.6'
             headers['user-agent'] = 'PixivIOSApp/7.13.3 (iOS 14.6; iPhone13,2)'
 
-        if (not req_auth):
+        if not req_auth:
             return self.requests_call(method, url, headers, params, data)
         else:
             self.require_auth()
@@ -48,18 +50,20 @@ class AppPixivAPI(BasePixivAPI):
         try:
             return self.parse_json(req.text)
         except Exception as e:
-            raise PixivError("parse_json() error: %s" % (e), header=req.headers, body=req.text)
+            raise PixivError('parse_json() error: %s' % e, header=req.headers, body=req.text)
 
-    def format_bool(self, bool_value):
-        if type(bool_value) == bool:
+    @classmethod
+    def format_bool(cls, bool_value):
+        if isinstance(bool_value, bool):
             return 'true' if bool_value else 'false'
-        if bool_value in ['true', 'True']:
+        if bool_value in {'true', 'True'}:
             return 'true'
         else:
             return 'false'
 
     # 返回翻页用参数
-    def parse_qs(self, next_url):
+    @classmethod
+    def parse_qs(cls, next_url):
         if not next_url:
             return None
 
@@ -76,8 +80,10 @@ class AppPixivAPI(BasePixivAPI):
                     result_qs[key] = value[-1]
 
         else:
-            # Python2 unquote may return utf8 instand unicode
-            def safe_unquote(s): return up.unquote(s.encode('utf8')).decode('utf8')
+            # Python2 unquote may return utf8 instead of unicode
+            def safe_unquote(s):
+                return up.unquote(s.encode('utf8')).decode('utf8')
+
             for kv in query.split('&'):
                 # split than unquote() to k,v strings
                 k, v = map(safe_unquote, kv.split('='))
@@ -112,9 +118,9 @@ class AppPixivAPI(BasePixivAPI):
             'user_id': user_id,
             'filter': filter,
         }
-        if type != None:
+        if type is not None:
             params['type'] = type
-        if (offset):
+        if offset:
             params['offset'] = offset
         r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
         return self.parse_result(r)
@@ -129,14 +135,14 @@ class AppPixivAPI(BasePixivAPI):
             'restrict': restrict,
             'filter': filter,
         }
-        if (max_bookmark_id):
+        if max_bookmark_id:
             params['max_bookmark_id'] = max_bookmark_id
-        if (tag):
+        if tag:
             params['tag'] = tag
         r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
         return self.parse_result(r)
 
-    def user_related(self, seed_user_id, filter="for_ios", offset=None, req_auth=True):
+    def user_related(self, seed_user_id, filter='for_ios', offset=None, req_auth=True):
         url = '%s/v1/user/related' % self.hosts
         params = {
             'filter': filter,
@@ -153,7 +159,7 @@ class AppPixivAPI(BasePixivAPI):
         params = {
             'restrict': restrict,
         }
-        if (offset):
+        if offset:
             params['offset'] = offset
         r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
         return self.parse_result(r)
@@ -173,25 +179,25 @@ class AppPixivAPI(BasePixivAPI):
         params = {
             'illust_id': illust_id,
         }
-        if (offset):
+        if offset:
             params['offset'] = offset
-        if (include_total_comments):
+        if include_total_comments:
             params['include_total_comments'] = self.format_bool(include_total_comments)
         r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
         return self.parse_result(r)
 
     # 相关作品列表
     def illust_related(self, illust_id, filter='for_ios', seed_illust_ids=None, offset=None,
-                            viewed=None, req_auth=True):
+                       viewed=None, req_auth=True):
         url = '%s/v2/illust/related' % self.hosts
         params = {
             'illust_id': illust_id,
             'filter': filter,
             'offset': offset,
         }
-        if type(seed_illust_ids) == str:
+        if isinstance(seed_illust_ids, str):
             params['seed_illust_ids[]'] = [seed_illust_ids]
-        if type(seed_illust_ids) == list:
+        elif isinstance(seed_illust_ids, list):
             params['seed_illust_ids[]'] = seed_illust_ids
         r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
         return self.parse_result(r)
@@ -202,7 +208,7 @@ class AppPixivAPI(BasePixivAPI):
                            max_bookmark_id_for_recommend=None, min_bookmark_id_for_recent_illust=None,
                            offset=None, include_ranking_illusts=None, bookmark_illust_ids=None,
                            include_privacy_policy=None, viewed=None, req_auth=True):
-        if (req_auth):
+        if req_auth:
             url = '%s/v1/illust/recommended' % self.hosts
         else:
             url = '%s/v1/illust/recommended-nologin' % self.hosts
@@ -211,22 +217,22 @@ class AppPixivAPI(BasePixivAPI):
             'include_ranking_label': self.format_bool(include_ranking_label),
             'filter': filter,
         }
-        if (max_bookmark_id_for_recommend):
+        if max_bookmark_id_for_recommend:
             params['max_bookmark_id_for_recommend'] = max_bookmark_id_for_recommend
-        if (min_bookmark_id_for_recent_illust):
+        if min_bookmark_id_for_recent_illust:
             params['min_bookmark_id_for_recent_illust'] = min_bookmark_id_for_recent_illust
-        if (offset):
+        if offset:
             params['offset'] = offset
-        if (include_ranking_illusts):
+        if include_ranking_illusts:
             params['include_ranking_illusts'] = self.format_bool(include_ranking_illusts)
 
-        if (not req_auth):
-            if (type(bookmark_illust_ids) == str):
+        if not req_auth:
+            if isinstance(bookmark_illust_ids, str):
                 params['bookmark_illust_ids'] = bookmark_illust_ids
-            if (type(bookmark_illust_ids) == list):
-                params['bookmark_illust_ids'] = ",".join([str(iid) for iid in bookmark_illust_ids])
+            elif isinstance(bookmark_illust_ids, list):
+                params['bookmark_illust_ids'] = ','.join(str(iid) for iid in bookmark_illust_ids)
 
-        if (include_privacy_policy):
+        if include_privacy_policy:
             params['include_privacy_policy'] = include_privacy_policy
 
         r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
@@ -243,9 +249,9 @@ class AppPixivAPI(BasePixivAPI):
             'mode': mode,
             'filter': filter,
         }
-        if (date):
+        if date:
             params['date'] = date
-        if (offset):
+        if offset:
             params['offset'] = offset
         r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
         return self.parse_result(r)
@@ -277,13 +283,13 @@ class AppPixivAPI(BasePixivAPI):
             'sort': sort,
             'filter': filter,
         }
-        if (start_date):
+        if start_date:
             params['start_date'] = start_date
-        if (end_date):
+        if end_date:
             params['end_date'] = end_date
-        if (duration):
+        if duration:
             params['duration'] = duration
-        if (offset):
+        if offset:
             params['offset'] = offset
         r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
         return self.parse_result(r)
@@ -308,11 +314,11 @@ class AppPixivAPI(BasePixivAPI):
             'sort': sort,
             'filter': filter,
         }
-        if (start_date):
+        if start_date:
             params['start_date'] = start_date
-        if (end_date):
+        if end_date:
             params['end_date'] = end_date
-        if (offset):
+        if offset:
             params['offset'] = offset
         r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
         return self.parse_result(r)
@@ -325,9 +331,9 @@ class AppPixivAPI(BasePixivAPI):
             'sort': sort,
             'filter': filter,
         }
-        if (duration):
+        if duration:
             params['duration'] = duration
-        if (offset):
+        if offset:
             params['offset'] = offset
         r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
         return self.parse_result(r)
@@ -350,7 +356,7 @@ class AppPixivAPI(BasePixivAPI):
         }
 
         if isinstance(tags, list):
-            tags = " ".join(str(tag) for tag in tags)
+            tags = ' '.join(str(tag) for tag in tags)
         if tags:
             data['tags[]'] = tags
 
@@ -391,7 +397,7 @@ class AppPixivAPI(BasePixivAPI):
         params = {
             'restrict': restrict,
         }
-        if (offset):
+        if offset:
             params['offset'] = offset
         r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
         return self.parse_result(r)
@@ -403,7 +409,7 @@ class AppPixivAPI(BasePixivAPI):
             'user_id': user_id,
             'restrict': restrict,
         }
-        if (offset):
+        if offset:
             params['offset'] = offset
 
         r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
@@ -416,7 +422,7 @@ class AppPixivAPI(BasePixivAPI):
             'user_id': user_id,
             'filter': filter,
         }
-        if (offset):
+        if offset:
             params['offset'] = offset
 
         r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
@@ -428,7 +434,7 @@ class AppPixivAPI(BasePixivAPI):
         params = {
             'user_id': user_id,
         }
-        if (offset):
+        if offset:
             params['offset'] = offset
 
         r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
@@ -441,7 +447,7 @@ class AppPixivAPI(BasePixivAPI):
             'user_id': user_id,
             'filter': filter,
         }
-        if (offset):
+        if offset:
             params['offset'] = offset
 
         r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
@@ -464,7 +470,7 @@ class AppPixivAPI(BasePixivAPI):
             'user_id': user_id,
             'filter': filter,
         }
-        if (offset):
+        if offset:
             params['offset'] = offset
         r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
         return self.parse_result(r)
@@ -476,7 +482,7 @@ class AppPixivAPI(BasePixivAPI):
             'series_id': series_id,
             'filter': filter,
         }
-        if (last_order):
+        if last_order:
             params['last_order'] = last_order
         r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
         return self.parse_result(r)
@@ -507,7 +513,7 @@ class AppPixivAPI(BasePixivAPI):
         # Web API，伪造Chrome的User-Agent
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 '
-            + '(KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36',
+                          + '(KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36',
             'Referer': 'https://www.pixiv.net',
         }
         params = {
