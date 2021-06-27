@@ -78,14 +78,17 @@ class BasePixivAPI(object):
         self.client_id = client_id
         self.client_secret = client_secret
 
-    def auth(self, username=None, password=None, refresh_token=None):
+    def auth(self, username=None, password=None, refresh_token=None, headers={}):
         """Login with password, or use the refresh_token to acquire a new bearer token"""
         local_time = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S+00:00')
-        headers = {
-            'User-Agent': 'PixivAndroidApp/5.0.115 (Android 6.0; PixivBot)',
-            'X-Client-Time': local_time,
-            'X-Client-Hash': hashlib.md5((local_time + self.hash_secret).encode('utf-8')).hexdigest(),
-        }
+        headers['x-client-time'] = local_time
+        headers['x-client-hash'] = hashlib.md5((local_time + self.hash_secret).encode('utf-8')).hexdigest()
+        # Allow mock UA due to #171: https://github.com/upbit/pixivpy/issues/171
+        if headers.get('User-Agent', None) == None and headers.get('user-agent', None) == None:
+            headers['app-os'] = 'ios'
+            headers['app-os-version'] = '14.6'
+            headers['user-agent'] = 'PixivIOSApp/7.13.3 (iOS 14.6; iPhone13,2)'
+
         if not hasattr(self, 'hosts') or self.hosts == "https://app-api.pixiv.net":
             auth_hosts = "https://oauth.secure.pixiv.net"
         else:
