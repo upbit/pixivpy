@@ -15,7 +15,7 @@ sys.dont_write_bytecode = True
 
 # get your refresh_token, and replace _REFRESH_TOKEN
 #  https://github.com/upbit/pixivpy/issues/158#issuecomment-778919084
-_REFRESH_TOKEN = "uXooTT7xz9v4mflnZqJUO7po9W5ciouhKrIDnI2Dv3c"
+_REFRESH_TOKEN = "0zeYA-PllRYp1tfrsq_w3vHGU1rPy237JMf5oDt73c4"
 _TEST_WRITE = False
 
 # If a special network environment is meet, please configure requests as you need.
@@ -113,9 +113,7 @@ def appapi_users(aapi):
     print(json_result)
 
     json_result = aapi.user_related(275527)
-    # print(json_result)
-    users = [x["id"] for x in json_result.user_previews]
-    print(">>> user IDs: %s", users)
+    print(json_result)
 
 
 def appapi_search(aapi):

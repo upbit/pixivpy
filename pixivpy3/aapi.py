@@ -33,10 +33,9 @@ class AppPixivAPI(BasePixivAPI):
             headers['host'] = 'app-api.pixiv.net'
         if headers.get('User-Agent', None) == None and headers.get('user-agent', None) == None:
             # Set User-Agent if not provided
-            headers['App-OS'] = 'ios'
-            headers['App-OS-Version'] = '12.2'
-            headers['App-Version'] = '7.6.2'
-            headers['User-Agent'] = 'PixivIOSApp/7.6.2 (iOS 12.2; iPhone9,1)'
+            headers['app-os'] = 'ios'
+            headers['app-os-version'] = '14.6'
+            headers['user-agent'] = 'PixivIOSApp/7.13.3 (iOS 14.6; iPhone13,2)'
 
         if (not req_auth):
             return self.requests_call(method, url, headers, params, data)
@@ -182,7 +181,8 @@ class AppPixivAPI(BasePixivAPI):
         return self.parse_result(r)
 
     # 相关作品列表
-    def illust_related(self, illust_id, filter='for_ios', seed_illust_ids=None, offset=None, req_auth=True):
+    def illust_related(self, illust_id, filter='for_ios', seed_illust_ids=None, offset=None,
+                            viewed=None, req_auth=True):
         url = '%s/v2/illust/related' % self.hosts
         params = {
             'illust_id': illust_id,
@@ -201,7 +201,7 @@ class AppPixivAPI(BasePixivAPI):
     def illust_recommended(self, content_type='illust', include_ranking_label=True, filter='for_ios',
                            max_bookmark_id_for_recommend=None, min_bookmark_id_for_recent_illust=None,
                            offset=None, include_ranking_illusts=None, bookmark_illust_ids=None,
-                           include_privacy_policy=None, req_auth=True):
+                           include_privacy_policy=None, viewed=None, req_auth=True):
         if (req_auth):
             url = '%s/v1/illust/recommended' % self.hosts
         else:
