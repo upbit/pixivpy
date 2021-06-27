@@ -8,4 +8,4 @@ from .aapi import AppPixivAPI
 from .bapi import ByPassSniApi
 from .utils import PixivError
 
-__all__ = ("PixivAPI", "AppPixivAPI", "ByPassSniApi", "PixivError")
+__all__ = ('PixivAPI', 'AppPixivAPI', 'ByPassSniApi', 'PixivError')

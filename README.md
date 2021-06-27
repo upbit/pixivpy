@@ -68,8 +68,7 @@ Requirements: [requests](https://pypi.python.org/pypi/requests)
 
 ### Projects base on pixivpy
 
-1. [Xdynix/PixivPixie](https://github.com/Xdynix/PixivPixie): User-friendly Pixiv API based on PixivPy
-2. [Mikubill/PixivPy-Async](https://github.com/Mikubill/pixivpy-async): Async Pixiv API for Python 3
+1. [Mikubill/PixivPy-Async](https://github.com/Mikubill/pixivpy-async): Async Pixiv API for Python 3
 
 ### Example:
 
