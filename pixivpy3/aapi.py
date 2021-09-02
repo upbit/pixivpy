@@ -111,7 +111,7 @@ class AppPixivAPI(BasePixivAPI):
         return self.parse_result(r)
 
     # 用户作品列表
-    # type: [illust, manga]
+    # content_type: [illust, manga]
     def user_illusts(self, user_id, type='illust', filter='for_ios', offset=None, req_auth=True):
         url = '%s/v1/user/illusts' % self.hosts
         params = {
