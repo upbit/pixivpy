@@ -235,6 +235,21 @@ class AppPixivAPI(BasePixivAPI):
 
     # 获取ugoira信息
     def ugoira_metadata(self, illust_id):
+
+    # 用户小说列表
+    def user_novels(self, user_id, filter='for_ios', offset=None):
+
+    # 小说系列详情
+    def novel_series(self, series_id, filter='for_ios', last_order=None):
+
+    # 小说详情
+    def novel_detail(self, novel_id):
+
+    # 小说正文
+    def novel_text(self, novel_id):
+
+    # 大家的新作 [illust, manga]
+    def illust_new(self, content_type="illust", filter='for_ios', max_illust_id=None):
 ~~~
 
 [Usage](https://github.com/upbit/pixivpy/blob/master/demo.py#L42):
