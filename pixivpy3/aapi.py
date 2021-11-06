@@ -507,6 +507,17 @@ class AppPixivAPI(BasePixivAPI):
         r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
         return self.parse_result(r)
 
+    # 大家的新作
+    ## content_type: [illust, manga]
+    def illust_new(self, content_type="illust", filter='for_ios', max_illust_id=None, req_auth=True):
+        url = '%s/v1/illust/new' % self.hosts
+        params = {
+            'content_type': content_type,
+            'filter': filter,
+        }
+        r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
+        return self.parse_result(r)
+
     # 特辑详情 (无需登录，调用Web API)
     def showcase_article(self, showcase_id):
         url = 'https://www.pixiv.net/ajax/showcase/article'
