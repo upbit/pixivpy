@@ -508,13 +508,15 @@ class AppPixivAPI(BasePixivAPI):
         return self.parse_result(r)
 
     # 大家的新作
-    ## content_type: [illust, manga]
+    # content_type: [illust, manga]
     def illust_new(self, content_type="illust", filter='for_ios', max_illust_id=None, req_auth=True):
         url = '%s/v1/illust/new' % self.hosts
         params = {
             'content_type': content_type,
             'filter': filter,
         }
+        if max_illust_id:
+            params['max_illust_id'] = max_illust_id
         r = self.no_auth_requests_call('GET', url, params=params, req_auth=req_auth)
         return self.parse_result(r)
 
