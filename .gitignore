@@ -9,6 +9,9 @@ build/
 PixivPy.egg-info/
 MANIFEST
 
-# mac
+# Mac
 .DS_Store
 
+# IDE
+/.idea/
+/.vscode/

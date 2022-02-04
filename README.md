@@ -7,6 +7,7 @@ PixivPy ![Build Status](https://github.com/upbit/pixivpy/workflows/pixivpy/badge
 
 _Pixiv API for Python (with Auth supported)_
 
+* [2022/02/04] Remove Public-API support as it's deprecated by Pixiv, see [!201](https://github.com/upbit/pixivpy/commit/74e114e1cfe51e6c0e8c30c2024bcfcf0bae7ccc)
 * [2021/11/23] Add `illust_new` for get latest works, see [!189](https://github.com/upbit/pixivpy/commit/024d4e7212582ca6f31ef5592b4b5b46cb351cbc)
 * [2021/03/02] Add user `follow/unfollow`, add `novel` API, see [!161](https://github.com/upbit/pixivpy/pull/161/files) (thanks [@y-young](https://github.com/y-young), [@invobzvr](https://github.com/invobzvr))
 * [2020/10/17] Use [cloudscraper](https://github.com/VeNoMouS/cloudscraper) to bypass Cloudflare, fixed issue #140 (thanks [@lllusion3469](https://github.com/lllusion3469))
@@ -98,7 +99,7 @@ for illust in json_result.illusts:
 ~~~
 
 ### [Sniffer - App API](https://github.com/upbit/pixivpy/wiki#6x-api)
-### [Sniffer - Public API](https://github.com/upbit/pixivpy/wiki/sniffer)
+### [Sniffer - Public API (deprecated)](https://github.com/upbit/pixivpy/wiki/sniffer)
 
 
 ### [Using API proxy behind the Great Wall](https://github.com/upbit/pixivpy/blob/master/example_api_proxy.py#L33) See detail in [Issue#73](https://github.com/upbit/pixivpy/issues/73)
@@ -318,177 +319,6 @@ json_result = aapi.search_user("gomzi")
 print(json_result)
 illust = json_result.user_previews[0].illusts[0]
 print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
-~~~
-
-### Public-API
-
-[PAPI](https://github.com/upbit/pixivpy/blob/master/pixivpy3/api.py).*
-
-~~~python
-class PixivAPI(BasePixivAPI):
-
-	# 作品详细
-	def works(self, illust_id):
-
-	# 用户资料
-	def users(self, author_id):
-
-	# 我的订阅
-	def me_feeds(self, show_r18=1):
-
-	# 获取收藏夹
-	def me_favorite_works(self,page=1,per_page=50,image_sizes=['px_128x128', 'px_480mw', 'large']):
-
-	# 添加收藏
-	# publicity:  public, private
-	def me_favorite_works_add(self, work_id, publicity='public'):
-
-	# 删除收藏
-	def me_favorite_works_delete(self, ids):
-
-	# 关注用户
-	# publicity:  public, private
-	def me_favorite_users_follow(self, user_id, publicity='public'):
-
-	# 用户作品
-	# publicity:  public, private
-	def users_works(self, author_id, page=1, per_page=30, publicity='public'):
-
-	# 用户收藏
-	# publicity:  public, private
-	def users_favorite_works(self, author_id, page=1, per_page=30, publicity='public'):
-
-	# 排行榜/过去排行榜
-	# mode:
-	#   daily - 每日
-	#   weekly - 每周
-	#   monthly - 每月
-	#   male - 男性热门
-	#   female - 女性热门
-	#   original - 原创
-	#   rookie - Rookie
-	#   daily_r18 - R18每日
-	#   weekly_r18 - R18每周
-	#   male_r18
-	#   female_r18
-	#   r18g
-	# page: 1-n
-	# date: '2015-04-01' (仅过去排行榜)
-	def ranking_all(self, mode='daily', page=1, per_page=50, date=None):
-
-	# 搜索
-	# query: 搜索的文字
-	# page: 1-n
-	# mode:
-	#   text - 标题/描述
-	#   tag - 非精确标签
-	#   exact_tag - 精确标签
-	#   caption - 描述
-	# period (only applies to asc order):  
-	#   all - 所有
-	#   day - 一天之内
-	#   week - 一周之内
-	#   month - 一月之内
-	# order:
-	#   desc - 新顺序
-	#   asc - 旧顺序
-	def search_works(self, query, page=1, per_page=30, mode='text',
-		period='all', order='desc', sort='date'):
-
-~~~
-
-[Usage](https://github.com/upbit/pixivpy/blob/master/demo.py#L42):
-
-~~~python
-# 作品详细 PAPI.works
-json_result = api.works(46363414)
-print(json_result)
-illust = json_result.response[0]
-print( ">>> %s, origin url: %s" % (illust.caption, illust.image_urls['large']))
-
-# 用户资料 PAPI.users
-json_result = api.users(1184799)
-print(json_result)
-user = json_result.response[0]
-print(user.profile.introduction)
-
-# 我的订阅 PAPI.me_feeds
-json_result = api.me_feeds(show_r18=0)
-print(json_result)
-ref_work = json_result.response[0].ref_work
-print(ref_work.title)
-
-# 我的收藏列表(private) PAPI.me_favorite_works
-json_result = api.me_favorite_works(publicity='private')
-print(json_result)
-illust = json_result.response[0].work
-print("[%s] %s: %s" % (illust.user.name, illust.title, illust.image_urls.px_480mw))
-
-# 关注的新作品[New -> Follow] PAPI.me_following_works
-json_result = api.me_following_works()
-print(json_result)
-illust = json_result.response[0]
-print(">>> %s, origin url: %s" % (illust.caption, illust.image_urls['large']))
-
-# 我关注的用户 PAPI.me_following
-json_result = api.me_following()
-print(json_result)
-user = json_result.response[0]
-print(user.name)
-
-# 用户作品 PAPI.users_works
-json_result = api.users_works(1184799)
-print(json_result)
-illust = json_result.response[0]
-print(">>> %s, origin url: %s" % (illust.caption, illust.image_urls['large']))
-
-# 用户收藏 PAPI.users_favorite_works
-json_result = api.users_favorite_works(1184799)
-print(json_result)
-illust = json_result.response[0].work
-print(">>> %s origin url: %s" % (illust.caption, illust.image_urls['large']))
-
-# 获取收藏夹 PAPI.me_favorite_works
-json_result = api.me_favorite_works()
-print(json_result)
-ids = json_result.response[0].id
-
-# 添加收藏 PAPI.me_favorite_works_add
-json_result = api.me_favorite_works_add(46363414)
-print(json_result)
-
-# 删除收藏 PAPI.me_favorite_works_delete
-json_result = api.me_favorite_works_delete(ids)
-print(json_result)
-
-# 关注用户 PAPI.me_favorite_users_follow
-json_result = api.me_favorite_users_follow(1184799)
-print(json_result)
-
-# 排行榜 PAPI.ranking(illust)
-json_result = api.ranking('illust', 'weekly', 1)
-print(json_result)
-illust = json_result.response[0].works[0].work
-print(">>> %s origin url: %s" % (illust.title, illust.image_urls['large']))
-
-# 过去排行榜 PAPI.ranking(all, 2015-05-01)
-json_result = api.ranking(ranking_type='all', mode='daily', page=1, date='2015-05-01')
-print(json_result)
-illust = json_result.response[0].works[0].work
-print(">>> %s origin url: %s" % (illust.title, illust.image_urls['large']))
-
-# 标题(text)/标签(exact_tag)搜索 PAPI.search_works
-#json_result = api.search_works("五航戦 姉妹", page=1, mode='text')
-json_result = api.search_works("水遊び", page=1, mode='exact_tag')
-print(json_result)
-illust = json_result.response[0]
-print(">>> %s origin url: %s" % (illust.title, illust.image_urls['large']))
-
-# 最新作品列表[New -> Everyone] PAPI.latest_works
-json_result = api.latest_works()
-print(json_result)
-illust = json_result.response[0]
-print(">>> %s url: %s" % (illust.title, illust.image_urls.px_480mw))
 ~~~
 
 ## Make a release
