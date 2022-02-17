@@ -29,7 +29,7 @@ class BasePixivAPI(object):
         self.user_id = 0
         self.access_token = None  # type: Optional[str]
         self.refresh_token = None  # type: Optional[str]
-        self.hosts = "https://oauth.secure.pixiv.net"
+        self.hosts = "https://app-api.pixiv.net"
 
         # self.requests = requests.Session()
         self.requests = cloudscraper.create_scraper()  # fix due to #140
