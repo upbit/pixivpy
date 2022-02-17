@@ -204,7 +204,7 @@ class BasePixivAPI(object):
     ):
         # type: (str, str, str, Optional[str], bool, Optional[Union[str, IO[bytes]]], str) -> bool
         """Download image to file (use 6.0 app-api)"""
-        if isinstance(fname, io.IOBase):
+        if hasattr(fname, "write"):
             # A file-like object has been provided.
             file = fname
         else:
@@ -220,6 +220,6 @@ class BasePixivAPI(object):
             if isinstance(file, str):
                 with open(file, "wb") as out_file:
                     shutil.copyfileobj(response.raw, out_file)
-            else:
+            elif isinstance(file, io.IOBase):
                 shutil.copyfileobj(response.raw, file)
         return True
