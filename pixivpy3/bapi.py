@@ -1,14 +1,19 @@
 # -*- coding:utf-8 -*-
 
+import sys
+
 import requests
-from requests_toolbelt.adapters import host_header_ssl
+from requests_toolbelt.adapters import host_header_ssl  # type: ignore[import]
 
 from .aapi import AppPixivAPI
 
+if sys.version_info >= (3, 7):
+    from typing import Any, Union
+
 
 class ByPassSniApi(AppPixivAPI):
-
     def __init__(self, **requests_kwargs):
+        # type: (Any) -> None
         """initialize requests kwargs if need be"""
         super(AppPixivAPI, self).__init__(**requests_kwargs)
         session = requests.Session()
@@ -16,6 +21,7 @@ class ByPassSniApi(AppPixivAPI):
         self.requests = session
 
     def require_appapi_hosts(self, hostname="app-api.pixiv.net", timeout=3):
+        # type: (str, int) -> Union[str, bool]
         """
         通过 Cloudflare 的 DNS over HTTPS 请求真实的 IP 地址。
         """
@@ -37,7 +43,7 @@ class ByPassSniApi(AppPixivAPI):
         for url in URLS:
             try:
                 response = requests.get(url, params=params, timeout=timeout)
-                self.hosts = "https://" + response.json()["Answer"][0]["data"]
+                self.hosts = "https://" + str(response.json()["Answer"][0]["data"])
                 return self.hosts
             except Exception:
                 pass
