@@ -26,7 +26,6 @@ class AppPixivAPI(BasePixivAPI):
         # type: (Any) -> None
         """initialize requests kwargs if need be"""
         super(AppPixivAPI, self).__init__(**requests_kwargs)
-        self.hosts = "https://app-api.pixiv.net"
 
     # noinspection HttpUrlsUsage
     def set_api_proxy(self, proxy_hosts="http://app-api.pixivlite.com"):
