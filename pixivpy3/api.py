@@ -1,6 +1,5 @@
 # -*- coding:utf-8 -*-
 import hashlib
-import io
 import json
 import os
 import shutil
@@ -220,6 +219,6 @@ class BasePixivAPI(object):
             if isinstance(file, str):
                 with open(file, "wb") as out_file:
                     shutil.copyfileobj(response.raw, out_file)
-            elif isinstance(file, io.IOBase):
-                shutil.copyfileobj(response.raw, file)
+            else:
+                shutil.copyfileobj(response.raw, file)  # type: ignore[arg-type]
         return True
