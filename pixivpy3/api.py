@@ -220,6 +220,6 @@ class BasePixivAPI(object):
             if isinstance(file, str):
                 with open(file, "wb") as out_file:
                     shutil.copyfileobj(response.raw, out_file)
-            elif isinstance(fname, io.IOBase):
+            else:
                 shutil.copyfileobj(response.raw, file)
         return True

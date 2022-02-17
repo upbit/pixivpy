@@ -174,7 +174,7 @@ class AppPixivAPI(BasePixivAPI):
         params = {
             "filter": filter,
             # Pixiv warns to put seed_user_id at the end -> put offset here
-            "offset": 0 if offset is None else offset,
+            "offset": offset if offset else 0,
             "seed_user_id": seed_user_id,
         }
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
