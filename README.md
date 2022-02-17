@@ -96,6 +96,14 @@ next_qs = api.parse_qs(json_result.next_url)
 json_result = api.illust_ranking(**next_qs)
 for illust in json_result.illusts:
     print(" p2 [%s] %s" % (illust.title, illust.image_urls.medium))
+
+# get all page:
+next_qs = {"mode": "day"}
+while next_qs:
+    json_result = api.illust_ranking(**next_qs)
+    for illust in json_result.illusts:
+        print("[%s] %s" % (illust.title, illust.image_urls.medium))
+    next_qs = api.parse_qs(json_result.next_url)
 ~~~
 
 ### [Sniffer - App API](https://github.com/upbit/pixivpy/wiki#6x-api)
