@@ -1,0 +1,4 @@
+setuptools
+mypy
+flake8
+-r requirements.txt
