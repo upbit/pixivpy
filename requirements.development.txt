@@ -1,4 +1,5 @@
 setuptools
 mypy
 flake8
+types-requests
 -r requirements.txt
