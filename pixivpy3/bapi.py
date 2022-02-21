@@ -1,14 +1,11 @@
 # -*- coding:utf-8 -*-
 
-import sys
+from typing import Any, Union
 
 import requests
 from requests_toolbelt.adapters import host_header_ssl  # type: ignore[import]
 
 from .aapi import AppPixivAPI
-
-if sys.version_info >= (3, 7):
-    from typing import Any, Union
 
 
 class ByPassSniApi(AppPixivAPI):

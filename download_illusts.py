@@ -1,16 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from pixivpy3 import *
+import imp
 import os
 import sys
 
-if sys.version_info >= (3, 0):
-    import imp
-    imp.reload(sys)
-else:
-    reload(sys)
-    sys.setdefaultencoding('utf8')
+from pixivpy3 import AppPixivAPI, ByPassSniApi
+
+imp.reload(sys)
 sys.dont_write_bytecode = True
 
 
@@ -29,7 +26,7 @@ def main():
     api.auth(refresh_token=_REFRESH_TOKEN)
 
     # get rankings
-    json_result = api.illust_ranking('day', date='2019-01-01')
+    json_result = api.illust_ranking("day", date="2019-01-01")
 
     directory = "illusts"
     if not os.path.exists(directory):
@@ -37,7 +34,9 @@ def main():
 
     # download top3 day rankings to 'illusts' dir
     for idx, illust in enumerate(json_result.illusts[:4]):
-        image_url = illust.meta_single_page.get('original_image_url', illust.image_urls.large)
+        image_url = illust.meta_single_page.get(
+            "original_image_url", illust.image_urls.large
+        )
         print("%s: %s" % (illust.title, image_url))
 
         # try four args in MR#102
@@ -49,11 +48,15 @@ def main():
             name = "illust_id_%d_%s%s" % (illust.id, illust.title, extension)
             api.download(image_url, path=directory, name=name)
         elif idx == 2:
-            api.download(image_url, path=directory, fname='illust_%s.jpg' % (illust.id))
+            api.download(image_url, path=directory, fname="illust_%s.jpg" % (illust.id))
         else:
             # path will not work due to fname is a handler
-            api.download(image_url, path='/foo/bar', fname=open('%s/illust_%s.jpg' % (directory, illust.id), 'wb'))
+            api.download(
+                image_url,
+                path="/foo/bar",
+                fname=open("%s/illust_%s.jpg" % (directory, illust.id), "wb"),
+            )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

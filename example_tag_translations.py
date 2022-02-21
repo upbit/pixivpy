@@ -1,16 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from datetime import *
-from pixivpy3 import *
+import imp
 import sys
+from datetime import datetime, timedelta
 
-if sys.version_info >= (3, 0):
-    import imp
-    imp.reload(sys)
-else:
-    reload(sys)
-    sys.setdefaultencoding('utf8')
+from pixivpy3 import AppPixivAPI
+
+imp.reload(sys)
 sys.dont_write_bytecode = True
 
 
@@ -22,16 +19,26 @@ _REFRESH_TOKEN = "0zeYA-PllRYp1tfrsq_w3vHGU1rPy237JMf5oDt73c4"
 def main():
     aapi = AppPixivAPI()
     # aapi.set_additional_headers({'Accept-Language':'en-US'})
-    aapi.set_accept_language('en-us')  # zh-cn
+    aapi.set_accept_language("en-us")  # zh-cn
 
     aapi.auth(refresh_token=_REFRESH_TOKEN)
-    json_result = aapi.illust_ranking('day', date=(datetime.now() - timedelta(days=5)).strftime('%Y-%m-%d'))
+    json_result = aapi.illust_ranking(
+        "day", date=(datetime.now() - timedelta(days=5)).strftime("%Y-%m-%d")
+    )
 
-    print('Printing image titles and tags with English tag translations present when available')
+    print(
+        "Printing image titles and tags with English tag translations present when available"
+    )
 
     for illust in json_result.illusts[:3]:
-        print('Illustration: "' + str(illust.title) + '"\nTags: ' + str(illust.tags) + '\n')
+        print(
+            'Illustration: "'
+            + str(illust.title)
+            + '"\nTags: '
+            + str(illust.tags)
+            + "\n"
+        )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

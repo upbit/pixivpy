@@ -1,15 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import imp
 import sys
-from pixivpy3 import *
 
-if sys.version_info >= (3, 0):
-    import imp
-    imp.reload(sys)
-else:
-    reload(sys)
-    sys.setdefaultencoding('utf8')
+from pixivpy3 import AppPixivAPI
+
+imp.reload(sys)
+
 sys.dont_write_bytecode = True
 
 
@@ -34,7 +32,7 @@ def appapi_illust(aapi):
     json_result = aapi.illust_detail(59580629)
     print(json_result)
     illust = json_result.illust
-    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls["large"]))
 
     json_result = aapi.illust_comments(59580629)
     print(json_result)
@@ -50,7 +48,7 @@ def appapi_recommend(aapi):
     json_result = aapi.illust_recommended(bookmark_illust_ids=[59580629])
     print(json_result)
     illust = json_result.illusts[0]
-    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls["large"]))
 
     # get next page
     next_qs = aapi.parse_qs(json_result.next_url)
@@ -58,12 +56,12 @@ def appapi_recommend(aapi):
         json_result = aapi.illust_recommended(**next_qs)
         # print(json_result)
         illust = json_result.illusts[0]
-        print("  > %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+        print("  > %s, origin url: %s" % (illust.title, illust.image_urls["large"]))
 
     json_result = aapi.illust_related(59580629)
     print(json_result)
     illust = json_result.illusts[0]
-    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls["large"]))
 
     # get next page
     next_qs = aapi.parse_qs(json_result.next_url)
@@ -71,7 +69,7 @@ def appapi_recommend(aapi):
         json_result = aapi.illust_related(**next_qs)
         # print(json_result)
         illust = json_result.illusts[0]
-        print("  > %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+        print("  > %s, origin url: %s" % (illust.title, illust.image_urls["large"]))
 
 
 def appapi_users(aapi):
@@ -83,7 +81,7 @@ def appapi_users(aapi):
     json_result = aapi.user_illusts(275527)
     print(json_result)
     illust = json_result.illusts[0]
-    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls["large"]))
 
     # get next page
     next_qs = aapi.parse_qs(json_result.next_url)
@@ -91,12 +89,12 @@ def appapi_users(aapi):
         json_result = aapi.user_illusts(**next_qs)
         # print(json_result)
         illust = json_result.illusts[0]
-        print("  > %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+        print("  > %s, origin url: %s" % (illust.title, illust.image_urls["large"]))
 
     json_result = aapi.user_bookmarks_illust(2088434)
     print(json_result)
     illust = json_result.illusts[0]
-    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls["large"]))
 
     json_result = aapi.user_following(7314824)
     print(json_result)
@@ -126,12 +124,15 @@ def appapi_search(aapi):
     for trend_tag in response.trend_tags[:10]:
         if not first_tag:
             first_tag = trend_tag.tag
-        print("%s -  %s(id=%s)" % (trend_tag.tag, trend_tag.illust.title, trend_tag.illust.id))
+        print(
+            "%s -  %s(id=%s)"
+            % (trend_tag.tag, trend_tag.illust.title, trend_tag.illust.id)
+        )
 
-    json_result = aapi.search_illust(first_tag, search_target='partial_match_for_tags')
+    json_result = aapi.search_illust(first_tag, search_target="partial_match_for_tags")
     print(json_result)
     illust = json_result.illusts[0]
-    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls["large"]))
 
     # get next page
     next_qs = aapi.parse_qs(json_result.next_url)
@@ -139,13 +140,13 @@ def appapi_search(aapi):
         json_result = aapi.search_illust(**next_qs)
         # print(json_result)
         illust = json_result.illusts[0]
-        print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+        print(">>> %s, origin url: %s" % (illust.title, illust.image_urls["large"]))
 
     # novel
-    json_result = aapi.search_novel('FGO', search_target='keyword')
+    json_result = aapi.search_novel("FGO", search_target="keyword")
     print(json_result)
     novel = json_result.novels[0]
-    print(">>> %s, origin url: %s" % (novel.title, novel.image_urls['large']))
+    print(">>> %s, origin url: %s" % (novel.title, novel.image_urls["large"]))
 
     # get next page
     next_qs = aapi.parse_qs(json_result.next_url)
@@ -153,18 +154,18 @@ def appapi_search(aapi):
         json_result = aapi.search_novel(**next_qs)
         # print(json_result)
         novel = json_result.novels[0]
-        print(">>> %s, origin url: %s" % (novel.title, novel.image_urls['large']))
+        print(">>> %s, origin url: %s" % (novel.title, novel.image_urls["large"]))
 
 
 def appapi_user_search(aapi):
-    json_result = aapi.illust_ranking('day_male')
+    json_result = aapi.illust_ranking("day_male")
     name = json_result.illusts[0].user.name
     print(">>> %s" % name)
 
     json_result = aapi.search_user(name)
     print(json_result)
     illust = json_result.user_previews[0].illusts[0]
-    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls["large"]))
 
     # get next page
     next_qs = aapi.parse_qs(json_result.next_url)
@@ -172,14 +173,14 @@ def appapi_user_search(aapi):
         json_result = aapi.search_user(**next_qs)
         # print(json_result)
         illust = json_result.user_previews[0].illusts[0]
-        print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+        print(">>> %s, origin url: %s" % (illust.title, illust.image_urls["large"]))
 
 
 def appapi_ranking(aapi):
-    json_result = aapi.illust_ranking('day_male')
+    json_result = aapi.illust_ranking("day_male")
     print(json_result)
     illust = json_result.illusts[0]
-    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls["large"]))
 
     # get next page
     next_qs = aapi.parse_qs(json_result.next_url)
@@ -187,20 +188,20 @@ def appapi_ranking(aapi):
         json_result = aapi.illust_ranking(**next_qs)
         # print(json_result)
         illust = json_result.illusts[0]
-        print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+        print(">>> %s, origin url: %s" % (illust.title, illust.image_urls["large"]))
 
     # 2016-07-15 日的过去一周排行
-    json_result = aapi.illust_ranking('week', date='2016-07-15')
+    json_result = aapi.illust_ranking("week", date="2016-07-15")
     print(json_result)
     illust = json_result.illusts[0]
-    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls["large"]))
 
 
 def appapi_auth_api(aapi):
     json_result = aapi.illust_follow(req_auth=True)
     print(json_result)
     illust = json_result.illusts[0]
-    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls["large"]))
 
     # get next page
     next_qs = aapi.parse_qs(json_result.next_url)
@@ -208,54 +209,74 @@ def appapi_auth_api(aapi):
         json_result = aapi.illust_follow(req_auth=True, **next_qs)
         # print(json_result)
         illust = json_result.illusts[0]
-        print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+        print(">>> %s, origin url: %s" % (illust.title, illust.image_urls["large"]))
 
     json_result = aapi.illust_recommended(req_auth=True)
     print(json_result)
     illust = json_result.illusts[0]
-    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+    print(">>> %s, origin url: %s" % (illust.title, illust.image_urls["large"]))
 
 
 def appapi_bookmark_add(aapi):
     illust_id = 74187223
-    tags = ['Fate/GO', '50000users入り', '私服']
+    tags = ["Fate/GO", "50000users入り", "私服"]
     json_result = aapi.illust_bookmark_add(illust_id, tags=tags)
     json_result = aapi.illust_bookmark_detail(illust_id)
     print(json_result.bookmark_detail)
-    print(">>> %s, tags added: %s" %
-          (illust_id, [tag.name for tag in json_result.bookmark_detail.tags if tag.is_registered]))
+    print(
+        ">>> %s, tags added: %s"
+        % (
+            illust_id,
+            [tag.name for tag in json_result.bookmark_detail.tags if tag.is_registered],
+        )
+    )
 
 
 def appapi_novel(aapi):
     json_result = aapi.user_novels(59216290)
     print(json_result)
     novel = json_result.novels[0]
-    print(">>> %s, text_length: %s, series: %s" % (novel.title, novel.text_length, novel.series))
+    print(
+        ">>> %s, text_length: %s, series: %s"
+        % (novel.title, novel.text_length, novel.series)
+    )
 
     # get next page
     next_qs = aapi.parse_qs(json_result.next_url)
     if next_qs is not None:
         json_result = aapi.user_novels(**next_qs)
         novel = json_result.novels[0]
-        print(">>> %s, text_length: %s, series: %s" % (novel.title, novel.text_length, novel.series))
+        print(
+            ">>> %s, text_length: %s, series: %s"
+            % (novel.title, novel.text_length, novel.series)
+        )
 
     json_result = aapi.novel_series(1276963)
     print(json_result)
     detail = json_result.novel_series_detail
-    print(">>> %s, total_character_count: %s" % (detail.title, detail.total_character_count))
+    print(
+        ">>> %s, total_character_count: %s"
+        % (detail.title, detail.total_character_count)
+    )
 
     # get next page
     next_qs = aapi.parse_qs(json_result.next_url)
     if next_qs is not None:
         json_result = aapi.novel_series(**next_qs)
         detail = json_result.novel_series_detail
-        print(">>> %s, total_character_count: %s" % (detail.title, detail.total_character_count))
+        print(
+            ">>> %s, total_character_count: %s"
+            % (detail.title, detail.total_character_count)
+        )
 
     novel_id = 14357107
     json_result = aapi.novel_detail(novel_id)
     print(json_result)
     novel = json_result.novel
-    print(">>> %s, text_length: %s, series: %s" % (novel.title, novel.text_length, novel.series))
+    print(
+        ">>> %s, text_length: %s, series: %s"
+        % (novel.title, novel.text_length, novel.series)
+    )
 
     json_result = aapi.novel_text(novel_id)
     print(json_result)
@@ -280,5 +301,5 @@ def main():
     appapi_auth_api(aapi)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
