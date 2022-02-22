@@ -3,18 +3,13 @@ import hashlib
 import json
 import os
 import shutil
-import sys
 from datetime import datetime
+from typing import IO, Any, Optional, Union
 
 import cloudscraper  # type: ignore[import]
 from requests.structures import CaseInsensitiveDict
 
-from .utils import JsonDict, PixivError
-
-if sys.version_info >= (3, 7):
-    from typing import IO, Any, Optional, Union
-
-    from .utils import ParamDict, ParsedJson, Response
+from .utils import JsonDict, ParamDict, ParsedJson, PixivError, Response
 
 
 class BasePixivAPI(object):

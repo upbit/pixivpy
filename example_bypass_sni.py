@@ -1,15 +1,12 @@
 # -*- coding: utf-8 -*-
 
+import imp
 import sys
 from datetime import datetime, timedelta
-from pixivpy3 import *
 
-if sys.version_info >= (3, 0):
-    import imp
-    imp.reload(sys)
-else:
-    reload(sys)
-    sys.setdefaultencoding('utf8')
+from pixivpy3 import ByPassSniApi
+
+imp.reload(sys)
 sys.dont_write_bytecode = True
 
 
@@ -22,17 +19,27 @@ def main():
     api = ByPassSniApi()  # Same as AppPixivAPI, but bypass the GFW
     api.require_appapi_hosts()
     # api.set_additional_headers({'Accept-Language':'en-US'})
-    api.set_accept_language('en-us')
+    api.set_accept_language("en-us")
 
     # api.login(_USERNAME, _PASSWORD)
     print(api.auth(refresh_token=_REFRESH_TOKEN))
-    json_result = api.illust_ranking('day', date=(datetime.now() - timedelta(days=5)).strftime('%Y-%m-%d'))
+    json_result = api.illust_ranking(
+        "day", date=(datetime.now() - timedelta(days=5)).strftime("%Y-%m-%d")
+    )
 
-    print('Printing image titles and tags with English tag translations present when available')
+    print(
+        "Printing image titles and tags with English tag translations present when available"
+    )
 
     for illust in json_result.illusts[:3]:
-        print('Illustration: "' + str(illust.title) + '"\nTags: ' + str(illust.tags) + '\n')
+        print(
+            'Illustration: "'
+            + str(illust.title)
+            + '"\nTags: '
+            + str(illust.tags)
+            + "\n"
+        )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

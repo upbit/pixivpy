@@ -1,15 +1,12 @@
 # -*- coding:utf-8 -*-
 
-import sys
+from typing import Any, Dict, Optional, Union
 
-if sys.version_info >= (3, 7):
-    from typing import Any, Dict, Optional, Union
+from requests.structures import CaseInsensitiveDict
 
-    from requests.structures import CaseInsensitiveDict
-
-    ParamDict = Optional[Dict[str, Any]]
-    ParsedJson = Any
-    Response = Any
+ParamDict = Optional[Dict[str, Any]]
+ParsedJson = Any
+Response = Any
 
 
 class PixivError(Exception):

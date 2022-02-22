@@ -1,22 +1,12 @@
 # -*- coding:utf-8 -*-
 
-import re
-import sys
-
-from .api import BasePixivAPI  # nopep8
-from .utils import PixivError  # nopep8
-
-if sys.version_info >= (3, 0):
-    import urllib.parse as up
-else:
-    import urlparse as up
-
-if sys.version_info >= (3, 7):
-    from typing import Any, Dict, List, Optional, Union
-
-    from .utils import ParsedJson, ParamDict, Response  # nopep8
+import urllib.parse as up
+from typing import Any, Dict, List, Optional, Union
 
 from requests.structures import CaseInsensitiveDict
+
+from .api import BasePixivAPI
+from .utils import ParamDict, ParsedJson, PixivError, Response
 
 
 # App-API (6.x - app-api.pixiv.net)
@@ -83,33 +73,13 @@ class AppPixivAPI(BasePixivAPI):
         result_qs = {}  # type: Dict[str, Union[str, List[str]]]
         query = up.urlparse(next_url).query
 
-        if sys.version_info >= (3, 0):
-            for key, value in up.parse_qs(query).items():
-                # merge seed_illust_ids[] liked PHP params to array
-                if "[" in key and key.endswith("]"):
-                    # keep the origin sequence, just ignore array length
-                    result_qs[key.split("[")[0]] = value
-                else:
-                    result_qs[key] = value[-1]
-
-        else:
-            # Python2 unquote may return utf8 instead of unicode
-            def safe_unquote(s):
-                return up.unquote(s.encode("utf8")).decode("utf8")
-
-            for kv in query.split("&"):
-                # split than unquote() to k,v strings
-                k, v = map(safe_unquote, kv.split("="))
-
-                # merge seed_illust_ids[] liked PHP params to array
-                matched = re.match("(?P<key>[\w]*)\[(?P<idx>[\w]*)\]", k)
-                if matched:
-                    mk = matched.group("key")
-                    marray = result_qs.get(mk, [])
-                    # keep the origin sequence, just ignore group('idx')
-                    result_qs[mk] = marray + [v]
-                else:
-                    result_qs[k] = v
+        for key, value in up.parse_qs(query).items():
+            # merge seed_illust_ids[] liked PHP params to array
+            if "[" in key and key.endswith("]"):
+                # keep the origin sequence, just ignore array length
+                result_qs[key.split("[")[0]] = value
+            else:
+                result_qs[key] = value[-1]
 
         return result_qs
 
