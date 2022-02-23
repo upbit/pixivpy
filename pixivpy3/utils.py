@@ -16,7 +16,7 @@ class PixivError(Exception):
         self,
         reason: str,
         header: Optional[Union[Dict[str, Any], CaseInsensitiveDict[Any]]] = None,
-        body: Optional[str] = None,
+        body: Any = None
     ) -> None:
         self.reason = str(reason)
         self.header = header
