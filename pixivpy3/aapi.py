@@ -104,7 +104,7 @@ class AppPixivAPI(BasePixivAPI):
         filter: str = "for_ios",
         offset: Optional[Union[int, str]] = None,
         req_auth: bool = True,
-    ):
+    ) -> ParsedJson:
         url = "%s/v1/user/illusts" % self.hosts
         params = {
             "user_id": user_id,
@@ -335,7 +335,7 @@ class AppPixivAPI(BasePixivAPI):
         filter: Optional[str] = "for_ios",
         offset: Optional[Union[int, str]] = None,
         req_auth: bool = True,
-    ):
+    ) -> ParsedJson:
         url = "%s/v1/search/illust" % self.hosts
         params: Dict[str, Any] = {
             "word": word,
@@ -497,7 +497,7 @@ class AppPixivAPI(BasePixivAPI):
         self,
         user_id: Union[int, str],
         restrict: str = "public",
-        offset: Union[int, str] = None,
+        offset: Optional[Union[int, str]] = None,
         req_auth: bool = True,
     ) -> ParsedJson:
         url = "%s/v1/user/following" % self.hosts
@@ -516,7 +516,7 @@ class AppPixivAPI(BasePixivAPI):
         self,
         user_id: Union[int, str],
         filter: str = "for_ios",
-        offset: Union[int, str] = None,
+        offset: Optional[Union[int, str]] = None,
         req_auth: bool = True,
     ) -> ParsedJson:
         url = "%s/v1/user/follower" % self.hosts
@@ -534,7 +534,7 @@ class AppPixivAPI(BasePixivAPI):
     def user_mypixiv(
         self,
         user_id: Union[int, str],
-        offset: Union[int, str] = None,
+        offset: Optional[Union[int, str]] = None,
         req_auth: bool = True,
     ) -> ParsedJson:
         url = "%s/v1/user/mypixiv" % self.hosts
