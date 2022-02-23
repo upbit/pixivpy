@@ -17,12 +17,11 @@ class BasePixivAPI(object):
     client_secret = "lsACyCD94FhDUtGTXi3QzcFE2uU1hqtDaKeqrdwj"
     hash_secret = "28c1fdd170a5204386cb1313c7077b34f83e4aaf4aa829ce78c231e05b0bae2c"
 
-    def __init__(self, **requests_kwargs):
-        # type: (Any) -> None
+    def __init__(self, **requests_kwargs: Any) -> None:
         """initialize requests kwargs if need be"""
         self.user_id = 0
-        self.access_token = None  # type: Optional[str]
-        self.refresh_token = None  # type: Optional[str]
+        self.access_token: Optional[str] = None
+        self.refresh_token: Optional[str] = None
         self.hosts = "https://app-api.pixiv.net"
 
         # self.requests = requests.Session()
@@ -32,35 +31,36 @@ class BasePixivAPI(object):
         )  # type: CaseInsensitiveDict[Any]
         self.requests_kwargs = requests_kwargs
 
-    def set_additional_headers(self, headers):
-        # type: (ParamDict) -> None
+    def set_additional_headers(self, headers: ParamDict) -> None:
         """manually specify additional headers. will overwrite API default headers in case of collision"""
         self.additional_headers = CaseInsensitiveDict(headers)
 
     # 设置HTTP的Accept-Language (用于获取tags的对应语言translated_name)
     # language: en-us, zh-cn, ...
-    def set_accept_language(self, language):
-        # type: (str) -> None
+    def set_accept_language(self, language: str) -> None:
         """set header Accept-Language for all requests (useful for get tags.translated_name)"""
         self.additional_headers["Accept-Language"] = language
 
     @classmethod
-    def parse_json(cls, json_str):
-        # type: (str) -> ParsedJson
+    def parse_json(cls, json_str: str) -> ParsedJson:
         """parse str into JsonDict"""
         return json.loads(json_str, object_hook=JsonDict)
 
-    def require_auth(self):
-        # type: () -> None
+    def require_auth(self) -> None:
         if self.access_token is None:
             raise PixivError(
                 "Authentication required! Call login() or set_auth() first!"
             )
 
     def requests_call(
-        self, method, url, headers=None, params=None, data=None, stream=False
-    ):
-        # type: (str, str, Union[ParamDict, CaseInsensitiveDict[Any]], ParamDict, ParamDict, bool) -> Response
+        self,
+        method: str,
+        url: str,
+        headers: Union[ParamDict, CaseInsensitiveDict[Any]] = None,
+        params: ParamDict = None,
+        data: ParamDict = None,
+        stream: bool = False,
+    ) -> Response:
         """requests http/https call for Pixiv API"""
         merged_headers = self.additional_headers.copy()
         if headers:
@@ -99,22 +99,24 @@ class BasePixivAPI(object):
         except Exception as e:
             raise PixivError("requests %s %s error: %s" % (method, url, e))
 
-    def set_auth(self, access_token, refresh_token=None):
-        # type: (str, Optional[str]) -> None
+    def set_auth(self, access_token: str, refresh_token: Optional[str] = None) -> None:
         self.access_token = access_token
         self.refresh_token = refresh_token
 
-    def login(self, username, password):
-        # type: (str, str) -> Any
+    def login(self, username: str, password: str) -> Any:
         return self.auth(username=username, password=password)
 
-    def set_client(self, client_id, client_secret):
-        # type: (str, str) -> None
+    def set_client(self, client_id: str, client_secret: str) -> None:
         self.client_id = client_id
         self.client_secret = client_secret
 
-    def auth(self, username=None, password=None, refresh_token=None, headers=None):
-        # type: (Optional[str], Optional[str], Optional[str], ParamDict) -> ParsedJson
+    def auth(
+        self,
+        username: Optional[str] = None,
+        password: Optional[str] = None,
+        refresh_token: Optional[str] = None,
+        headers: ParamDict = None,
+    ) -> ParsedJson:
         """Login with password, or use the refresh_token to acquire a new bearer token"""
         local_time = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S+00:00")
         headers_ = CaseInsensitiveDict(headers or {})
@@ -188,15 +190,14 @@ class BasePixivAPI(object):
 
     def download(
         self,
-        url,
-        prefix="",
-        path=os.path.curdir,
-        name=None,
-        replace=False,
-        fname=None,
-        referer="https://app-api.pixiv.net/",
-    ):
-        # type: (str, str, str, Optional[str], bool, Optional[Union[str, IO[bytes]]], str) -> bool
+        url: str,
+        prefix: str = "",
+        path: str = os.path.curdir,
+        name: Optional[str] = None,
+        replace: bool = False,
+        fname: Optional[Union[str, IO[bytes]]] = None,
+        referer: str = "https://app-api.pixiv.net/",
+    ) -> bool:
         """Download image to file (use 6.0 app-api)"""
         if hasattr(fname, "write"):
             # A file-like object has been provided.

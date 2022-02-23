@@ -9,16 +9,16 @@ from .aapi import AppPixivAPI
 
 
 class ByPassSniApi(AppPixivAPI):
-    def __init__(self, **requests_kwargs):
-        # type: (Any) -> None
+    def __init__(self, **requests_kwargs: Any) -> None:
         """initialize requests kwargs if need be"""
         super(AppPixivAPI, self).__init__(**requests_kwargs)
         session = requests.Session()
         session.mount("https://", host_header_ssl.HostHeaderSSLAdapter())
         self.requests = session
 
-    def require_appapi_hosts(self, hostname="app-api.pixiv.net", timeout=3):
-        # type: (str, int) -> Union[str, bool]
+    def require_appapi_hosts(
+        self, hostname: str = "app-api.pixiv.net", timeout: int = 3
+    ) -> Union[str, bool]:
         """
         通过 Cloudflare 的 DNS over HTTPS 请求真实的 IP 地址。
         """
