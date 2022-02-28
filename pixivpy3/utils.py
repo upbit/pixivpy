@@ -14,10 +14,11 @@ class PixivError(Exception):
 
     def __init__(
         self,
-        reason: str,
-        header: Optional[Union[Dict[str, Any], CaseInsensitiveDict[Any]]] = None,
-        body: Optional[str] = None,
-    ) -> None:
+        reason,
+        header=None,
+        body=None,
+    ):
+        # type: (str, Optional[Union[Dict[str, Any], CaseInsensitiveDict[Any]]], Optional[str]) -> None
         self.reason = str(reason)
         self.header = header
         self.body = body
