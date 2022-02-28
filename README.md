@@ -156,41 +156,49 @@ Find Pixiv API in **Objective-C**? You might also like [**PixivAPI_iOS**](https:
 class AppPixivAPI(BasePixivAPI):
 
     # 返回翻页用参数
-    def parse_qs(self, next_url):
+    def parse_qs(next_url):
 
-    # 用户详情 
-    def user_detail(self, user_id):
+    # 用户详情
+    def user_detail(user_id):
 
-    # 用户作品列表 
-    def user_illusts(self, user_id, type='illust'):
+    # 用户作品列表
+    ## type: [illust, manga]
+    def user_illusts(user_id, type="illust"):
 
-    # 用户收藏作品列表 
-    def user_bookmarks_illust(self, user_id, restrict='public'):
+    # 用户收藏作品列表
+    # tag: 从 user_bookmark_tags_illust 获取的收藏标签
+    def user_bookmarks_illust(user_id, restrict="public"):
+
+    def user_related(seed_user_id):
 
     # 关注用户的新作
     # restrict: [public, private]
-    def illust_follow(self, restrict='public'):
+    def illust_follow(restrict="public"):
 
-    # 作品详情 (无需登录，同PAPI.works)
-    def illust_detail(self, illust_id):
+    # 作品详情 (类似PAPI.works()，iOS中未使用)
+    def illust_detail(illust_id):
 
-    # 相关作品列表 
-    def illust_related(self, illust_id):
+    # 作品评论
+    def illust_comments(illust_id, include_total_comments=None):
 
-    # 插画推荐 (Home - Main) 
+    # 相关作品列表
+    def illust_related(illust_id):
+
+    # 插画推荐 (Home - Main)
     # content_type: [illust, manga]
-    def illust_recommended(self, content_type='illust'):
+    def illust_recommended(content_type="illust"):
 
     # 作品排行
     # mode: [day, week, month, day_male, day_female, week_original, week_rookie, day_manga]
     # date: '2016-08-01'
-    # mode(r18榜单需登录): [day_r18, day_male_r18, day_female_r18, week_r18, week_r18g]
-    def illust_ranking(self, mode='day', date=None, offset=None):
+    # mode (Past): [day, week, month, day_male, day_female, week_original, week_rookie,
+    #               day_r18, day_male_r18, day_female_r18, week_r18, week_r18g]
+    def illust_ranking(mode="day", date=None):
 
-    # 趋势标签 (Search - tags) 
-    def trending_tags_illust(self):
+    # 趋势标签 (Search - tags)
+    def trending_tags_illust():
 
-    # 搜索 (Search) 
+    # 搜索 (Search)
     # search_target - 搜索类型
     #   partial_match_for_tags  - 标签部分一致
     #   exact_match_for_tags    - 标签完全一致
@@ -198,7 +206,7 @@ class AppPixivAPI(BasePixivAPI):
     # sort: [date_desc, date_asc, popular_desc] - popular_desc为会员的热门排序
     # duration: [within_last_day, within_last_week, within_last_month]
     # start_date, end_date: '2020-07-01'
-    def search_illust(self, word, search_target='partial_match_for_tags', sort='date_desc', duration=None):
+    def search_illust(word, search_target="partial_match_for_tags", sort="date_desc", duration=None, start_date=None, end_date=None):
 
     # 搜索小说 (Search Novel)
     # search_target - 搜索类型
@@ -207,59 +215,62 @@ class AppPixivAPI(BasePixivAPI):
     #   text                    - 正文
     #   keyword                 - 关键词
     # sort: [date_desc, date_asc]
-    # start_date/end_date: 2020-06-01 (最长1年)
-    def search_novel(self, word, search_target='partial_match_for_tags', sort='date_desc', start_date=None, end_date=None):
+    # start_date/end_date: 2020-06-01
+    def search_novel(word, search_target="partial_match_for_tags", sort="date_desc", start_date=None, end_date=None):
 
-    # 用户搜索
-    def search_user(self, word, sort='date_desc', duration=None):
+    def search_user(word, sort='date_desc', duration=None):
 
-    # 作品收藏详情 
-    def illust_bookmark_detail(self, illust_id):
+    # 作品收藏详情
+    def illust_bookmark_detail(illust_id):
 
     # 新增收藏
-    def illust_bookmark_add(self, illust_id, restrict='public', tags=None):
+    def illust_bookmark_add(illust_id, restrict="public", tags=None):
 
     # 删除收藏
-    def illust_bookmark_delete(self, illust_id):
+    def illust_bookmark_delete(illust_id):
 
     # 关注用户
-    def user_follow_add(self, user_id, restrict='public'):
+    def user_follow_add(user_id, restrict="public"):
 
     # 取消关注用户
-    def user_follow_delete(self, user_id):
+    def user_follow_delete(user_id):
 
     # 用户收藏标签列表
-    def user_bookmark_tags_illust(self, restrict='public', offset=None):
+    def user_bookmark_tags_illust(restrict="public"):
 
-    # Following用户列表 
-    def user_following(self, user_id, restrict='public', offset=None):
+    # Following用户列表
+    def user_following(user_id, restrict="public"):
 
-    # Followers用户列表 
-    def user_follower(self, user_id, filter='for_ios', offset=None):
+    # Followers用户列表
+    def user_follower(user_id):
 
-    # 好P友 
-    def user_mypixiv(self, user_id, offset=None):
+    # 好P友
+    def user_mypixiv(user_id):
 
-    # 黑名单用户 
-    def user_list(self, user_id, filter='for_ios', offset=None):
+    # 黑名单用户
+    def user_list(user_id):
 
     # 获取ugoira信息
-    def ugoira_metadata(self, illust_id):
+    def ugoira_metadata(illust_id):
 
     # 用户小说列表
-    def user_novels(self, user_id, filter='for_ios', offset=None):
+    def user_novels(user_id):
 
     # 小说系列详情
-    def novel_series(self, series_id, filter='for_ios', last_order=None):
+    def novel_series(series_id, last_order=None):
 
     # 小说详情
-    def novel_detail(self, novel_id):
+    def novel_detail(novel_id):
 
     # 小说正文
-    def novel_text(self, novel_id):
+    def novel_text(novel_id):
 
-    # 大家的新作 [illust, manga]
-    def illust_new(self, content_type="illust", filter='for_ios', max_illust_id=None):
+    # 大家的新作
+    # content_type: [illust, manga]
+    def illust_new(content_type="illust", max_illust_id=None):
+
+    # 特辑详情 (无需登录，调用Web API)
+    def showcase_article(showcase_id):
 ~~~
 
 [Usage](https://github.com/upbit/pixivpy/blob/master/demo.py#L42):
