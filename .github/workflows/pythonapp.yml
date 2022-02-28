@@ -8,9 +8,10 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
+      max-parallel: 1
       fail-fast: false
       matrix:
-        python-version: ['3.6', '3.8', '3.10']
+        python-version: ['3.6', '3.10']
 
     steps:
     - uses: actions/checkout@v1
