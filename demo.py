@@ -251,7 +251,7 @@ def appapi_novel(aapi):
             % (novel.title, novel.text_length, novel.series)
         )
 
-    json_result = aapi.novel_series(1276963)
+    json_result = aapi.novel_series(1206600)
     print(json_result)
     detail = json_result.novel_series_detail
     print(
