@@ -54,13 +54,14 @@ class BasePixivAPI(object):
 
     def requests_call(
         self,
-        method: str,
-        url: str,
-        headers: Union[ParamDict, CaseInsensitiveDict[Any]] = None,
-        params: ParamDict = None,
-        data: ParamDict = None,
-        stream: bool = False,
-    ) -> Response:
+        method,
+        url,
+        headers= None,
+        params = None,
+        data = None,
+        stream = False,
+    ):
+        # type: (str, str, Union[ParamDict, CaseInsensitiveDict[Any]], ParamDict, ParamDict, bool) -> Response
         """requests http/https call for Pixiv API"""
         merged_headers = self.additional_headers.copy()
         if headers:
