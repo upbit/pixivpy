@@ -56,10 +56,10 @@ class BasePixivAPI(object):
         self,
         method,
         url,
-        headers= None,
-        params = None,
-        data = None,
-        stream = False,
+        headers=None,
+        params=None,
+        data=None,
+        stream=False,
     ):
         # type: (str, str, Union[ParamDict, CaseInsensitiveDict[Any]], ParamDict, ParamDict, bool) -> Response
         """requests http/https call for Pixiv API"""
