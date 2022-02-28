@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import imp
+import importlib
 import sys
 
 from pixivpy3 import AppPixivAPI
 
-imp.reload(sys)
+importlib.reload(sys)
 
 sys.dont_write_bytecode = True
 

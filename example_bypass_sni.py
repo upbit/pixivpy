@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-import imp
+import importlib
 import sys
 from datetime import datetime, timedelta
 
 from pixivpy3 import ByPassSniApi
 
-imp.reload(sys)
+importlib.reload(sys)
 sys.dont_write_bytecode = True
 
 
