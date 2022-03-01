@@ -1,13 +1,39 @@
 # -*- coding:utf-8 -*-
 
 import urllib.parse as up
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Literal, Optional, Union
 
 from requests.structures import CaseInsensitiveDict
 from typeguard import typechecked
 
 from .api import BasePixivAPI
 from .utils import ParamDict, ParsedJson, PixivError, Response
+
+_FILTER = Literal["for_ios", ""]
+_TYPE = Literal["illust", "manga", ""]
+_RESTRICT = Literal["public", "private", ""]
+_CONTENT_TYPE = Literal["illust", "manga", ""]
+_MODE = Literal[
+    "day",
+    "week",
+    "month",
+    "day_male",
+    "day_female",
+    "week_original",
+    "week_rookie",
+    "day_manga",
+    "day_r18",
+    "day_male_r18",
+    "day_female_r18",
+    "week_r18",
+    "week_r18g",
+    "",
+]
+_SEARCH_TARGET = Literal[
+    "partial_match_for_tags", "exact_match_for_tags", "title_and_caption", ""
+]
+_SORT = Literal["date_desc", "date_asc", "popular_desc", ""]
+_DURATION = Literal["within_last_day", "within_last_week", "within_last_month", ""]
 
 
 # App-API (6.x - app-api.pixiv.net)
