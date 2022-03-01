@@ -21,7 +21,7 @@ class BasePixivAPI(object):
 
     def __init__(self, **requests_kwargs: Any) -> None:
         """initialize requests kwargs if need be"""
-        self.user_id: int = 0
+        self.user_id: Union[int, str] = 0
         self.access_token: Optional[str] = None
         self.refresh_token: Optional[str] = None
         self.hosts = "https://app-api.pixiv.net"
