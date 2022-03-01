@@ -4,6 +4,7 @@ import urllib.parse as up
 from typing import Any, Dict, List, Optional, Union
 
 from requests.structures import CaseInsensitiveDict
+from typeguard import typechecked
 
 from .api import BasePixivAPI
 from .utils import ParamDict, ParsedJson, PixivError, Response
@@ -11,6 +12,7 @@ from .utils import ParamDict, ParsedJson, PixivError, Response
 
 # App-API (6.x - app-api.pixiv.net)
 # noinspection PyShadowingBuiltins
+@typechecked
 class AppPixivAPI(BasePixivAPI):
     def __init__(self, **requests_kwargs: Any) -> None:
         """initialize requests kwargs if need be"""
