@@ -8,7 +8,7 @@ try:
     from typing import Literal  # type: ignore[attr-defined]
 except ImportError:
     # Python==3.6, ==3.7
-    from typing_extensions import Literal  # type: ignore[misc]
+    from typing_extensions import Literal
 
 try:
     # Python>=3.10
