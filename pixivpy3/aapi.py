@@ -87,7 +87,7 @@ class AppPixivAPI(BasePixivAPI):
             )
 
     @classmethod
-    def format_bool(cls, bool_value: Union[bool, str]) -> _BOOL:
+    def format_bool(cls, bool_value: Optional[Union[bool, str]]) -> _BOOL:
         if isinstance(bool_value, bool):
             return "true" if bool_value else "false"
         if bool_value in {"true", "True"}:
@@ -267,7 +267,7 @@ class AppPixivAPI(BasePixivAPI):
     def illust_recommended(
         self,
         content_type: _CONTENT_TYPE = "illust",
-        include_ranking_label: bool = True,
+        include_ranking_label: Union[bool, str] = True,
         filter: _FILTER = "for_ios",
         max_bookmark_id_for_recommend: Optional[Union[int, str]] = None,
         min_bookmark_id_for_recent_illust: Optional[Union[int, str]] = None,
