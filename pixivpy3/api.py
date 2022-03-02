@@ -8,10 +8,12 @@ from typing import IO, Any, Optional, Union
 
 import cloudscraper  # type: ignore[import]
 from requests.structures import CaseInsensitiveDict
+from typeguard import typechecked
 
 from .utils import JsonDict, ParamDict, ParsedJson, PixivError, Response
 
 
+@typechecked
 class BasePixivAPI(object):
     client_id = "MOBrBDS8blbauoSck0ZfDbtuzpyT"
     client_secret = "lsACyCD94FhDUtGTXi3QzcFE2uU1hqtDaKeqrdwj"
@@ -19,7 +21,7 @@ class BasePixivAPI(object):
 
     def __init__(self, **requests_kwargs: Any) -> None:
         """initialize requests kwargs if need be"""
-        self.user_id = 0
+        self.user_id: Union[int, str] = 0
         self.access_token: Optional[str] = None
         self.refresh_token: Optional[str] = None
         self.hosts = "https://app-api.pixiv.net"

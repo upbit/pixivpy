@@ -4,10 +4,12 @@ from typing import Any, Union
 
 import requests
 from requests_toolbelt.adapters import host_header_ssl  # type: ignore[import]
+from typeguard import typechecked
 
 from .aapi import AppPixivAPI
 
 
+@typechecked
 class ByPassSniApi(AppPixivAPI):
     def __init__(self, **requests_kwargs: Any) -> None:
         """initialize requests kwargs if need be"""
