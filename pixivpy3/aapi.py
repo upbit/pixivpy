@@ -37,7 +37,7 @@ _MODE = Literal[
     "",
 ]
 _SEARCH_TARGET = Literal[
-    "partial_match_for_tags", "exact_match_for_tags", "title_and_caption", ""
+    "partial_match_for_tags", "exact_match_for_tags", "title_and_caption", "keyword", ""
 ]
 _SORT = Literal["date_desc", "date_asc", "popular_desc", ""]
 _DURATION = Literal[
