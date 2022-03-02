@@ -5,14 +5,14 @@ from typing import Any, Dict, List, Optional, Union
 
 try:
     # Python>=3.8
-    from typing import Literal # type: ignore[attr-defined]
+    from typing import Literal  # type: ignore[attr-defined]
 except ImportError:
     # Python==3.6, ==3.7
     from typing_extensions import Literal  # type: ignore[misc]
 
 try:
     # Python>=3.10
-    from typing import TypeAlias # type: ignore[attr-defined]
+    from typing import TypeAlias  # type: ignore[attr-defined]
 except ImportError:
     # Python==3.6, ==3.7, ==3.8, ==3.9
     from typing_extensions import TypeAlias
@@ -144,7 +144,7 @@ class AppPixivAPI(BasePixivAPI):
         return self.parse_result(r)
 
     # 用户作品列表
-    ## type: [illust, manga]
+    ## type: [illust, manga] # noqa
     def user_illusts(
         self,
         user_id: Union[int, str],
