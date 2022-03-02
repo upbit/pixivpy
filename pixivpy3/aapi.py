@@ -1,7 +1,14 @@
 # -*- coding:utf-8 -*-
 
 import urllib.parse as up
-from typing import Any, Dict, List, Literal, Optional, Union
+from typing import Any, Dict, List, Optional, Union
+
+try:
+    # Python>=3.8
+    from typing import Literal
+except ImportError:
+    # Python==3.6, ==3.7
+    from typing_extensions import Literal
 
 from requests.structures import CaseInsensitiveDict
 from typeguard import typechecked
@@ -246,7 +253,7 @@ class AppPixivAPI(BasePixivAPI):
         filter: _FILTER = "for_ios",
         seed_illust_ids: Optional[Union[int, str]] = None,
         offset: Optional[Union[int, str]] = None,
-        viewed: Optional[str] = None,
+        viewed: Optional[List[str]] = None,
         req_auth: bool = True,
     ) -> ParsedJson:
         url = "%s/v2/illust/related" % self.hosts
@@ -275,7 +282,7 @@ class AppPixivAPI(BasePixivAPI):
         include_ranking_illusts: Optional[Union[str, bool]] = None,
         bookmark_illust_ids: Optional[Union[str, List[Union[int, str]]]] = None,
         include_privacy_policy: Optional[Union[str, List[Union[int, str]]]] = None,
-        viewed: Optional[str] = None,
+        viewed: Optional[List[str]] = None,
         req_auth: bool = True,
     ) -> ParsedJson:
         if req_auth:
