@@ -5,10 +5,17 @@ from typing import Any, Dict, List, Optional, Union
 
 try:
     # Python>=3.8
-    from typing import Literal
+    from typing import Literal # type: ignore[attr-defined]
 except ImportError:
     # Python==3.6, ==3.7
     from typing_extensions import Literal  # type: ignore[misc]
+
+try:
+    # Python>=3.10
+    from typing import TypeAlias # type: ignore[attr-defined]
+except ImportError:
+    # Python==3.6, ==3.7, ==3.8, ==3.9
+    from typing_extensions import TypeAlias
 
 from requests.structures import CaseInsensitiveDict
 from typeguard import typechecked
@@ -16,11 +23,11 @@ from typeguard import typechecked
 from .api import BasePixivAPI
 from .utils import ParamDict, ParsedJson, PixivError, Response
 
-_FILTER = Literal["for_ios", ""]
-_TYPE = Literal["illust", "manga", ""]
-_RESTRICT = Literal["public", "private", ""]
-_CONTENT_TYPE = Literal["illust", "manga", ""]
-_MODE = Literal[
+_FILTER: TypeAlias = Literal["for_ios", ""]
+_TYPE: TypeAlias = Literal["illust", "manga", ""]
+_RESTRICT: TypeAlias = Literal["public", "private", ""]
+_CONTENT_TYPE: TypeAlias = Literal["illust", "manga", ""]
+_MODE: TypeAlias = Literal[
     "day",
     "week",
     "month",
@@ -36,14 +43,14 @@ _MODE = Literal[
     "week_r18g",
     "",
 ]
-_SEARCH_TARGET = Literal[
+_SEARCH_TARGET: TypeAlias = Literal[
     "partial_match_for_tags", "exact_match_for_tags", "title_and_caption", "keyword", ""
 ]
-_SORT = Literal["date_desc", "date_asc", "popular_desc", ""]
-_DURATION = Literal[
+_SORT: TypeAlias = Literal["date_desc", "date_asc", "popular_desc", ""]
+_DURATION: TypeAlias = Literal[
     "within_last_day", "within_last_week", "within_last_month", "", None
 ]
-_BOOL = Literal["true", "false"]
+_BOOL: TypeAlias = Literal["true", "false"]
 
 
 # App-API (6.x - app-api.pixiv.net)
