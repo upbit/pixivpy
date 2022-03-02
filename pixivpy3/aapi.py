@@ -251,7 +251,7 @@ class AppPixivAPI(BasePixivAPI):
         self,
         illust_id: Union[int, str],
         filter: _FILTER = "for_ios",
-        seed_illust_ids: Optional[Union[int, str]] = None,
+        seed_illust_ids: Optional[Union[int, str, List[str]]] = None,
         offset: Optional[Union[int, str]] = None,
         viewed: Optional[List[str]] = None,
         req_auth: bool = True,
