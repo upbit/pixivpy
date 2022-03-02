@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import importlib
 import os
 import sys
 
 from pixivpy3 import AppPixivAPI, ByPassSniApi
 
-importlib.reload(sys)
 sys.dont_write_bytecode = True
 
 
