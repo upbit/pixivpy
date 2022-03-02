@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import imp
 import sys
 from datetime import datetime, timedelta
 
 from pixivpy3 import AppPixivAPI
 
-imp.reload(sys)
 sys.dont_write_bytecode = True
 
 
