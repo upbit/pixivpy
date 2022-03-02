@@ -8,7 +8,7 @@ try:
     from typing import Literal
 except ImportError:
     # Python==3.6, ==3.7
-    from typing_extensions import Literal
+    from typing_extensions import Literal  # type: ignore[misc]
 
 from requests.structures import CaseInsensitiveDict
 from typeguard import typechecked
