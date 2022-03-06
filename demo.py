@@ -218,7 +218,7 @@ def appapi_auth_api():
 
 
 def appapi_bookmark_add():
-        illust_id = 74187223
+    illust_id = 74187223
     tags = ["Fate/GO", "50000users入り", "私服"]
     json_result = aapi.illust_bookmark_add(illust_id, tags=tags)
     json_result = aapi.illust_bookmark_detail(illust_id)
