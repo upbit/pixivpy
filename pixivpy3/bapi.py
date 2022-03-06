@@ -22,14 +22,15 @@ class ByPassSniApi(AppPixivAPI):
         self, hostname: str = "app-api.pixiv.net", timeout: int = 3
     ) -> Union[str, bool]:
         """
-        通过 Cloudflare 的 DNS over HTTPS 请求真实的 IP 地址。
+        通过 DNS over HTTPS 服务获取真实 IP 地址。
         """
         URLS = (
             "https://1.0.0.1/dns-query",
-            "https://1.1.1.1/dns-query",
-            "https://[2606:4700:4700::1001]/dns-query",
-            "https://[2606:4700:4700::1111]/dns-query",
+            "https://dns.alidns.com/dns-query",
+            "https://doh.dns.sb/dns-query",
+            "https://doh.opendns.com/dns-query",
             "https://cloudflare-dns.com/dns-query",
+            "https://dns.google/dns-query"
         )
         params = {
             "ct": "application/dns-json",
