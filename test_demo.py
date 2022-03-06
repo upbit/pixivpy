@@ -22,10 +22,14 @@ _REQUESTS_KWARGS = {
     # 'verify': False,       # PAPI use https, an easy way is disable requests SSL verify
 }
 
+AAPI = AppPixivAPI(**_REQUESTS_KWARGS)
+AAPI.auth(refresh_token=_REFRESH_TOKEN)
+
 # AppAPI start
 
 
-def appapi_illust(aapi):
+def test_appapi_illust():
+    aapi = AAPI
     json_result = aapi.illust_detail(59580629)
     print(json_result)
     illust = json_result.illust
@@ -41,7 +45,8 @@ def appapi_illust(aapi):
     # print(">>> frames=%d %s" % (len(metadata.frames), metadata.zip_urls.medium))
 
 
-def appapi_recommend(aapi):
+def test_appapi_recommend():
+    aapi = AAPI
     json_result = aapi.illust_recommended(bookmark_illust_ids=[59580629])
     print(json_result)
     illust = json_result.illusts[0]
@@ -69,7 +74,8 @@ def appapi_recommend(aapi):
         print("  > %s, origin url: %s" % (illust.title, illust.image_urls["large"]))
 
 
-def appapi_users(aapi):
+def test_appapi_users():
+    aapi = AAPI
     json_result = aapi.user_detail(275527)
     print(json_result)
     user = json_result.user
@@ -115,7 +121,8 @@ def appapi_users(aapi):
     print(json_result)
 
 
-def appapi_search(aapi):
+def test_appapi_search():
+    aapi = AAPI
     first_tag = None
     response = aapi.trending_tags_illust()
     for trend_tag in response.trend_tags[:10]:
@@ -154,7 +161,8 @@ def appapi_search(aapi):
         print(">>> %s, origin url: %s" % (novel.title, novel.image_urls["large"]))
 
 
-def appapi_user_search(aapi):
+def test_appapi_user_search():
+    aapi = AAPI
     json_result = aapi.illust_ranking("day_male")
     name = json_result.illusts[0].user.name
     print(">>> %s" % name)
@@ -173,7 +181,8 @@ def appapi_user_search(aapi):
         print(">>> %s, origin url: %s" % (illust.title, illust.image_urls["large"]))
 
 
-def appapi_ranking(aapi):
+def test_appapi_ranking():
+    aapi = AAPI
     json_result = aapi.illust_ranking("day_male")
     print(json_result)
     illust = json_result.illusts[0]
@@ -194,7 +203,8 @@ def appapi_ranking(aapi):
     print(">>> %s, origin url: %s" % (illust.title, illust.image_urls["large"]))
 
 
-def appapi_auth_api(aapi):
+def test_appapi_auth_api():
+    aapi = AAPI
     json_result = aapi.illust_follow(req_auth=True)
     print(json_result)
     illust = json_result.illusts[0]
@@ -214,7 +224,8 @@ def appapi_auth_api(aapi):
     print(">>> %s, origin url: %s" % (illust.title, illust.image_urls["large"]))
 
 
-def appapi_bookmark_add(aapi):
+def test_appapi_bookmark_add():
+    aapi = AAPI
     illust_id = 74187223
     tags = ["Fate/GO", "50000users入り", "私服"]
     json_result = aapi.illust_bookmark_add(illust_id, tags=tags)
@@ -229,7 +240,8 @@ def appapi_bookmark_add(aapi):
     )
 
 
-def appapi_novel(aapi):
+def test_appapi_novel():
+    aapi = AAPI
     json_result = aapi.user_novels(59216290)
     print(json_result)
     novel = json_result.novels[0]
@@ -278,25 +290,3 @@ def appapi_novel(aapi):
     json_result = aapi.novel_text(novel_id)
     print(json_result)
     print(">>> %s, novel_text: %s" % (novel.title, json_result.novel_text))
-
-
-def main():
-    # app-api
-    aapi = AppPixivAPI(**_REQUESTS_KWARGS)
-
-    aapi.auth(refresh_token=_REFRESH_TOKEN)
-
-    appapi_illust(aapi)
-    appapi_recommend(aapi)
-    appapi_users(aapi)
-    appapi_search(aapi)
-    appapi_user_search(aapi)
-    appapi_ranking(aapi)
-    appapi_bookmark_add(aapi)
-    appapi_novel(aapi)
-
-    appapi_auth_api(aapi)
-
-
-if __name__ == "__main__":
-    main()
