@@ -111,7 +111,9 @@ class AppPixivAPI(BasePixivAPI):
 
     # 返回翻页用参数
     @classmethod
-    def parse_qs(cls, next_url: Optional[str]) -> Optional[Dict[str, Union[str, List[str]]]]:
+    def parse_qs(
+        cls, next_url: Optional[str]
+    ) -> Optional[Dict[str, Union[str, List[str]]]]:
         if next_url is None:
             return None
 
