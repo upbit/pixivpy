@@ -33,4 +33,4 @@ jobs:
         run: |
           mypy
       - name: Run demo.py
-        run: pytest --cov -v test_demo.py
+        run: pytest --cov -v demo.py
