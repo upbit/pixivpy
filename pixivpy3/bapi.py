@@ -31,8 +31,8 @@ class ByPassSniApi(AppPixivAPI):
             "https://[2606:4700:4700::1111]/dns-query",
             "https://cloudflare-dns.com/dns-query",
         )
+        headers = {"Accept": "application/dns-json"}
         params = {
-            "ct": "application/dns-json",
             "name": hostname,
             "type": "A",
             "do": "false",
@@ -41,7 +41,9 @@ class ByPassSniApi(AppPixivAPI):
 
         for url in URLS:
             try:
-                response = requests.get(url, params=params, timeout=timeout)
+                response = requests.get(
+                    url, headers=headers, params=params, timeout=timeout
+                )
                 self.hosts = "https://" + str(response.json()["Answer"][0]["data"])
                 return self.hosts
             except Exception:
