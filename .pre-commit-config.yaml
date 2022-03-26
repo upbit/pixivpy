@@ -7,7 +7,6 @@ repos:
       - id: check-case-conflict
       - id: check-executables-have-shebangs
       - id: check-merge-conflict
-      - id: check-shebang-scripts-are-executable
       - id: check-symlinks
       - id: check-yaml
       - id: destroyed-symlinks
@@ -21,12 +20,14 @@ repos:
     rev: 22.1.0
     hooks:
       - id: black
-        args: [--check]
   - repo: https://github.com/PyCQA/flake8
     rev: 4.0.1
     hooks:
       - id: flake8
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v0.790
+    rev: v0.942
     hooks:
       - id: mypy
+        additional_dependencies: [types-requests]
+        files: ^pixivpy3/
+        args: [--strict]

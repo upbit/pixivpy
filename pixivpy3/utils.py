@@ -3,7 +3,7 @@
 from typing import Any, Dict, Optional, Union
 
 from requests.structures import CaseInsensitiveDict
-from typeguard import typechecked
+from typeguard import typechecked  # type: ignore[import]
 
 ParamDict = Optional[Dict[str, Any]]
 ParsedJson = Any
