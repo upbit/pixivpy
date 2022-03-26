@@ -32,4 +32,4 @@ repos:
       - id: mypy
         additional_dependencies: [types-requests]
         files: ^pixivpy3/
-        args: [--strict]
+        args: [--no-warn-unused-ignores, --strict]
