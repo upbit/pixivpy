@@ -18,7 +18,7 @@ except ImportError:
     from typing_extensions import TypeAlias
 
 from requests.structures import CaseInsensitiveDict
-from typeguard import typechecked
+from typeguard import typechecked  # type: ignore[import]
 
 from .api import BasePixivAPI
 from .utils import ParamDict, ParsedJson, PixivError, Response

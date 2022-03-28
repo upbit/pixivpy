@@ -8,7 +8,7 @@ from typing import IO, Any, Optional, Union
 
 import cloudscraper  # type: ignore[import]
 from requests.structures import CaseInsensitiveDict
-from typeguard import typechecked
+from typeguard import typechecked  # type: ignore[import]
 
 from .utils import JsonDict, ParamDict, ParsedJson, PixivError, Response
 

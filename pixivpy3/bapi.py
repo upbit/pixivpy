@@ -4,7 +4,7 @@ from typing import Any, Union
 
 import requests
 from requests_toolbelt.adapters import host_header_ssl  # type: ignore[import]
-from typeguard import typechecked
+from typeguard import typechecked  # type: ignore[import]
 
 from .aapi import AppPixivAPI
 
