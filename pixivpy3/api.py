@@ -7,7 +7,7 @@ import json
 import os
 import shutil
 from datetime import datetime
-from typing import IO, Any, Union
+from typing import IO, Any
 
 import cloudscraper  # type: ignore[import]
 from requests.structures import CaseInsensitiveDict
@@ -67,7 +67,7 @@ class BasePixivAPI(object):
         data=None,
         stream=False,
     ):
-        # type: (str, str, Union[ParamDict, CaseInsensitiveDict[Any]], ParamDict, ParamDict, bool) -> Response
+        # type: (str, str, ParamDict | CaseInsensitiveDict[Any], ParamDict, ParamDict, bool) -> Response
         """requests http/https call for Pixiv API"""
         merged_headers = self.additional_headers.copy()
         if headers:

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Optional
 
 from requests.structures import CaseInsensitiveDict
 
@@ -19,11 +19,10 @@ class PixivError(Exception):
 
     def __init__(
         self,
-        reason,
-        header=None,
-        body=None,
+        reason: str,
+        header: dict[str, Any] | CaseInsensitiveDict[Any] | None = None,
+        body: str | None = None,
     ):
-        # type: (str, Optional[Union[Dict[str, Any], CaseInsensitiveDict[Any]]], Optional[str]) -> None
         self.reason = str(reason)
         self.header = header
         self.body = body
