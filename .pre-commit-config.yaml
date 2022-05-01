@@ -1,3 +1,7 @@
+# pip install pre-commit
+# pre-commit install
+# pre-commit run --all-files
+
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.2.0
