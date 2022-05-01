@@ -3,14 +3,15 @@
 from typing import Any, Dict, Optional, Union
 
 from requests.structures import CaseInsensitiveDict
-from typeguard import typechecked
+
+# from typeguard import typechecked
 
 ParamDict = Optional[Dict[str, Any]]
 ParsedJson = Any
 Response = Any
 
 
-@typechecked
+# @typechecked
 class PixivError(Exception):
     """Pixiv API exception"""
 
@@ -30,7 +31,7 @@ class PixivError(Exception):
         return self.reason
 
 
-@typechecked
+# @typechecked
 class JsonDict(dict):  # type: ignore[type-arg]
     """general json object that allows attributes to be bound to and also behaves like a dict"""
 

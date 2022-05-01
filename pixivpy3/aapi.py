@@ -18,10 +18,12 @@ except ImportError:
     from typing_extensions import TypeAlias
 
 from requests.structures import CaseInsensitiveDict
-from typeguard import typechecked
 
 from .api import BasePixivAPI
 from .utils import ParamDict, ParsedJson, PixivError, Response
+
+# from typeguard import typechecked
+
 
 _FILTER: TypeAlias = Literal["for_ios", ""]
 _TYPE: TypeAlias = Literal["illust", "manga", ""]
@@ -55,7 +57,7 @@ _BOOL: TypeAlias = Literal["true", "false"]
 
 # App-API (6.x - app-api.pixiv.net)
 # noinspection PyShadowingBuiltins
-@typechecked
+# @typechecked
 class AppPixivAPI(BasePixivAPI):
     def __init__(self, **requests_kwargs: Any) -> None:
         """initialize requests kwargs if need be"""

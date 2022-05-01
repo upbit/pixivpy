@@ -35,7 +35,7 @@ def main():
         image_url = illust.meta_single_page.get(
             "original_image_url", illust.image_urls.large
         )
-        print("%s: %s" % (illust.title, image_url))
+        print("{}: {}".format(illust.title, image_url))
 
         # try four args in MR#102
         if idx == 0:
@@ -52,7 +52,7 @@ def main():
             api.download(
                 image_url,
                 path="/foo/bar",
-                fname=open("%s/illust_%s.jpg" % (directory, illust.id), "wb"),
+                fname=open("{}/illust_{}.jpg".format(directory, illust.id), "wb"),
             )
 
 
