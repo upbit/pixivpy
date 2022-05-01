@@ -1,9 +1,0 @@
-_e = None
-for i in range(3):
-    try:
-        raise Exception
-    except Exception as e:
-        _e = e
-        pass
-else:
-    raise _e
