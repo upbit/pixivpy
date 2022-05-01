@@ -1,5 +1,7 @@
 # -*- coding:utf-8 -*-
 
+from __future__ import annotations
+
 from typing import Any, Dict, Optional, Union
 
 from requests.structures import CaseInsensitiveDict

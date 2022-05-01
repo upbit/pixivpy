@@ -1,6 +1,8 @@
 # -*- coding:utf-8 -*-
 
-from typing import Any, Union
+from __future__ import annotations
+
+from typing import Any
 
 import requests
 from requests_toolbelt.adapters import host_header_ssl  # type: ignore[import]
@@ -21,7 +23,7 @@ class ByPassSniApi(AppPixivAPI):
 
     def require_appapi_hosts(
         self, hostname: str = "app-api.pixiv.net", timeout: int = 3
-    ) -> Union[str, bool]:
+    ) -> str | bool:
         """
         通过 DoH 服务请求真实的 IP 地址。
         """
