@@ -2,8 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import time
 
-from pixivpy3 import AppPixivAPI
+from pixivpy3 import AppPixivAPI, PixivError
 
 sys.dont_write_bytecode = True
 
@@ -286,7 +287,16 @@ def main():
     # app-api
     aapi = AppPixivAPI(**_REQUESTS_KWARGS)
 
-    aapi.auth(refresh_token=_REFRESH_TOKEN)
+    _e = None
+    for _ in range(3):
+        try:
+            aapi.auth(refresh_token=_REFRESH_TOKEN)
+            break
+        except PixivError as e:
+            _e = e
+            time.sleep(10)
+    else:  # failed 3 times
+        raise _e
 
     appapi_illust(aapi)
     appapi_recommend(aapi)
