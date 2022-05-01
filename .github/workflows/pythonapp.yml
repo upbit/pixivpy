@@ -1,6 +1,11 @@
 name: pixivpy
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  workflow_dispatch:
 
 jobs:
   build:
@@ -15,14 +20,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v1
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v1
-        with:
-          python-version: ${{ matrix.python-version }}
-      - uses: pre-commit/action@v2.0.3
+      - name: Lint with pre-commit
+        uses: pre-commit/action@v2.0.3
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install '.[dev]'
+          pip install .
       - name: Run demo.py
         run: python demo.py

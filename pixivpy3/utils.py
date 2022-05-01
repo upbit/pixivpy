@@ -1,26 +1,28 @@
 # -*- coding:utf-8 -*-
 
-from typing import Any, Dict, Optional, Union
+from __future__ import annotations
+
+from typing import Any, Dict, Optional
 
 from requests.structures import CaseInsensitiveDict
-from typeguard import typechecked  # type: ignore[import]
+
+# from typeguard import typechecked
 
 ParamDict = Optional[Dict[str, Any]]
 ParsedJson = Any
 Response = Any
 
 
-@typechecked
+# @typechecked
 class PixivError(Exception):
     """Pixiv API exception"""
 
     def __init__(
         self,
-        reason,
-        header=None,
-        body=None,
+        reason: str,
+        header: dict[str, Any] | CaseInsensitiveDict[Any] | None = None,
+        body: str | None = None,
     ):
-        # type: (str, Optional[Union[Dict[str, Any], CaseInsensitiveDict[Any]]], Optional[str]) -> None
         self.reason = str(reason)
         self.header = header
         self.body = body
@@ -30,7 +32,7 @@ class PixivError(Exception):
         return self.reason
 
 
-@typechecked
+# @typechecked
 class JsonDict(dict):  # type: ignore[type-arg]
     """general json object that allows attributes to be bound to and also behaves like a dict"""
 

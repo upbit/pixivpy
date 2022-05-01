@@ -1,19 +1,23 @@
 # -*- coding:utf-8 -*-
+
+from __future__ import annotations
+
 import hashlib
 import json
 import os
 import shutil
 from datetime import datetime
-from typing import IO, Any, Optional, Union
+from typing import IO, Any
 
 import cloudscraper  # type: ignore[import]
 from requests.structures import CaseInsensitiveDict
-from typeguard import typechecked  # type: ignore[import]
 
 from .utils import JsonDict, ParamDict, ParsedJson, PixivError, Response
 
+# from typeguard import typechecked
 
-@typechecked
+
+# @typechecked
 class BasePixivAPI(object):
     client_id = "MOBrBDS8blbauoSck0ZfDbtuzpyT"
     client_secret = "lsACyCD94FhDUtGTXi3QzcFE2uU1hqtDaKeqrdwj"
@@ -21,9 +25,9 @@ class BasePixivAPI(object):
 
     def __init__(self, **requests_kwargs: Any) -> None:
         """initialize requests kwargs if need be"""
-        self.user_id: Union[int, str] = 0
-        self.access_token: Optional[str] = None
-        self.refresh_token: Optional[str] = None
+        self.user_id: int | str = 0
+        self.access_token: str | None = None
+        self.refresh_token: str | None = None
         self.hosts = "https://app-api.pixiv.net"
 
         # self.requests = requests.Session()
@@ -63,7 +67,7 @@ class BasePixivAPI(object):
         data=None,
         stream=False,
     ):
-        # type: (str, str, Union[ParamDict, CaseInsensitiveDict[Any]], ParamDict, ParamDict, bool) -> Response
+        # type: (str, str, ParamDict | CaseInsensitiveDict[Any], ParamDict, ParamDict, bool) -> Response
         """requests http/https call for Pixiv API"""
         merged_headers = self.additional_headers.copy()
         if headers:
@@ -77,7 +81,7 @@ class BasePixivAPI(object):
                     params=params,
                     headers=merged_headers,
                     stream=stream,
-                    **self.requests_kwargs
+                    **self.requests_kwargs,
                 )
             elif method == "POST":
                 return self.requests.post(
@@ -86,7 +90,7 @@ class BasePixivAPI(object):
                     data=data,
                     headers=merged_headers,
                     stream=stream,
-                    **self.requests_kwargs
+                    **self.requests_kwargs,
                 )
             elif method == "DELETE":
                 return self.requests.delete(
@@ -95,14 +99,14 @@ class BasePixivAPI(object):
                     data=data,
                     headers=merged_headers,
                     stream=stream,
-                    **self.requests_kwargs
+                    **self.requests_kwargs,
                 )
             else:
                 raise PixivError("Unknown method: %s" % method)
         except Exception as e:
-            raise PixivError("requests %s %s error: %s" % (method, url, e))
+            raise PixivError("requests {} {} error: {}".format(method, url, e))
 
-    def set_auth(self, access_token: str, refresh_token: Optional[str] = None) -> None:
+    def set_auth(self, access_token: str, refresh_token: str | None = None) -> None:
         self.access_token = access_token
         self.refresh_token = refresh_token
 
@@ -115,9 +119,9 @@ class BasePixivAPI(object):
 
     def auth(
         self,
-        username: Optional[str] = None,
-        password: Optional[str] = None,
-        refresh_token: Optional[str] = None,
+        username: str | None = None,
+        password: str | None = None,
+        refresh_token: str | None = None,
         headers: ParamDict = None,
     ) -> ParsedJson:
         """Login with password, or use the refresh_token to acquire a new bearer token"""
@@ -196,9 +200,9 @@ class BasePixivAPI(object):
         url: str,
         prefix: str = "",
         path: str = os.path.curdir,
-        name: Optional[str] = None,
+        name: str | None = None,
         replace: bool = False,
-        fname: Optional[Union[str, IO[bytes]]] = None,
+        fname: str | IO[bytes] | None = None,
         referer: str = "https://app-api.pixiv.net/",
     ) -> bool:
         """Download image to file (use 6.0 app-api)"""
