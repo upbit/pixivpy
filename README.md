@@ -342,7 +342,7 @@ print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
 ## Make a release
 
-> Bump version in `pixivpy3/__init__.py`, rebuild dist/*
+> Bump version in `pixivpy3/VERSION`, rebuild dist/*
 
 ```bash
 python3 setup.py sdist bdist_wheel
