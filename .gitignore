@@ -7,6 +7,7 @@ url.txt
 dist/
 build/
 PixivPy.egg-info/
+PixivPy3.egg-info/
 MANIFEST
 
 # Mac

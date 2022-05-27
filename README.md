@@ -1,4 +1,4 @@
-PixivPy ![Build Status](https://github.com/upbit/pixivpy/workflows/pixivpy/badge.svg?branch=master) [![PyPI version](https://badge.fury.io/py/PixivPy.svg)](https://badge.fury.io/py/PixivPy)
+PixivPy3 ![Build Status](https://github.com/upbit/pixivpy/workflows/pixivpy/badge.svg?branch=master) [![PyPI version](https://badge.fury.io/py/PixivPy3.svg)](https://badge.fury.io/py/PixivPy3)
 ======
 
 > Due to [#158](https://github.com/upbit/pixivpy/issues) reason, password login no longer exist. Please use `api.auth(refresh_token=REFRESH_TOKEN)` instead
@@ -30,6 +30,10 @@ _Pixiv API for Python (with Auth supported)_
 Use pip for installing:
 
 ~~~
+# for Python3
+pip install pixivpy3 --upgrade
+
+# for Python2
 pip install pixivpy --upgrade
 ~~~
 
