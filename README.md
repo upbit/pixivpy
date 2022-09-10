@@ -192,6 +192,9 @@ class AppPixivAPI(BasePixivAPI):
     # content_type: [illust, manga]
     def illust_recommended(content_type="illust"):
 
+    # 小说推荐
+    def novel_recommended():
+
     # 作品排行
     # mode: [day, week, month, day_male, day_female, week_original, week_rookie, day_manga]
     # date: '2016-08-01'
