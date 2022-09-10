@@ -233,6 +233,24 @@ def appapi_bookmark_add(aapi):
 
 
 def appapi_novel(aapi):
+    json_result = aapi.novel_recommended()
+    print(json_result)
+    novel = json_result.novels[0]
+    print(
+        ">>> %s, text_length: %s, series: %s"
+        % (novel.title, novel.text_length, novel.series)
+    )
+
+    # get next page
+    next_qs = aapi.parse_qs(json_result.next_url)
+    if next_qs is not None:
+        json_result = aapi.novel_recommended(**next_qs)
+        novel = json_result.novels[0]
+        print(
+            ">>> %s, text_length: %s, series: %s"
+            % (novel.title, novel.text_length, novel.series)
+        )
+
     json_result = aapi.user_novels(59216290)
     print(json_result)
     novel = json_result.novels[0]

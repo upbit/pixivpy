@@ -330,6 +330,42 @@ class AppPixivAPI(BasePixivAPI):
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
         return self.parse_result(r)
 
+    # 小说推荐
+    def novel_recommended(
+        self,
+        include_ranking_label: bool | str = True,
+        filter: _FILTER = "for_ios",
+        offset: int | str | None = None,
+        include_ranking_novels: str | bool | None = None,
+        already_recommended: str | list[str] | None = None,
+        max_bookmark_id_for_recommend: int | str | None = None,
+        include_privacy_policy: str | list[int | str] | None = None,
+        req_auth: bool = True,
+    ) -> ParsedJson:
+        url = "%s/v1/novel/recommended" % self.hosts
+        params: dict[str, Any] = {
+            "include_ranking_label": self.format_bool(include_ranking_label),
+            "filter": filter,
+        }
+        if offset:
+            params["offset"] = offset
+        if include_ranking_novels:
+            params["include_ranking_novels"] = self.format_bool(include_ranking_novels)
+        if max_bookmark_id_for_recommend:
+            params["max_bookmark_id_for_recommend"] = max_bookmark_id_for_recommend
+        if already_recommended:
+            if isinstance(already_recommended, str):
+                params["already_recommended"] = already_recommended
+            elif isinstance(already_recommended, list):
+                params["already_recommended"] = ",".join(
+                    str(iid) for iid in already_recommended
+                )
+        if include_privacy_policy:
+            params["include_privacy_policy"] = include_privacy_policy
+
+        r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
+        return self.parse_result(r)
+
     # 作品排行
     # mode: [day, week, month, day_male, day_female, week_original, week_rookie, day_manga]
     # date: '2016-08-01'
