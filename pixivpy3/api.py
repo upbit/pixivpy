@@ -161,7 +161,7 @@ class BasePixivAPI(object):
         else:
             raise PixivError("[ERROR] auth() but no password or refresh_token is set.")
 
-        r = self.requests_call("POST", url, headers=headers, data=data)
+        r = self.requests_call("POST", url, headers=headers_, data=data)
         if r.status_code not in {200, 301, 302}:
             if data["grant_type"] == "password":
                 raise PixivError(
