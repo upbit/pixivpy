@@ -275,6 +275,8 @@ class AppPixivAPI(BasePixivAPI):
     # 大家的新作
     # content_type: [illust, manga]
     def illust_new(content_type="illust", max_illust_id=None):
+        
+    def novel_new(max_novel_id=None):
 
     # 特辑详情 (无需登录，调用Web API)
     def showcase_article(showcase_id):
