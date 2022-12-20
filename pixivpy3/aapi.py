@@ -713,6 +713,21 @@ class AppPixivAPI(BasePixivAPI):
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
         return self.parse_result(r)
 
+    def novel_new(
+        self,
+        filter: _FILTER = "for_ios",
+        max_novel_id: int | str | None = None,
+        req_auth: bool = True,
+    ) -> ParsedJson:
+        url = "%s/v1/novel/new" % self.hosts
+        params: dict[str, Any] = {
+            "filter": filter,
+        }
+        if max_novel_id:
+            params["max_novel_id"] = max_novel_id
+        r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
+        return self.parse_result(r)
+
     # 小说正文
     def novel_text(self, novel_id: int | str, req_auth: bool = True) -> ParsedJson:
         url = "%s/v1/novel/text" % self.hosts
