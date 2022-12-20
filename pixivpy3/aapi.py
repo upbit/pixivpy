@@ -714,10 +714,10 @@ class AppPixivAPI(BasePixivAPI):
         return self.parse_result(r)
 
     def novel_new(
-            self,
-            filter: _FILTER = "for_ios",
-            max_novel_id: int | str | None = None,
-            req_auth: bool = True,
+        self,
+        filter: _FILTER = "for_ios",
+        max_novel_id: int | str | None = None,
+        req_auth: bool = True,
     ) -> ParsedJson:
         url = "%s/v1/novel/new" % self.hosts
         params: dict[str, Any] = {
