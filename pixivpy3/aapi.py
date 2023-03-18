@@ -262,7 +262,7 @@ class AppPixivAPI(BasePixivAPI):
         filter: _FILTER = "for_ios",
         seed_illust_ids: int | str | list[str] | None = None,
         offset: int | str | None = None,
-        viewed: list[str] | None = None,
+        viewed: str | list[str] | None = None,
         req_auth: bool = True,
     ) -> ParsedJson:
         url = "%s/v2/illust/related" % self.hosts
@@ -275,6 +275,10 @@ class AppPixivAPI(BasePixivAPI):
             params["seed_illust_ids[]"] = [seed_illust_ids]
         elif isinstance(seed_illust_ids, list):
             params["seed_illust_ids[]"] = seed_illust_ids
+        if isinstance(viewed, str):
+            params["viewed[]"] = [viewed]
+        elif isinstance(viewed, list):
+            params["viewed[]"] = viewed
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
         return self.parse_result(r)
 
@@ -291,7 +295,7 @@ class AppPixivAPI(BasePixivAPI):
         include_ranking_illusts: str | bool | None = None,
         bookmark_illust_ids: str | list[int | str] | None = None,
         include_privacy_policy: str | list[int | str] | None = None,
-        viewed: list[str] | None = None,
+        viewed: str | list[str] | None = None,
         req_auth: bool = True,
     ) -> ParsedJson:
         if req_auth:
@@ -315,6 +319,10 @@ class AppPixivAPI(BasePixivAPI):
             params["include_ranking_illusts"] = self.format_bool(
                 include_ranking_illusts
             )
+        if isinstance(viewed, str):
+            params["viewed[]"] = [viewed]
+        elif isinstance(viewed, list):
+            params["viewed[]"] = viewed
 
         if not req_auth:
             if isinstance(bookmark_illust_ids, str):
