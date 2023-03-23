@@ -210,6 +210,22 @@ class AppPixivAPI(BasePixivAPI):
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
         return self.parse_result(r)
 
+    def user_recommended(
+        self,
+        filter: _FILTER = "for_ios",
+        offset: int | str | None = None,
+        req_auth: bool = True,
+    ) -> ParsedJson:
+        url = "%s/v1/user/recommended" % self.hosts
+        params = {
+            "filter": filter,
+        }
+        if offset:
+            params["offset"] = offset
+
+        r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
+        return self.parse_result(r)
+
     # 关注用户的新作
     # restrict: [public, private]
     def illust_follow(
