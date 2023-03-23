@@ -340,13 +340,12 @@ class AppPixivAPI(BasePixivAPI):
         elif isinstance(viewed, list):
             params["viewed[]"] = viewed
 
-        if not req_auth:
-            if isinstance(bookmark_illust_ids, str):
-                params["bookmark_illust_ids"] = bookmark_illust_ids
-            elif isinstance(bookmark_illust_ids, list):
-                params["bookmark_illust_ids"] = ",".join(
-                    str(iid) for iid in bookmark_illust_ids
-                )
+        if not req_auth and isinstance(bookmark_illust_ids, (str, list)):
+            params["bookmark_illust_ids"] = (
+                ",".join(str(iid) for iid in bookmark_illust_ids)
+                if isinstance(bookmark_illust_ids, list)
+                else bookmark_illust_ids
+            )
 
         if include_privacy_policy:
             params["include_privacy_policy"] = include_privacy_policy
