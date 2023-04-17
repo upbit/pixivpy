@@ -287,7 +287,7 @@ def appapi_novel(aapi):
             % (detail.title, detail.total_character_count)
         )
 
-    novel_id = 14357107
+    novel_id = 12438689
     json_result = aapi.novel_detail(novel_id)
     print(json_result)
     novel = json_result.novel
