@@ -1,21 +1,25 @@
+import json
+
 import pytest
+
+from tests.utils import load_data_from_file, load_json_from_file
 
 
 class ResponseFixture:
-    def __init__(self, status_code, headers=None, json=None):
+    def __init__(self, status_code, headers=None, json_data=None):
         self.status_code = status_code
         self.headers = headers or {}
-        self.json = json or {}
+        self.json = json_data or {}
 
 
 @pytest.fixture
 def pixiv_response_200():
-    return ResponseFixture(status_code=200, headers=None, json=None)
+    return ResponseFixture(status_code=200, headers=None, json_data=None)
 
 
 @pytest.fixture
 def pixiv_response_201():
-    return ResponseFixture(status_code=201, headers=None, json=None)
+    return ResponseFixture(status_code=201, headers=None, json_data=None)
 
 
 @pytest.fixture
@@ -42,41 +46,11 @@ def accept_language_header_dict():
 
 @pytest.fixture
 def valid_json_str():
-    # TODO: simplify generating of valid json;
-    #       move some data to files
-
-    return """{
-  "string": "string",
-  "number": 1.0,
-  "boolean": true,
-  "array": [
-    {
-      "string": "string",
-      "number": 1.0,
-      "boolean": true
-    },
-    {
-      "string": "string",
-      "number": 1.0,
-      "boolean": true
-    }
-  ],
-  "null": null,
-  "object": {
-    "string": "string",
-    "number": 1.0,
-    "boolean": true
-  }
-}
-"""
+    json_data = load_json_from_file("general_valid_json.json")
+    return json.dumps(json_data)
 
 
 @pytest.fixture
 def invalid_json_str():
-    # TODO: simplify generating of valid json;
-    #       move some data to files
-
-    return """{
-  'string': 'string',
-}
-"""
+    invalid_json_data = load_data_from_file("general_invalid_json.txt")
+    return invalid_json_data

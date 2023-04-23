@@ -1,0 +1,23 @@
+{
+  "string": "string",
+  "number": 1.0,
+  "boolean": true,
+  "array": [
+    {
+      "string": "string",
+      "number": 1.0,
+      "boolean": true
+    },
+    {
+      "string": "string",
+      "number": 1.0,
+      "boolean": true
+    }
+  ],
+  "null": null,
+  "object": {
+    "string": "string",
+    "number": 1.0,
+    "boolean": true
+  }
+}
