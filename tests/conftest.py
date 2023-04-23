@@ -1,4 +1,5 @@
 import json
+import random
 
 import pytest
 
@@ -32,6 +33,16 @@ def pixiv_post_payload():
 def pixiv_url_common():
     # @TODO: enhance generating of Pixiv common url
     return "https://app-api.pixiv.net/v1/"
+
+
+@pytest.fixture
+def pixiv_image_url():
+    return (
+        "https://i.pximg.net/c/600x1200_90/img-master/"
+        "img/2023/01/01/12/38/38/{}_p0_master1200.jpg".format(
+            random.randint(100_000_000, 999_999_999)
+        )
+    )
 
 
 @pytest.fixture

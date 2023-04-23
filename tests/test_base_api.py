@@ -124,3 +124,33 @@ class TestBasePixivAPI(object):
 
         with pytest.raises(JSONDecodeError):
             api.parse_json(invalid_json_str)
+
+    @patch("cloudscraper.create_scraper")
+    def test_require_auth(self, scraper_mock):
+        api = BasePixivAPI()
+        scraper_mock.assert_called_once()
+
+        assert api.access_token is None
+
+        with pytest.raises(PixivError):
+            api.require_auth()
+
+    @patch("pixivpy3.api.open")
+    @patch("pixivpy3.api.shutil")
+    @patch("cloudscraper.create_scraper")
+    def test_download(
+        self, scraper_mock, shutil_mock, open_mock, pixiv_image_url, pixiv_response_200
+    ):
+        api = BasePixivAPI()
+        scraper_mock.assert_called_once()
+
+        api.download(pixiv_image_url)
+
+        scraper_mock.return_value.get.assert_called_once()
+        assert pixiv_image_url in scraper_mock.return_value.get.call_args[0]
+        assert scraper_mock.return_value.get.call_args[1].get("stream")
+
+        shutil_mock.copyfileobj.assert_called_once_with(
+            scraper_mock.return_value.get.return_value.__enter__.return_value.raw,
+            open_mock.return_value.__enter__.return_value,
+        )
