@@ -34,3 +34,8 @@ jobs:
           pip install .
       - name: Run demo.py
         run: python demo.py
+      - name: Install dependencies tests
+        run: |
+          pip install .[tests]
+      - name: Run tests
+        run: pytest

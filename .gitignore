@@ -16,3 +16,6 @@ MANIFEST
 # IDE
 /.idea/
 /.vscode/
+
+# tests
+.pytest_cache
