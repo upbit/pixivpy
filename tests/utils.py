@@ -2,7 +2,6 @@ import json
 import logging
 import os
 
-
 logger = logging.getLogger(__name__)
 
 FIXTURES_DIR = "tests/fixtures"
