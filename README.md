@@ -1,84 +1,113 @@
-PixivPy3 ![Build Status](https://github.com/upbit/pixivpy/workflows/pixivpy/badge.svg?branch=master) [![PyPI version](https://badge.fury.io/py/PixivPy3.svg)](https://badge.fury.io/py/PixivPy3)
-======
+# PixivPy3 ![Build Status](https://github.com/upbit/pixivpy/workflows/pixivpy/badge.svg?branch=master) [![PyPI version](https://badge.fury.io/py/PixivPy3.svg)](https://badge.fury.io/py/PixivPy3)
 
-> Due to [#158](https://github.com/upbit/pixivpy/issues) reason, password login no longer exist. Please use `api.auth(refresh_token=REFRESH_TOKEN)` instead
+> Due to [#158](https://github.com/upbit/pixivpy/issues) reason, password login
+> no longer exist. Please use `api.auth(refresh_token=REFRESH_TOKEN)` instead
 >
-> To get `refresh_token`, see [@ZipFile Pixiv OAuth Flow](https://gist.github.com/ZipFile/c9ebedb224406f4f11845ab700124362) or [OAuth with Selenium/ChromeDriver]( https://gist.github.com/upbit/6edda27cb1644e94183291109b8a5fde)
+> To get `refresh_token`, see
+> [@ZipFile Pixiv OAuth Flow](https://gist.github.com/ZipFile/c9ebedb224406f4f11845ab700124362)
+> or
+> [OAuth with Selenium/ChromeDriver](https://gist.github.com/upbit/6edda27cb1644e94183291109b8a5fde)
 
 _Pixiv API for Python (with Auth supported)_
 
-* [2022/02/04] Remove Public-API support as it's deprecated by Pixiv, see [!201](https://github.com/upbit/pixivpy/commit/74e114e1cfe51e6c0e8c30c2024bcfcf0bae7ccc)
-* [2021/11/23] Add `illust_new` for get latest works, see [!189](https://github.com/upbit/pixivpy/commit/024d4e7212582ca6f31ef5592b4b5b46cb351cbc)
-* [2021/03/02] Add user `follow/unfollow`, add `novel` API, see [!161](https://github.com/upbit/pixivpy/pull/161/files) (thanks [@y-young](https://github.com/y-young), [@invobzvr](https://github.com/invobzvr))
-* [2020/10/17] Use [cloudscraper](https://github.com/VeNoMouS/cloudscraper) to bypass Cloudflare, fixed issue #140 (thanks [@lllusion3469](https://github.com/lllusion3469))
-* [2020/07/19] Add date specification for `search_illust()` (thanks [Xdynix](https://github.com/Xdynix))
-* [2020/06/06] Add `AppPixivAPI().search_novel()` for novel search
-* [2019/09/23] 增加大陆地区AppAPI的免翻墙访问支持, release v3.5 (See [example_bypass_sni.py](https://github.com/upbit/pixivpy/blob/master/example_bypass_sni.py), thanks [@Notsfsssf](https://github.com/Notsfsssf))
-* [2019/09/03] Support new auth() check `X-Client-Time/X-Client-Hash` (thanks [DaRealFreak](https://github.com/DaRealFreak), [#83](https://github.com/upbit/pixivpy/issues/83))
-* [2019/04/27] Support hosts proxy for AppAPI, which can use behind the Great Wall (See [example_api_proxy.py](https://github.com/upbit/pixivpy/blob/master/example_api_proxy.py))
-* [2017/04/18] Fix encoder BUG for `illust_bookmark_add()/illust_bookmark_delete()` params (thanks [naplings](https://github.com/naplings))
-* [2017/01/05] Add `PixivAPI().works()` liked API `illust_detail()` for App-API (thanks [Mapaler](https://github.com/Mapaler)), release v3.3
-* [2016/12/17] Fixed encoding BUG for Public-API, see #26 (thanks [Xdynix](https://github.com/Xdynix))
-* [2016/07/27] Now `AppPixivAPI()` can call **without auth** (thanks [zzycami](https://github.com/zzycami)), check [demo.py](https://github.com/upbit/pixivpy/blob/b83578e066ddcba86295676d931ff3313d138b22/demo.py#L268)
-* [2016/07/20] New **App-API** (Experimental) for `PixivIOSApp/6.0.9`
-* [2016/07/11] Add new [iOS 6.x API](https://github.com/upbit/pixivpy/wiki#6x-api) reference to Wiki
-* [2015/12/02] Add write API for favorite an user / illust, release v3.1
-* [2015/08/11] Remove SPAI and release v3.0 (pixivpy3) (Public-API with Search API)
-* [2015/05/16] As Pixiv **deprecated** SAPI in recent days, push new Public-API **ranking_all**
-* [2014/10/07] New framework, **SAPI / Public-API** supported (requests needed)
+- [2022/02/04] Remove Public-API support as it's deprecated by Pixiv, see
+  [!201](https://github.com/upbit/pixivpy/commit/74e114e1cfe51e6c0e8c30c2024bcfcf0bae7ccc)
+- [2021/11/23] Add `illust_new` for get latest works, see
+  [!189](https://github.com/upbit/pixivpy/commit/024d4e7212582ca6f31ef5592b4b5b46cb351cbc)
+- [2021/03/02] Add user `follow/unfollow`, add `novel` API, see
+  [!161](https://github.com/upbit/pixivpy/pull/161/files) (thanks
+  [@y-young](https://github.com/y-young),
+  [@invobzvr](https://github.com/invobzvr))
+- [2020/10/17] Use [cloudscraper](https://github.com/VeNoMouS/cloudscraper) to
+  bypass Cloudflare, fixed issue #140 (thanks
+  [@lllusion3469](https://github.com/lllusion3469))
+- [2020/07/19] Add date specification for `search_illust()` (thanks
+  [Xdynix](https://github.com/Xdynix))
+- [2020/06/06] Add `AppPixivAPI().search_novel()` for novel search
+- [2019/09/23] 增加大陆地区 AppAPI 的免翻墙访问支持, release v3.5 (See
+  [example_bypass_sni.py](https://github.com/upbit/pixivpy/blob/master/example_bypass_sni.py),
+  thanks [@Notsfsssf](https://github.com/Notsfsssf))
+- [2019/09/03] Support new auth() check `X-Client-Time/X-Client-Hash` (thanks
+  [DaRealFreak](https://github.com/DaRealFreak),
+  [#83](https://github.com/upbit/pixivpy/issues/83))
+- [2019/04/27] Support hosts proxy for AppAPI, which can use behind the Great
+  Wall (See
+  [example_api_proxy.py](https://github.com/upbit/pixivpy/blob/master/example_api_proxy.py))
+- [2017/04/18] Fix encoder BUG for
+  `illust_bookmark_add()/illust_bookmark_delete()` params (thanks
+  [naplings](https://github.com/naplings))
+- [2017/01/05] Add `PixivAPI().works()` liked API `illust_detail()` for App-API
+  (thanks [Mapaler](https://github.com/Mapaler)), release v3.3
+- [2016/12/17] Fixed encoding BUG for Public-API, see #26 (thanks
+  [Xdynix](https://github.com/Xdynix))
+- [2016/07/27] Now `AppPixivAPI()` can call **without auth** (thanks
+  [zzycami](https://github.com/zzycami)), check
+  [demo.py](https://github.com/upbit/pixivpy/blob/b83578e066ddcba86295676d931ff3313d138b22/demo.py#L268)
+- [2016/07/20] New **App-API** (Experimental) for `PixivIOSApp/6.0.9`
+- [2016/07/11] Add new
+  [iOS 6.x API](https://github.com/upbit/pixivpy/wiki#6x-api) reference to Wiki
+- [2015/12/02] Add write API for favorite an user / illust, release v3.1
+- [2015/08/11] Remove SPAI and release v3.0 (pixivpy3) (Public-API with Search
+  API)
+- [2015/05/16] As Pixiv **deprecated** SAPI in recent days, push new Public-API
+  **ranking_all**
+- [2014/10/07] New framework, **SAPI / Public-API** supported (requests needed)
 
 Use pip for installing:
 
-~~~
+```bash
 # for Python3
 pip install pixivpy3 --upgrade
 
 # for Python2
 pip install pixivpy --upgrade
-~~~
+```
 
 Requirements: [requests](https://pypi.python.org/pypi/requests)
 
 ### [Mikubill/PixivPy-Async](https://github.com/Mikubill/pixivpy-async): Async Pixiv API for Python 3
 
-性能对比（需要高性能访问场景，可以参考[这个脚本](https://github.com/Mikubill/pixivpy-async/blob/master/Perf.py)）
+> 性能对比（需要高性能访问场景，可以参
+> 考[这个脚本](https://github.com/Mikubill/pixivpy-async/blob/master/Perf.py)）
 
-@Mikubill: 简单进行了一下并发测试。（撞了N次Rate Limit...)
+> Warning: The rate limit was hit multiple times during the test, so the result
+> may not be informative. Script:
+> https://github.com/Mikubill/pixivpy-async/blob/master/Perf.py
 
 `sg -> Singapore, jp -> Japan, unit -> second`
 
-| Method | Sync(10,sg)  |  Async(10,sg)   |  Sync(200,sg)  |  Async(200,sg)   |
-| ----  | ----  |  ----  | ----  |  ----  |
-|  illust_detail  | 1.1209 | 0.8641 | 31.7041 | 2.4580 |
-| illust_ranking  | 1.0697 | 0.7936 | 28.4539 | 2.0693 |
-|   user_illusts  | 0.8824 | 0.7505 | 28.3981 | 1.8199 |
-|    user_detail  | 0.9628 | 0.7550 | 28.3055 | 1.7738 |
-| ugoira_metadata | 0.8509 | 0.7459 | 29.5566 | 2.2331 |
-| works           | 1.1204 | 0.8912 | 32.2068 | 2.8513 |
-| me_following_works | 1.1253 | 0.7845 | 39.3142 | 2.2785 |
-| ranking             | 1.0946 | 0.7944 | 39.6509 | 2.6548 |
-| latest_works        | 1.0483 | 0.8667 | 36.1992 | 2.5066 |
+| Method             | Sync(10,sg) | Async(10,sg) | Sync(200,sg) | Async(200,sg) |
+| ------------------ | ----------- | ------------ | ------------ | ------------- |
+| illust_detail      | 1.1209      | 0.8641       | 31.7041      | 2.4580        |
+| illust_ranking     | 1.0697      | 0.7936       | 28.4539      | 2.0693        |
+| user_illusts       | 0.8824      | 0.7505       | 28.3981      | 1.8199        |
+| user_detail        | 0.9628      | 0.7550       | 28.3055      | 1.7738        |
+| ugoira_metadata    | 0.8509      | 0.7459       | 29.5566      | 2.2331        |
+| works              | 1.1204      | 0.8912       | 32.2068      | 2.8513        |
+| me_following_works | 1.1253      | 0.7845       | 39.3142      | 2.2785        |
+| ranking            | 1.0946      | 0.7944       | 39.6509      | 2.6548        |
+| latest_works       | 1.0483      | 0.8667       | 36.1992      | 2.5066        |
 
-
-| Method |  Sync(500,jp)  |  Async(500,jp)   |
-| ----  |  ----  |  ----  |
-|  illust_detail  |6.2178 | 0.6400 |
-| illust_ranking  |6.4046 | 0.6119 |
-|   user_illusts  |7.6093 | 1.5266 |
-|    user_detail  |6.6759 | 0.5952 |
-| ugoira_metadata |6.5155 | 0.7577 |
-| works           | 13.3074| 0.8619|
-| me_following_works | 24.2693|2.0835|
-| ranking             | 21.4119|3.2805|
-| latest_works        | 17.3502|2.7029|
+| Method             | Sync(500,jp) | Async(500,jp) |
+| ------------------ | ------------ | ------------- |
+| illust_detail      | 6.2178       | 0.6400        |
+| illust_ranking     | 6.4046       | 0.6119        |
+| user_illusts       | 7.6093       | 1.5266        |
+| user_detail        | 6.6759       | 0.5952        |
+| ugoira_metadata    | 6.5155       | 0.7577        |
+| works              | 13.3074      | 0.8619        |
+| me_following_works | 24.2693      | 2.0835        |
+| ranking            | 21.4119      | 3.2805        |
+| latest_works       | 17.3502      | 2.7029        |
 
 ### Projects base on pixivpy
 
-1. [Mikubill/PixivPy-Async](https://github.com/Mikubill/pixivpy-async): Async Pixiv API for Python 3
+1. [Mikubill/PixivPy-Async](https://github.com/Mikubill/pixivpy-async): Async
+   Pixiv API for Python 3
 
 ### Example:
 
-~~~python
+```python
 from pixivpy3 import *
 
 api = AppPixivAPI()
@@ -108,30 +137,30 @@ while next_qs:
     for illust in json_result.illusts:
         print("[%s] %s" % (illust.title, illust.image_urls.medium))
     next_qs = api.parse_qs(json_result.next_url)
-~~~
+```
 
 ### [Sniffer - App API](https://github.com/upbit/pixivpy/wiki#6x-api)
-### [Sniffer - Public API (deprecated)](https://github.com/upbit/pixivpy/wiki/sniffer)
 
+### [Sniffer - Public API (deprecated)](https://github.com/upbit/pixivpy/wiki/sniffer)
 
 ### [Using API proxy behind the Great Wall](https://github.com/upbit/pixivpy/blob/master/example_api_proxy.py#L33) See detail in [Issue#73](https://github.com/upbit/pixivpy/issues/73)
 
 1. Upgrade pixivpy >= **v3.2.0**: `pip install pixivpy --upgrade`
 2. Call `api.download()` like the below:
 
-~~~python
+```python
 aapi = AppPixivAPI()
 json_result = aapi.illust_ranking()
 for illust in json_result.illusts[:3]:
     aapi.download(illust.image_urls.large)
-~~~
+```
 
 ### [Migrate pixivpy2 to pixivpy3](https://github.com/upbit/pixivpy/blob/master/demo.py#L15-L25)
 
 1. Replace `api.papi.*` to `api.*`
 2. Change deprecated SPAI call to Public-API call
 
-~~~python
+```python
 print(">>> new ranking_all(mode='daily', page=1, per_page=50)")
 #rank_list = api.sapi.ranking("all", 'day', 1)
 rank_list = api.ranking_all('daily', 1, 50)
@@ -140,23 +169,25 @@ print(rank_list)
 # more fields about response: https://github.com/upbit/pixivpy/wiki/sniffer
 ranking = rank_list.response[0]
 for img in ranking.works:
-	#print img.work
+	# print(img.work)
 	print("[%s/%s(id=%s)] %s" % (img.work.user.name, img.work.title, img.work.id, img.work.image_urls.px_480mw))
-~~~
+```
 
 ### About
 
-1. Blog: [Pixiv Public-API (OAuth)分析](http://blog.imaou.com/opensource/2014/10/09/pixiv_api_for_ios_update.html)
+1. Blog:
+   [Pixiv Public-API (OAuth)分析](http://blog.imaou.com/opensource/2014/10/09/pixiv_api_for_ios_update.html)
 
 If you have any questions, please feel free to contact me: rmusique@gmail.com
 
-Find Pixiv API in **Objective-C**? You might also like [**PixivAPI_iOS**](https://github.com/upbit/PixivAPI_iOS)
+Find Pixiv API in **Objective-C**? You might also like
+[**PixivAPI_iOS**](https://github.com/upbit/PixivAPI_iOS)
 
 ## API functions
 
 ### App-API (6.0 - app-api.pixiv.net)
 
-~~~python
+```python
 class AppPixivAPI(BasePixivAPI):
 
     # 返回翻页用参数
@@ -275,16 +306,16 @@ class AppPixivAPI(BasePixivAPI):
     # 大家的新作
     # content_type: [illust, manga]
     def illust_new(content_type="illust", max_illust_id=None):
-        
+
     def novel_new(max_novel_id=None):
 
     # 特辑详情 (无需登录，调用Web API)
     def showcase_article(showcase_id):
-~~~
+```
 
 [Usage](https://github.com/upbit/pixivpy/blob/master/demo.py#L42):
 
-~~~python
+```python
 aapi = AppPixivAPI()
 
 # 作品推荐
@@ -347,11 +378,11 @@ json_result = aapi.search_user("gomzi")
 print(json_result)
 illust = json_result.user_previews[0].illusts[0]
 print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
-~~~
+```
 
 ## Make a release
 
-> Bump version in `pixivpy3/VERSION`, rebuild dist/*
+> Bump version in `pixivpy3/VERSION`, rebuild dist/\*
 
 ```bash
 python3 setup.py sdist bdist_wheel
