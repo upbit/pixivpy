@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 from __future__ import annotations
 
 import hashlib
@@ -18,7 +16,7 @@ from .utils import JsonDict, ParamDict, ParsedJson, PixivError, Response
 
 
 # @typechecked
-class BasePixivAPI(object):
+class BasePixivAPI:
     client_id = "MOBrBDS8blbauoSck0ZfDbtuzpyT"
     client_secret = "lsACyCD94FhDUtGTXi3QzcFE2uU1hqtDaKeqrdwj"
     hash_secret = "28c1fdd170a5204386cb1313c7077b34f83e4aaf4aa829ce78c231e05b0bae2c"
@@ -32,9 +30,7 @@ class BasePixivAPI(object):
 
         # self.requests = requests.Session()
         self.requests = cloudscraper.create_scraper()  # fix due to #140
-        self.additional_headers = CaseInsensitiveDict(
-            requests_kwargs.pop("headers", {})
-        )  # type: CaseInsensitiveDict[Any]
+        self.additional_headers = CaseInsensitiveDict(requests_kwargs.pop("headers", {}))  # type: CaseInsensitiveDict[Any]
         self.requests_kwargs = requests_kwargs
 
     def set_additional_headers(self, headers: ParamDict) -> None:
@@ -54,20 +50,17 @@ class BasePixivAPI(object):
 
     def require_auth(self) -> None:
         if self.access_token is None:
-            raise PixivError(
-                "Authentication required! Call login() or set_auth() first!"
-            )
+            raise PixivError("Authentication required! Call login() or set_auth() first!")
 
     def requests_call(
         self,
-        method,
-        url,
-        headers=None,
-        params=None,
-        data=None,
-        stream=False,
-    ):
-        # type: (str, str, ParamDict | CaseInsensitiveDict[Any], ParamDict, ParamDict, bool) -> Response
+        method: str,
+        url: str,
+        headers: ParamDict | CaseInsensitiveDict[Any] | None = None,
+        params: ParamDict | None = None,
+        data: ParamDict | None = None,
+        stream: bool = False,
+    ) -> Response:
         """requests http/https call for Pixiv API"""
         merged_headers = self.additional_headers.copy()
         if headers:
@@ -128,9 +121,7 @@ class BasePixivAPI(object):
         local_time = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S+00:00")
         headers_ = CaseInsensitiveDict(headers or {})
         headers_["x-client-time"] = local_time
-        headers_["x-client-hash"] = hashlib.md5(
-            (local_time + self.hash_secret).encode("utf-8")
-        ).hexdigest()
+        headers_["x-client-hash"] = hashlib.md5((local_time + self.hash_secret).encode("utf-8")).hexdigest()
         # Allow mock UA due to #171: https://github.com/upbit/pixivpy/issues/171
         if "user-agent" not in headers_:
             headers_["app-os"] = "ios"
@@ -165,15 +156,13 @@ class BasePixivAPI(object):
         if r.status_code not in {200, 301, 302}:
             if data["grant_type"] == "password":
                 raise PixivError(
-                    "[ERROR] auth() failed! check username and password.\nHTTP %s: %s"
-                    % (r.status_code, r.text),
+                    "[ERROR] auth() failed! check username and password.\nHTTP {}: {}".format(r.status_code, r.text),
                     header=r.headers,
                     body=r.text,
                 )
             else:
                 raise PixivError(
-                    "[ERROR] auth() failed! check refresh_token.\nHTTP %s: %s"
-                    % (r.status_code, r.text),
+                    "[ERROR] auth() failed! check refresh_token.\nHTTP {}: {}".format(r.status_code, r.text),
                     header=r.headers,
                     body=r.text,
                 )
@@ -216,9 +205,7 @@ class BasePixivAPI(object):
             if os.path.exists(file) and not replace:
                 return False
 
-        with self.requests_call(
-            "GET", url, headers={"Referer": referer}, stream=True
-        ) as response:
+        with self.requests_call("GET", url, headers={"Referer": referer}, stream=True) as response:
             if isinstance(file, str):
                 with open(file, "wb") as out_file:
                     shutil.copyfileobj(response.raw, out_file)

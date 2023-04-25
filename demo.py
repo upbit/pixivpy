@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 import sys
 import time
@@ -74,9 +73,7 @@ def appapi_users(aapi):
     json_result = aapi.user_detail(275527)
     print(json_result)
     user = json_result.user
-    print(
-        "{}(@{}) region={}".format(user.name, user.account, json_result.profile.region)
-    )
+    print("{}(@{}) region={}".format(user.name, user.account, json_result.profile.region))
 
     json_result = aapi.user_illusts(275527)
     print(json_result)
@@ -124,10 +121,7 @@ def appapi_search(aapi):
     for trend_tag in response.trend_tags[:10]:
         if not first_tag:
             first_tag = trend_tag.tag
-        print(
-            "%s -  %s(id=%s)"
-            % (trend_tag.tag, trend_tag.illust.title, trend_tag.illust.id)
-        )
+        print("{} -  {}(id={})".format(trend_tag.tag, trend_tag.illust.title, trend_tag.illust.id))
 
     json_result = aapi.search_illust(first_tag, search_target="partial_match_for_tags")
     print(json_result)
@@ -236,65 +230,44 @@ def appapi_novel(aapi):
     json_result = aapi.novel_recommended()
     print(json_result)
     novel = json_result.novels[0]
-    print(
-        ">>> %s, text_length: %s, series: %s"
-        % (novel.title, novel.text_length, novel.series)
-    )
+    print(">>> {}, text_length: {}, series: {}".format(novel.title, novel.text_length, novel.series))
 
     # get next page
     next_qs = aapi.parse_qs(json_result.next_url)
     if next_qs is not None:
         json_result = aapi.novel_recommended(**next_qs)
         novel = json_result.novels[0]
-        print(
-            ">>> %s, text_length: %s, series: %s"
-            % (novel.title, novel.text_length, novel.series)
-        )
+        print(">>> {}, text_length: {}, series: {}".format(novel.title, novel.text_length, novel.series))
 
     json_result = aapi.user_novels(59216290)
     print(json_result)
     novel = json_result.novels[0]
-    print(
-        ">>> %s, text_length: %s, series: %s"
-        % (novel.title, novel.text_length, novel.series)
-    )
+    print(">>> {}, text_length: {}, series: {}".format(novel.title, novel.text_length, novel.series))
 
     # get next page
     next_qs = aapi.parse_qs(json_result.next_url)
     if next_qs is not None:
         json_result = aapi.user_novels(**next_qs)
         novel = json_result.novels[0]
-        print(
-            ">>> %s, text_length: %s, series: %s"
-            % (novel.title, novel.text_length, novel.series)
-        )
+        print(">>> {}, text_length: {}, series: {}".format(novel.title, novel.text_length, novel.series))
 
     json_result = aapi.novel_series(1206600)
     print(json_result)
     detail = json_result.novel_series_detail
-    print(
-        ">>> %s, total_character_count: %s"
-        % (detail.title, detail.total_character_count)
-    )
+    print(">>> {}, total_character_count: {}".format(detail.title, detail.total_character_count))
 
     # get next page
     next_qs = aapi.parse_qs(json_result.next_url)
     if next_qs is not None:
         json_result = aapi.novel_series(**next_qs)
         detail = json_result.novel_series_detail
-        print(
-            ">>> %s, total_character_count: %s"
-            % (detail.title, detail.total_character_count)
-        )
+        print(">>> {}, total_character_count: {}".format(detail.title, detail.total_character_count))
 
     novel_id = 12438689
     json_result = aapi.novel_detail(novel_id)
     print(json_result)
     novel = json_result.novel
-    print(
-        ">>> %s, text_length: %s, series: %s"
-        % (novel.title, novel.text_length, novel.series)
-    )
+    print(">>> {}, text_length: {}, series: {}".format(novel.title, novel.text_length, novel.series))
 
     json_result = aapi.novel_text(novel_id)
     print(json_result)

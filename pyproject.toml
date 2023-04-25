@@ -22,7 +22,7 @@ classifiers = [
 homepage = "https://github.com/upbit/pixivpy"
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.7"
 cloudscraper = "^1.2.58"
 requests = "^2.27.1"
 requests-toolbelt = "^0.10.1"
@@ -32,7 +32,7 @@ typing-extensions = "^4.1.1"
 [tool.poetry.group.dev.dependencies]
 black = {version = ">=22.1.0", extras = ["jupyter"]}
 ruff = "^0.0.263"
-isort = ">=5.10.1"
+isort = ">=5.11.5"
 mypy = ">=0.931"
 pre-commit = ">=2.18.1"
 pytest = ">=7.3"
