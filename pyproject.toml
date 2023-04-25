@@ -1,0 +1,73 @@
+[tool.poetry]
+name = "pixivpy3"
+version = "3.7.2"
+description = "Pixiv API for Python (with 6.x AppAPI supported)"
+authors = ["upbit <rmusique@gmail.com>"]
+license = "Unlicense"
+readme = "README.md"
+keywords = [
+    "pixiv",
+    "api",
+    "pixivapi"
+]
+classifiers = [
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+homepage = "https://github.com/upbit/pixivpy"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+cloudscraper = "^1.2.58"
+requests = "^2.27.1"
+requests-toolbelt = "^0.10.1"
+typing-extensions = "^4.1.1"
+
+
+[tool.poetry.group.dev.dependencies]
+black = {version = ">=22.1.0", extras = ["jupyter"]}
+ruff = "^0.0.263"
+isort = ">=5.10.1"
+mypy = ">=0.931"
+pre-commit = ">=2.18.1"
+pytest = ">=7.3"
+types-requests = ">=2.27.10"
+
+
+[tool.poetry.group.test.dependencies]
+pytest = "^7.3.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest]
+minversion = 7.3
+adops = "-ra"
+log_cli = true
+log_cli_level = 20
+log_cli_format = "%(asctime)s [%(levelname)8s] %(message)s (%(filename)s:%(lineno)s)"
+log_cli_date_format = "%Y-%m-%d %H:%M:%S"
+
+[tool.isort]
+profile = "black"
+
+[tool.black]
+line-length = 127
+preview = true
+target-version = ['py38', 'py39', 'py310', 'py311']
+
+[tool.ruff]
+line-length = 127
+
+[tool.mypy]
+python_version = 3.8
+show_error_codes = true
+pretty = true
+strict = true
+files = "pixivpy3"
