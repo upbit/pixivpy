@@ -5,19 +5,15 @@ description = "Pixiv API for Python (with 6.x AppAPI supported)"
 authors = ["upbit <rmusique@gmail.com>"]
 license = "Unlicense"
 readme = "README.md"
-keywords = [
-    "pixiv",
-    "api",
-    "pixivapi"
-]
+keywords = ["pixiv", "api", "pixivapi"]
 classifiers = [
-    "Operating System :: OS Independent",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
 ]
 homepage = "https://github.com/upbit/pixivpy"
 
@@ -28,16 +24,14 @@ requests = "^2.27.1"
 requests-toolbelt = "^0.10.1"
 typing-extensions = "^4.1.1"
 
-
 [tool.poetry.group.dev.dependencies]
-black = {version = ">=22.1.0", extras = ["jupyter"]}
+black = { version = ">=22.1.0", extras = ["jupyter"] }
 ruff = "^0.0.263"
 isort = ">=5.11.5"
 mypy = ">=0.931"
 pre-commit = ">=2.18.1"
 pytest = ">=7.3"
 types-requests = ">=2.27.10"
-
 
 [tool.poetry.group.test.dependencies]
 pytest = "^7.3.1"
@@ -46,7 +40,7 @@ pytest = "^7.3.1"
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.pytest]
+[tool.pytest.ini_options]
 minversion = 7.3
 adops = "-ra"
 log_cli = true

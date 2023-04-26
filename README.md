@@ -143,7 +143,7 @@ while next_qs:
 
 ### [Sniffer - Public API (deprecated)](https://github.com/upbit/pixivpy/wiki/sniffer)
 
-### [Using API proxy behind the Great Wall](https://github.com/upbit/pixivpy/blob/master/example_api_proxy.py#L33) See detail in [Issue#73](https://github.com/upbit/pixivpy/issues/73)
+### [Using API proxy behind the Great Wall](https://github.com/upbit/pixivpy/blob/aec177aa7a1979f7ec4c5bbbeed9085cc256bdbd/example_bypass_sni.py#L17) See detail in [Issue#73](https://github.com/upbit/pixivpy/issues/73)
 
 1. Upgrade pixivpy >= **v3.2.0**: `pip install pixivpy --upgrade`
 2. Call `api.download()` like the below:
@@ -155,7 +155,7 @@ for illust in json_result.illusts[:3]:
     aapi.download(illust.image_urls.large)
 ```
 
-### [Migrate pixivpy2 to pixivpy3](https://github.com/upbit/pixivpy/blob/master/demo.py#L15-L25)
+### [Migrate pixivpy2 to pixivpy3](https://github.com/upbit/pixivpy/blob/b1ad6b98/demo.py#L15-L25)
 
 1. Replace `api.papi.*` to `api.*`
 2. Change deprecated SPAI call to Public-API call
@@ -313,7 +313,7 @@ class AppPixivAPI(BasePixivAPI):
     def showcase_article(showcase_id):
 ```
 
-[Usage](https://github.com/upbit/pixivpy/blob/master/demo.py#L42):
+[Usage](https://github.com/upbit/pixivpy/blob/aec177aa7a1979f7ec4c5bbbeed9085cc256bdbd/demo.py#L306):
 
 ```python
 aapi = AppPixivAPI()

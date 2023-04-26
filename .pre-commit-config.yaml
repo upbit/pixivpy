@@ -13,17 +13,16 @@ repos:
       - id: check-merge-conflict
       - id: check-symlinks
       - id: check-yaml
+      - id: check-json
+      - id: check-toml
+      - id: check-vcs-permalinks
       - id: debug-statements
-      # - id: destroyed-symlinks
-      # - id: double-quote-string-fixer
       - id: end-of-file-fixer
         exclude: tests/test_changes/
         files: \.(py|sh|rst|yml|yaml)$
-      # - id: name-tests-test
       - id: mixed-line-ending
       - id: trailing-whitespace
         files: \.(py|sh|rst|yml|yaml)$
-      # - id: requirements-txt-fixer
   - repo: https://github.com/asottile/pyupgrade
     rev: v3.3.2
     hooks:
@@ -57,8 +56,11 @@ repos:
           - types-requests
         args: [--show-error-codes, --pretty, --strict]
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: ""
+    rev: "v2.7.1"
     hooks:
       - id: prettier
-        types_or: [markdown]
+        types_or: [markdown, toml]
         args: [--prose-wrap=always]
+        additional_dependencies:
+          - "prettier@2.8.8"
+          - "prettier-plugin-toml@0.3.1"
