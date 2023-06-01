@@ -65,6 +65,10 @@ class AppPixivAPI(BasePixivAPI):
         """initialize requests kwargs if need be"""
         super(AppPixivAPI, self).__init__(**requests_kwargs)
 
+    # add cloudscraper proxies
+    def set_cloudscraper_proxy(self,proxy_local: dict = {'http': 'http://127.0.0.1:7890', 'https': 'https://127.0.0.1:7890'}):
+        self.requests.proxies = proxy_local
+
     # noinspection HttpUrlsUsage
     def set_api_proxy(self, proxy_hosts: str = "http://app-api.pixivlite.com") -> None:
         """Set proxy hosts: eg pixivlite.com"""
