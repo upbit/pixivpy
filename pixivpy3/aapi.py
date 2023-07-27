@@ -751,6 +751,19 @@ class AppPixivAPI(BasePixivAPI):
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
         return self.parse_result(r)
 
+    # 正在关注的用户的新小说
+    # restrict: [public, private, all]
+    def novel_follow(
+        self,
+        restrict: _RESTRICT = "public",
+        offset: int | None = None,
+        req_auth: bool = True,
+    ) -> ParsedJson:
+        url = "%s/v1/novel/follow" % self.hosts
+        params: dict[str, Any] = {"restrict": restrict, "offset": offset}
+        r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
+        return self.parse_result(r)
+
     # 小说正文
     def novel_text(self, novel_id: int | str, req_auth: bool = True) -> ParsedJson:
         url = "%s/v1/novel/text" % self.hosts
