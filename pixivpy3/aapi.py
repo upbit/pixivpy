@@ -754,7 +754,10 @@ class AppPixivAPI(BasePixivAPI):
     # 正在关注的用户的新小说
     # restrict: [public, private, all]
     def novel_follow(
-        self, restrict: _RESTRICT = 'public', offset: int | None = None, req_auth: bool = True
+        self,
+        restrict: _RESTRICT = "public",
+        offset: int | None = None,
+        req_auth: bool = True,
     ) -> ParsedJson:
         url = "%s/v1/novel/follow" % self.hosts
         params: dict[str, Any] = {"restrict": restrict, "offset": offset}
