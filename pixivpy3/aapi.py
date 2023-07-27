@@ -751,25 +751,14 @@ class AppPixivAPI(BasePixivAPI):
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
         return self.parse_result(r)
 
+    # 正在关注的用户的新小说
+    # restrict: [public, private, all]
     def novel_follow(
-        self,
-        req_auth: bool = True,
-        restrict:str= 'public',
-        offset:int|None = None
+        self, restrict: _RESTRICT = 'public', offset: int | None = None, req_auth: bool = True
     ) -> ParsedJson:
-        '''
-        返回已关注用户的新小说。最多30个项目。
-
-            restrict(int): 返回内容的限制。可以是 'all', 'public' or 'private'。public表示非R18且非R18G，private表示R18或R18G，all表示二者全部。
-
-            offset(int|None): 距离最新的小说的距离。为None时表示从最新的小说开始取得，为1时表示从第二新的小说开始取得，以此类推。不可以填0。
-        '''
         url = "%s/v1/novel/follow" % self.hosts
-        params: dict[str, Any] = {
-            "restrict":restrict,
-            "offset":offset
-        }
-        r = self.no_auth_requests_call("GET", url, params=params,req_auth=req_auth)
+        params: dict[str, Any] = {"restrict": restrict, "offset": offset}
+        r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
         return self.parse_result(r)
 
     # 小说正文
