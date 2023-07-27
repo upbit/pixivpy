@@ -308,6 +308,7 @@ def appapi_novel(aapi):
         % (novel.title, novel.text_length, novel.series)
     )
 
+
 def main():
     # app-api
     aapi = AppPixivAPI(**_REQUESTS_KWARGS)
