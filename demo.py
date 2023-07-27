@@ -241,6 +241,14 @@ def appapi_novel(aapi):
         % (novel.title, novel.text_length, novel.series)
     )
 
+    json_result = aapi.novel_follow()
+    print(json_result)
+    novel = json_result.novels[0]
+    print(
+        ">>> %s, text_length: %s, series: %s"
+        % (novel.title, novel.text_length, novel.series)
+    )
+
     # get next page
     next_qs = aapi.parse_qs(json_result.next_url)
     if next_qs is not None:
