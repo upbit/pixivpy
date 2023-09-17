@@ -20,8 +20,9 @@ homepage = "https://github.com/upbit/pixivpy"
 [tool.poetry.dependencies]
 python = "^3.7"
 cloudscraper = "^1.2.58"
-requests = "^2.27.1"
-requests-toolbelt = "^0.10.1"
+requests = "^2.31.0"
+requests-toolbelt = "^1.0.0"
+urllib3 = "^2.0.0"
 typing-extensions = "^4.1.1"
 
 [tool.poetry.group.dev.dependencies]
