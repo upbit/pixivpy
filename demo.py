@@ -276,10 +276,7 @@ def appapi_novel(aapi):
     json_result = aapi.novel_follow()
     print(json_result)
     novel = json_result.novels[0]
-    print(
-        ">>> %s, text_length: %s, series: %s"
-        % (novel.title, novel.text_length, novel.series)
-    )
+    print(">>> %s, text_length: %s, series: %s" % (novel.title, novel.text_length, novel.series))
 
 
 def main():
