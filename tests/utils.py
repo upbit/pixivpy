@@ -10,7 +10,7 @@ JSON_FIXTURES_DIR = "tests/fixtures/json"
 
 def load_data_from_file(filename):
     try:
-        with open(os.path.join(FIXTURES_DIR, filename), "r") as fp:
+        with open(os.path.join(FIXTURES_DIR, filename)) as fp:
             return fp.read()
     except FileNotFoundError:
         logger.error(
@@ -23,7 +23,7 @@ def load_data_from_file(filename):
 
 def load_json_from_file(filename):
     try:
-        with open(os.path.join(JSON_FIXTURES_DIR, filename), "r") as fp:
+        with open(os.path.join(JSON_FIXTURES_DIR, filename)) as fp:
             return json.load(fp)
     except FileNotFoundError:
         logger.error(

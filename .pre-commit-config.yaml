@@ -4,7 +4,7 @@
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.2.0
+    rev: v4.4.0
     hooks:
       - id: check-added-large-files
       - id: check-ast
@@ -13,50 +13,54 @@ repos:
       - id: check-merge-conflict
       - id: check-symlinks
       - id: check-yaml
+      - id: check-json
+      - id: check-toml
+      - id: check-vcs-permalinks
       - id: debug-statements
-      # - id: destroyed-symlinks
-      # - id: double-quote-string-fixer
       - id: end-of-file-fixer
         exclude: tests/test_changes/
         files: \.(py|sh|rst|yml|yaml)$
-      # - id: name-tests-test
       - id: mixed-line-ending
       - id: trailing-whitespace
         files: \.(py|sh|rst|yml|yaml)$
-      # - id: requirements-txt-fixer
-  - repo: https://github.com/asottile/setup-cfg-fmt
-    rev: v1.20.1
-    hooks:
-      - id: setup-cfg-fmt
   - repo: https://github.com/asottile/pyupgrade
-    rev: v2.32.0
+    rev: v3.3.2
     hooks:
       - id: pyupgrade
   - repo: https://github.com/psf/black
-    rev: 22.3.0
+    rev: 23.3.0
     hooks:
       - id: black
   - repo: https://github.com/pycqa/isort
     rev: 5.11.5
     hooks:
       - id: isort
-  - repo: https://github.com/PyCQA/flake8
-    rev: 4.0.1
+        args: ["--profile", "black", "--filter-files"]
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: "v0.0.263"
     hooks:
-      - id: flake8
+      - id: ruff
   - repo: https://github.com/nbQA-dev/nbQA
-    rev: 1.3.1
+    rev: 1.5.3
     hooks:
       - id: nbqa-black
       - id: nbqa-pyupgrade
-        args: [--py37-plus]
+        args: [--py38-plus]
       - id: nbqa-isort
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v0.950
+    rev: v1.2.0
     hooks:
       - id: mypy
         files: ^pixivpy3/
         additional_dependencies:
           - types-requests
-          # - ..._
-        args: [--strict]
+        args: [--show-error-codes, --pretty, --strict]
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: "v2.7.1"
+    hooks:
+      - id: prettier
+        types_or: [markdown, toml]
+        args: [--prose-wrap=always]
+        additional_dependencies:
+          - "prettier@2.8.8"
+          - "prettier-plugin-toml@0.3.1"

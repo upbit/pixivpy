@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 import os
 import sys
@@ -32,9 +31,7 @@ def main():
 
     # download top3 day rankings to 'illusts' dir
     for idx, illust in enumerate(json_result.illusts[:4]):
-        image_url = illust.meta_single_page.get(
-            "original_image_url", illust.image_urls.large
-        )
+        image_url = illust.meta_single_page.get("original_image_url", illust.image_urls.large)
         print("{}: {}".format(illust.title, image_url))
 
         # try four args in MR#102

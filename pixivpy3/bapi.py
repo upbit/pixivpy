@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 from __future__ import annotations
 
 from typing import Any
@@ -21,9 +19,7 @@ class ByPassSniApi(AppPixivAPI):
         session.mount("https://", host_header_ssl.HostHeaderSSLAdapter())
         self.requests = session
 
-    def require_appapi_hosts(
-        self, hostname: str = "app-api.pixiv.net", timeout: int = 3
-    ) -> str | bool:
+    def require_appapi_hosts(self, hostname: str = "app-api.pixiv.net", timeout: int = 3) -> str | bool:
         """
         通过 DoH 服务请求真实的 IP 地址。
         """
@@ -43,9 +39,7 @@ class ByPassSniApi(AppPixivAPI):
 
         for url in URLS:
             try:
-                response = requests.get(
-                    url, headers=headers, params=params, timeout=timeout
-                )
+                response = requests.get(url, headers=headers, params=params, timeout=timeout)
                 self.hosts = "https://" + str(response.json()["Answer"][0]["data"])
                 return self.hosts
             except Exception:

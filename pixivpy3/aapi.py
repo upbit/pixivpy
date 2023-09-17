@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 from __future__ import annotations
 
 import urllib.parse as up
@@ -7,16 +5,16 @@ from typing import Any
 
 try:
     # Python>=3.8
-    from typing import Literal  # type: ignore[attr-defined]
+    from typing import Literal
 except ImportError:
-    # Python==3.6, ==3.7
-    from typing_extensions import Literal
+    # Python ==3.7
+    from typing_extensions import Literal  # type: ignore[assignment]
 
 try:
     # Python>=3.10
     from typing import TypeAlias  # type: ignore[attr-defined]
 except ImportError:
-    # Python==3.6, ==3.7, ==3.8, ==3.9
+    # Python==3.7, ==3.8, ==3.9
     from typing_extensions import TypeAlias
 
 from requests.structures import CaseInsensitiveDict
@@ -47,13 +45,9 @@ _MODE: TypeAlias = Literal[
     "week_r18g",
     "",
 ]
-_SEARCH_TARGET: TypeAlias = Literal[
-    "partial_match_for_tags", "exact_match_for_tags", "title_and_caption", "keyword", ""
-]
+_SEARCH_TARGET: TypeAlias = Literal["partial_match_for_tags", "exact_match_for_tags", "title_and_caption", "keyword", ""]
 _SORT: TypeAlias = Literal["date_desc", "date_asc", "popular_desc", ""]
-_DURATION: TypeAlias = Literal[
-    "within_last_day", "within_last_week", "within_last_month", "", None
-]
+_DURATION: TypeAlias = Literal["within_last_day", "within_last_week", "within_last_month", "", None]
 _BOOL: TypeAlias = Literal["true", "false"]
 
 
@@ -63,7 +57,7 @@ _BOOL: TypeAlias = Literal["true", "false"]
 class AppPixivAPI(BasePixivAPI):
     def __init__(self, **requests_kwargs: Any) -> None:
         """initialize requests kwargs if need be"""
-        super(AppPixivAPI, self).__init__(**requests_kwargs)
+        super().__init__(**requests_kwargs)
 
     # noinspection HttpUrlsUsage
     def set_api_proxy(self, proxy_hosts: str = "http://app-api.pixivlite.com") -> None:
@@ -100,9 +94,7 @@ class AppPixivAPI(BasePixivAPI):
         try:
             return self.parse_json(res.text)
         except Exception as e:
-            raise PixivError(
-                "parse_json() error: %s" % e, header=res.headers, body=res.text
-            )
+            raise PixivError("parse_json() error: %s" % e, header=res.headers, body=res.text)
 
     @classmethod
     def format_bool(cls, bool_value: bool | str | None) -> _BOOL:
@@ -326,15 +318,11 @@ class AppPixivAPI(BasePixivAPI):
         if max_bookmark_id_for_recommend:
             params["max_bookmark_id_for_recommend"] = max_bookmark_id_for_recommend
         if min_bookmark_id_for_recent_illust:
-            params[
-                "min_bookmark_id_for_recent_illust"
-            ] = min_bookmark_id_for_recent_illust
+            params["min_bookmark_id_for_recent_illust"] = min_bookmark_id_for_recent_illust
         if offset:
             params["offset"] = offset
         if include_ranking_illusts:
-            params["include_ranking_illusts"] = self.format_bool(
-                include_ranking_illusts
-            )
+            params["include_ranking_illusts"] = self.format_bool(include_ranking_illusts)
         if isinstance(viewed, str):
             params["viewed[]"] = [viewed]
         elif isinstance(viewed, list):
@@ -380,9 +368,7 @@ class AppPixivAPI(BasePixivAPI):
             if isinstance(already_recommended, str):
                 params["already_recommended"] = already_recommended
             elif isinstance(already_recommended, list):
-                params["already_recommended"] = ",".join(
-                    str(iid) for iid in already_recommended
-                )
+                params["already_recommended"] = ",".join(str(iid) for iid in already_recommended)
         if include_privacy_policy:
             params["include_privacy_policy"] = include_privacy_policy
 
@@ -415,9 +401,7 @@ class AppPixivAPI(BasePixivAPI):
         return self.parse_result(r)
 
     # 趋势标签 (Search - tags)
-    def trending_tags_illust(
-        self, filter: _FILTER = "for_ios", req_auth: bool = True
-    ) -> ParsedJson:
+    def trending_tags_illust(self, filter: _FILTER = "for_ios", req_auth: bool = True) -> ParsedJson:
         url = "%s/v1/trending-tags/illust" % self.hosts
         params = {
             "filter": filter,
@@ -525,9 +509,7 @@ class AppPixivAPI(BasePixivAPI):
         return self.parse_result(r)
 
     # 作品收藏详情
-    def illust_bookmark_detail(
-        self, illust_id: int | str, req_auth: bool = True
-    ) -> ParsedJson:
+    def illust_bookmark_detail(self, illust_id: int | str, req_auth: bool = True) -> ParsedJson:
         url = "%s/v2/illust/bookmark/detail" % self.hosts
         params = {
             "illust_id": illust_id,
@@ -557,9 +539,7 @@ class AppPixivAPI(BasePixivAPI):
         return self.parse_result(r)
 
     # 删除收藏
-    def illust_bookmark_delete(
-        self, illust_id: int | str, req_auth: bool = True
-    ) -> ParsedJson:
+    def illust_bookmark_delete(self, illust_id: int | str, req_auth: bool = True) -> ParsedJson:
         url = "%s/v1/illust/bookmark/delete" % self.hosts
         data = {
             "illust_id": illust_id,
@@ -580,9 +560,7 @@ class AppPixivAPI(BasePixivAPI):
         return self.parse_result(r)
 
     # 取消关注用户
-    def user_follow_delete(
-        self, user_id: int | str, req_auth: bool = True
-    ) -> ParsedJson:
+    def user_follow_delete(self, user_id: int | str, req_auth: bool = True) -> ParsedJson:
         url = "%s/v1/user/follow/delete" % self.hosts
         data = {"user_id": user_id}
         r = self.no_auth_requests_call("POST", url, data=data, req_auth=req_auth)
@@ -679,9 +657,7 @@ class AppPixivAPI(BasePixivAPI):
         return self.parse_result(r)
 
     # 获取ugoira信息
-    def ugoira_metadata(
-        self, illust_id: int | str, req_auth: bool = True
-    ) -> ParsedJson:
+    def ugoira_metadata(self, illust_id: int | str, req_auth: bool = True) -> ParsedJson:
         url = "%s/v1/ugoira/metadata" % self.hosts
         params = {
             "illust_id": illust_id,
@@ -798,15 +774,15 @@ class AppPixivAPI(BasePixivAPI):
         url = "https://www.pixiv.net/ajax/showcase/article"
         # Web API，伪造Chrome的User-Agent
         headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 "
-            + "(KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36",
+            "User-Agent": (
+                "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 "
+                + "(KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36"
+            ),
             "Referer": "https://www.pixiv.net",
         }
         params = {
             "article_id": showcase_id,
         }
 
-        r = self.no_auth_requests_call(
-            "GET", url, headers=headers, params=params, req_auth=False
-        )
+        r = self.no_auth_requests_call("GET", url, headers=headers, params=params, req_auth=False)
         return self.parse_result(r)

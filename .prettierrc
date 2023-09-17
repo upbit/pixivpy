@@ -1,0 +1,6 @@
+printWidth: 120
+proseWrap: always
+overrides:
+  - files: "*.md"
+    options:
+      printWidth: 80

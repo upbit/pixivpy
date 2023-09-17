@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import sys
 from datetime import datetime, timedelta
 
@@ -21,22 +19,12 @@ def main():
 
     # api.login(_USERNAME, _PASSWORD)
     print(api.auth(refresh_token=_REFRESH_TOKEN))
-    json_result = api.illust_ranking(
-        "day", date=(datetime.now() - timedelta(days=5)).strftime("%Y-%m-%d")
-    )
+    json_result = api.illust_ranking("day", date=(datetime.now() - timedelta(days=5)).strftime("%Y-%m-%d"))
 
-    print(
-        "Printing image titles and tags with English tag translations present when available"
-    )
+    print("Printing image titles and tags with English tag translations present when available")
 
     for illust in json_result.illusts[:3]:
-        print(
-            'Illustration: "'
-            + str(illust.title)
-            + '"\nTags: '
-            + str(illust.tags)
-            + "\n"
-        )
+        print('Illustration: "' + str(illust.title) + '"\nTags: ' + str(illust.tags) + "\n")
 
 
 if __name__ == "__main__":
