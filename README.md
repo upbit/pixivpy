@@ -10,8 +10,13 @@
 
 _Pixiv API for Python (with Auth supported)_
 
+- [2023/09/18] _v3.7.3_ Add `novel_follow()`, fix ByPassSniApi() host BUG, see
+  [!279](https://github.com/upbit/pixivpy/issues/279) (thanks
+  [@Solomon](https://github.com/Solomon-Edwards),
+  [@rhyryy](https://github.com/rhyryy))
 - [2023/09/17] Move to new PEP 517 standard with poetry, and upgrade deps, see
-  [#270](https://github.com/upbit/pixivpy/pull/270)
+  [#270](https://github.com/upbit/pixivpy/pull/270) (thanks
+  [@Nachtalb](https://github.com/Nachtalb))
 - [2022/02/04] Remove Public-API support as it's deprecated by Pixiv, see
   [!201](https://github.com/upbit/pixivpy/commit/74e114e1cfe51e6c0e8c30c2024bcfcf0bae7ccc)
 - [2021/11/23] Add `illust_new` for get latest works, see
