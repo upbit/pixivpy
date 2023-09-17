@@ -19,7 +19,7 @@ class ByPassSniApi(AppPixivAPI):
         session.mount("https://", host_header_ssl.HostHeaderSSLAdapter())
         self.requests = session
 
-    def require_appapi_hosts(self, hostname: str = "app-api.pixiv.net", timeout: int = 3) -> str | bool:
+    def require_appapi_hosts(self, hostname: str = "app-api.secure.pixiv.net", timeout: int = 3) -> str | bool:
         """
         通过 DoH 服务请求真实的 IP 地址。
         """

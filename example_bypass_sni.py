@@ -13,8 +13,7 @@ _REFRESH_TOKEN = "0zeYA-PllRYp1tfrsq_w3vHGU1rPy237JMf5oDt73c4"
 
 def main():
     api = ByPassSniApi()  # Same as AppPixivAPI, but bypass the GFW
-    # api.require_appapi_hosts()
-    api.require_appapi_hosts(hostname="public-api.secure.pixiv.net")
+    api.require_appapi_hosts()
     # api.set_additional_headers({'Accept-Language':'en-US'})
     api.set_accept_language("en-us")
 
