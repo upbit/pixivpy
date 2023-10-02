@@ -341,6 +341,25 @@ class AppPixivAPI(BasePixivAPI):
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
         return self.parse_result(r)
 
+    # 小说作品评论
+    def novel_comments(
+        self,
+        novel_id: int | str,
+        offset: int | str | None = None,
+        include_total_comments: str | bool | None = None,
+        req_auth: bool = True,
+    ) -> ParsedJson:
+        url = "%s/v1/novel/comments" % self.hosts
+        params = {
+            "novel_id": novel_id,
+        }
+        if offset:
+            params["offset"] = offset
+        if include_total_comments:
+            params["include_total_comments"] = self.format_bool(include_total_comments)
+        r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
+        return self.parse_result(r)
+        
     # 小说推荐
     def novel_recommended(
         self,
