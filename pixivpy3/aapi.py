@@ -359,7 +359,7 @@ class AppPixivAPI(BasePixivAPI):
             params["include_total_comments"] = self.format_bool(include_total_comments)
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
         return self.parse_result(r)
-        
+
     # 小说推荐
     def novel_recommended(
         self,
