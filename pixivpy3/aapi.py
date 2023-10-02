@@ -185,6 +185,29 @@ class AppPixivAPI(BasePixivAPI):
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
         return self.parse_result(r)
 
+    # 用户收藏小说列表
+    def user_bookmarks_novel(
+        self,
+        user_id: int | str,
+        restrict: _RESTRICT = "public",
+        filter: _FILTER = "for_ios",
+        max_bookmark_id: int | str | None = None,
+        tag: str | None = None,
+        req_auth: bool = True,
+    ) -> ParsedJson:
+        url = "%s/v1/user/bookmarks/novel" % self.hosts
+        params = {
+            "user_id": user_id,
+            "restrict": restrict,
+            "filter": filter,
+        }
+        if max_bookmark_id:
+            params["max_bookmark_id"] = max_bookmark_id
+        if tag:
+            params["tag"] = tag
+        r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
+        return self.parse_result(r)
+
     def user_related(
         self,
         seed_user_id: int | str,

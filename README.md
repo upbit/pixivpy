@@ -211,6 +211,9 @@ class AppPixivAPI(BasePixivAPI):
     # tag: 从 user_bookmark_tags_illust 获取的收藏标签
     def user_bookmarks_illust(user_id, restrict="public"):
 
+    # 用户收藏作品列表中的小说
+    def user_bookmarks_novel(user_id, restrict="public"):
+
     def user_related(seed_user_id):
 
     # 关注用户的新作
@@ -361,6 +364,12 @@ json_result = aapi.user_bookmarks_illust(2088434)
 print(json_result)
 illust = json_result.illusts[0]
 print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+
+# 用户收藏列表中的小说
+json_result = aapi.user_bookmarks_novel(42862448)
+print(json_result)
+novel = json_result.novels[0]
+print(">>> {}, text_length: {}, series: {}".format(novel.title, novel.text_length, novel.series))
 
 # 2016-07-15 日的过去一周排行
 json_result = aapi.illust_ranking('week', date='2016-07-15')

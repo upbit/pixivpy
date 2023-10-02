@@ -93,6 +93,11 @@ def appapi_users(aapi):
     illust = json_result.illusts[0]
     print(">>> {}, origin url: {}".format(illust.title, illust.image_urls["large"]))
 
+    json_result = aapi.user_bookmarks_novel(42862448)
+    print(json_result)
+    novel = json_result.novels[0]
+    print(">>> {}, text_length: {}, series: {}".format(novel.title, novel.text_length, novel.series))
+
     json_result = aapi.user_following(7314824)
     print(json_result)
     user_preview = json_result.user_previews[0]
