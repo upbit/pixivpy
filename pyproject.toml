@@ -27,7 +27,7 @@ typing-extensions = "^4.1.1"
 
 [tool.poetry.group.dev.dependencies]
 black = { version = ">=22.1.0", extras = ["jupyter"] }
-ruff = "^0.0.263"
+ruff = ">=0.0.263,<0.0.293"
 isort = ">=5.11.5"
 mypy = ">=0.931"
 pre-commit = ">=2.18.1"
