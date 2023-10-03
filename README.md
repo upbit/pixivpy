@@ -310,6 +310,9 @@ class AppPixivAPI(BasePixivAPI):
     # 小说正文
     def novel_text(novel_id):
 
+    # 小说评论
+    def novel_comments(novel_id):
+
     # 大家的新作
     # content_type: [illust, manga]
     def illust_new(content_type="illust", max_illust_id=None):
@@ -385,6 +388,15 @@ json_result = aapi.search_user("gomzi")
 print(json_result)
 illust = json_result.user_previews[0].illusts[0]
 print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+
+# 展示小说评论区
+json_result = aapi.novel_comments(16509454, include_total_comments=True)
+print("Total comments = {}".format(json_result["total_comments"]))
+for comment in json_result["comments"]:
+    if comment["parent_comment"] != dict():
+        print("{user} replied to {target} at {time} : {content}".format(user = comment["user"]["name"], time = comment["date"], content = comment["comment"], target = comment["parent_comment"]["user"]["name"]))
+    else:
+        print("{user} at {time} : {content}".format(user=comment["user"]["name"], time=comment["date"], content=comment["comment"]))
 ```
 
 ## Package Publishing Instructions
