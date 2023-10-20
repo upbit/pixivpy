@@ -22,12 +22,12 @@ python = "^3.7"
 cloudscraper = "^1.2.58"
 requests = "^2.31.0"
 requests-toolbelt = "^1.0.0"
-urllib3 = "^2.0.0"
+urllib3 = "^2.0.7"
 typing-extensions = "^4.1.1"
 
 [tool.poetry.group.dev.dependencies]
 black = { version = ">=22.1.0", extras = ["jupyter"] }
-ruff = "^0.0.263"
+ruff = "^0.1.0"
 isort = ">=5.11.5"
 mypy = ">=0.931"
 pre-commit = ">=2.18.1"
