@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pixivpy3"
-version = "3.7.3"
+version = "3.7.4"
 description = "Pixiv API for Python (with 6.x AppAPI supported)"
 authors = ["upbit <rmusique@gmail.com>"]
 license = "Unlicense"
