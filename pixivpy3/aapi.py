@@ -185,6 +185,7 @@ class AppPixivAPI(BasePixivAPI):
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
         return self.parse_result(r)
 
+    # 用户收藏小说列表
     def user_bookmarks_novel(
         self,
         user_id: int | str,
