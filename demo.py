@@ -282,10 +282,10 @@ def appapi_novel(aapi):
     json_result = aapi.novel_comments(16509454, include_total_comments=True)
     print("Total comments = {}".format(json_result["total_comments"]))
     for comment in json_result["comments"]:
-    if comment["parent_comment"] != dict():
-        print("{user} replied to {target} at {time} : {content}".format(user = comment["user"]["name"], time = comment["date"], content = comment["comment"], target = comment["parent_comment"]["user"]["name"]))
-    else:
-        print("{user} at {time} : {content}".format(user=comment["user"]["name"], time=comment["date"], content=comment["comment"]))
+        if comment["parent_comment"]:
+            print("{user} replied to {target} at {time} : {content}".format(user = comment["user"]["name"], time = comment["date"], content = comment["comment"], target = comment["parent_comment"]["user"]["name"]))
+        else:
+            print("{user} at {time} : {content}".format(user=comment["user"]["name"], time=comment["date"], content=comment["comment"]))
 
 
 
