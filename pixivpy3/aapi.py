@@ -611,12 +611,14 @@ class AppPixivAPI(BasePixivAPI):
     # 用户收藏标签列表
     def user_bookmark_tags_illust(
         self,
+        user_id: int | str,
         restrict: _RESTRICT = "public",
         offset: int | str | None = None,
         req_auth: bool = True,
     ) -> ParsedJson:
         url = "%s/v1/user/bookmark-tags/illust" % self.hosts
         params: dict[str, Any] = {
+            "user_id": user_id,
             "restrict": restrict,
         }
         if offset:
