@@ -114,6 +114,9 @@ def appapi_users(aapi):
     json_result = aapi.user_related(275527)
     print(json_result)
 
+    json_result = aapi.user_bookmark_tags_illust(9373351)
+    print(json_result)
+
 
 def appapi_search(aapi):
     first_tag = None
