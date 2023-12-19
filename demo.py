@@ -158,6 +158,11 @@ def appapi_search(aapi):
         novel = json_result.novels[0]
         print(">>> {}, origin url: {}".format(novel.title, novel.image_urls["large"]))
 
+    json_result = aapi.search_illust("AI生成", search_target="exact_match_for_tags", search_ai_type=0)
+    # 关闭AI搜索选项后，将过滤掉所有illust_ai_type=2的插画，而illust_ai_type=1 or 0 的插画将被保留
+    # 但是，加入了"AI生成"的tag却没有在作品提交时打开“AI生成”的开关的作品不会被筛选出结果列表
+    print(json_result["illusts"][0])
+
 
 def appapi_user_search(aapi):
     json_result = aapi.illust_ranking("day_male")
