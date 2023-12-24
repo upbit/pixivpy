@@ -617,7 +617,7 @@ class AppPixivAPI(BasePixivAPI):
         return self.parse_result(r)
 
     # 设置用户选项中是否展现AI生成作品
-    def user_edit_ai_show_settings(self, setting:_BOOL, req_auth: bool = True) -> ParsedJson:
+    def user_edit_ai_show_settings(self, setting: _BOOL, req_auth: bool = True) -> ParsedJson:
         url = "%s/v1/user/ai-show-settings/edit" % self.hosts
         data = {"show_ai": setting}
         r = self.no_auth_requests_call("POST", url, data=data, req_auth=req_auth)
