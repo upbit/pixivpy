@@ -458,6 +458,7 @@ class AppPixivAPI(BasePixivAPI):
     #   title_and_caption       - 标题说明文
     # sort: [date_desc, date_asc, popular_desc] - popular_desc为会员的热门排序
     # duration: [within_last_day, within_last_week, within_last_month]
+    # search_ai_type: 0|1 (0: 过滤AI生成作品, 1: 显示AI生成作品)
     # start_date, end_date: '2020-07-01'
     def search_illust(
         self,
@@ -468,6 +469,7 @@ class AppPixivAPI(BasePixivAPI):
         start_date: str | None = None,
         end_date: str | None = None,
         filter: _FILTER = "for_ios",
+        search_ai_type: Literal[0, 1] | None = None,
         offset: int | str | None = None,
         req_auth: bool = True,
     ) -> ParsedJson:
@@ -484,6 +486,8 @@ class AppPixivAPI(BasePixivAPI):
             params["end_date"] = end_date
         if duration:
             params["duration"] = duration
+        if search_ai_type:
+            params["search_ai_type"] = search_ai_type
         if offset:
             params["offset"] = offset
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
@@ -496,6 +500,7 @@ class AppPixivAPI(BasePixivAPI):
     #   text                    - 正文
     #   keyword                 - 关键词
     # sort: [date_desc, date_asc]
+    # search_ai_type: 0|1 (0: 过滤AI生成作品, 1: 显示AI生成作品)
     # start_date/end_date: 2020-06-01
     def search_novel(
         self,
@@ -507,6 +512,7 @@ class AppPixivAPI(BasePixivAPI):
         start_date: str | None = None,
         end_date: str | None = None,
         filter: str | None = None,
+        search_ai_type: Literal[0, 1] | None = None,
         offset: int | str | None = None,
         req_auth: bool = True,
     ) -> ParsedJson:
@@ -523,6 +529,8 @@ class AppPixivAPI(BasePixivAPI):
             params["start_date"] = start_date
         if end_date:
             params["end_date"] = end_date
+        if search_ai_type:
+            params["search_ai_type"] = search_ai_type
         if offset:
             params["offset"] = offset
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
@@ -605,6 +613,13 @@ class AppPixivAPI(BasePixivAPI):
     def user_follow_delete(self, user_id: int | str, req_auth: bool = True) -> ParsedJson:
         url = "%s/v1/user/follow/delete" % self.hosts
         data = {"user_id": user_id}
+        r = self.no_auth_requests_call("POST", url, data=data, req_auth=req_auth)
+        return self.parse_result(r)
+
+    # 设置用户选项中是否展现AI生成作品
+    def user_edit_ai_show_settings(self, setting: _BOOL, req_auth: bool = True) -> ParsedJson:
+        url = "%s/v1/user/ai-show-settings/edit" % self.hosts
+        data = {"show_ai": setting}
         r = self.no_auth_requests_call("POST", url, data=data, req_auth=req_auth)
         return self.parse_result(r)
 
