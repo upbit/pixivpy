@@ -27,7 +27,7 @@ jobs:
       - name: Install Poetry
         uses: abatilo/actions-poetry@v2
       - name: Lint with pre-commit
-        uses: pre-commit/action@v3.0.0
+        uses: pre-commit/action@v3.0.1
       - name: Install dependencies
         run: poetry install --no-dev
       - name: Run demo.py
