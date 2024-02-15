@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from typing import Any
 
 import requests
@@ -8,6 +9,9 @@ from requests_toolbelt.adapters import host_header_ssl  # type: ignore[import]
 from .aapi import AppPixivAPI
 
 # from typeguard import typechecked
+
+
+logger = logging.getLogger(__name__)
 
 
 # @typechecked
@@ -40,9 +44,12 @@ class ByPassSniApi(AppPixivAPI):
         for url in URLS:
             try:
                 response = requests.get(url, headers=headers, params=params, timeout=timeout)
-                self.hosts = "https://" + str(response.json()["Answer"][0]["data"])
+                domain_data = response.json()["Answer"][0]["data"]
+                self.hosts = f"https://{domain_data}"
                 return self.hosts
-            except Exception:
-                pass
+            except (requests.exceptions.JSONDecodeError, KeyError):
+                logger.debug(f"Unable to get according hostname info from '{url}', skipping...", exc_info=True)
+            except requests.ConnectionError:
+                logger.debug(f"Unable to establish connection to '{url}', skipping...", exc_info=True)
 
         return False
