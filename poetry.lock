@@ -58,7 +58,7 @@ files = [
 
 [package.dependencies]
 click = ">=8.0.0"
-ipython = {version = ">=8.10.0", optional = true, markers = "extra == \"jupyter\""}
+ipython = {version = ">=7.8.0", optional = true, markers = "extra == \"jupyter\""}
 mypy-extensions = ">=0.4.3"
 packaging = ">=22.0"
 pathspec = ">=0.9.0"
@@ -71,7 +71,7 @@ typing-extensions = {version = ">=3.10.0.0", markers = "python_version < \"3.10\
 [package.extras]
 colorama = ["colorama (>=0.4.3)"]
 d = ["aiohttp (>=3.7.4)"]
-jupyter = ["ipython (>=8.10.0)", "tokenize-rt (>=3.2.0)"]
+jupyter = ["ipython (>=7.8.0)", "tokenize-rt (>=3.2.0)"]
 uvloop = ["uvloop (>=0.15.2)"]
 
 [[package]]
