@@ -1,8 +1,8 @@
 from __future__ import annotations
 
+import re
 import urllib.parse as up
 from typing import Any
-import re
 
 try:
     # Python>=3.8
@@ -815,7 +815,7 @@ class AppPixivAPI(BasePixivAPI):
             return r.text
         try:
             # extract JSON content
-            json_str = re.search(r"novel:\s({.+}),\s+isOwnWork", r.text).groups()[0].encode()
+            json_str = re.search(r"novel:\s({.+}),\s+isOwnWork", r.text).groups()[0].encode()  # type: ignore
             return self.parse_json(json_str)
         except Exception as e:
             raise PixivError("Extract novel content error: %s" % e, header=r.headers, body=r.text)

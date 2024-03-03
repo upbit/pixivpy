@@ -44,7 +44,7 @@ class BasePixivAPI:
         self.additional_headers["Accept-Language"] = language
 
     @classmethod
-    def parse_json(cls, json_str: str) -> ParsedJson:
+    def parse_json(cls, json_str: str | bytes) -> ParsedJson:
         """parse str into JsonDict"""
         return json.loads(json_str, object_hook=JsonDict)
 
