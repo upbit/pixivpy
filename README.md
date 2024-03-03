@@ -10,7 +10,7 @@
 
 _Pixiv API for Python (with Auth supported)_
 
-- [2024/03/03] _v3.7.5_ Fix `novel_text()` BUG, add `webview_novel()`, see 
+- [2024/03/03] _v3.7.5_ Fix `novel_text()` BUG, add `webview_novel()`, see
   [#337](https://github.com/upbit/pixivpy/issues/337) (thanks
   [@xiyihan](https://github.com/xiyihan0))
 - [2023/09/18] _v3.7.3_ Add `novel_follow()`, fix ByPassSniApi() host BUG, see
