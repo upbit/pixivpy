@@ -5,7 +5,7 @@ import json
 import os
 import shutil
 from datetime import datetime
-from typing import IO, Any
+from typing import IO, Any, Union
 
 import cloudscraper  # type: ignore[import]
 from requests.structures import CaseInsensitiveDict
@@ -44,7 +44,7 @@ class BasePixivAPI:
         self.additional_headers["Accept-Language"] = language
 
     @classmethod
-    def parse_json(cls, json_str: str) -> ParsedJson:
+    def parse_json(cls, json_str: Union[str, bytes, Any]) -> ParsedJson:
         """parse str into JsonDict"""
         return json.loads(json_str, object_hook=JsonDict)
 
