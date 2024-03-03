@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import urllib.parse as up
 from typing import Any
+import re
 
 try:
     # Python>=3.8
@@ -799,15 +800,32 @@ class AppPixivAPI(BasePixivAPI):
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
         return self.parse_result(r)
 
-    # 小说正文
-    def novel_text(self, novel_id: int | str, req_auth: bool = True) -> ParsedJson:
-        url = "%s/v1/novel/text" % self.hosts
+    # 小说 (webview)
+    #  raw=True, return html content directly
+    def webview_novel(self, novel_id: int | str, raw: bool = False, req_auth: bool = True) -> ParsedJson:
+        # change new endpoint due to #337
+        url = "%s/webview/v2/novel" % self.hosts
         params = {
-            "novel_id": novel_id,
+            "id": novel_id,
+            "viewer_version": "20221031_ai",
         }
 
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
-        return self.parse_result(r)
+        if raw:
+            return r.text
+        try:
+            # extract JSON content
+            json_str = re.search(r"novel:\s({.+}),\s+isOwnWork", r.text).groups()[0].encode()
+            return self.parse_json(json_str)
+        except Exception as e:
+            raise PixivError("Extract novel content error: %s" % e, header=r.headers, body=r.text)
+
+    # 小说正文 (deprecated)
+    def novel_text(self, novel_id: int | str, req_auth: bool = True) -> ParsedJson:
+        # /v1/novel/text no longer exist
+        json_obj = self.webview_novel(novel_id=novel_id, raw=False)
+        json_obj["novel_text"] = json_obj.text
+        return json_obj
 
     # 大家的新作
     # content_type: [illust, manga]

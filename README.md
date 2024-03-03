@@ -10,6 +10,8 @@
 
 _Pixiv API for Python (with Auth supported)_
 
+- [2024/03/03] _v3.7.5_ Fix `novel_text()` BUG, add `webview_novel()`, see [#337](https://github.com/upbit/pixivpy/issues/337) (thanks
+  [@xiyihan](https://github.com/xiyihan0))
 - [2023/09/18] _v3.7.3_ Add `novel_follow()`, fix ByPassSniApi() host BUG, see
   [#279](https://github.com/upbit/pixivpy/issues/279) (thanks
   [@Solomon](https://github.com/Solomon-Edwards),
@@ -310,8 +312,8 @@ class AppPixivAPI(BasePixivAPI):
     # 小说详情
     def novel_detail(novel_id):
 
-    # 小说正文
-    def novel_text(novel_id):
+    # 小说 (包含正文)
+    def webview_novel(novel_id):
 
     # 小说评论
     def novel_comments(novel_id):
