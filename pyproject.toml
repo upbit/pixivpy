@@ -14,6 +14,7 @@ classifiers = [
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
 ]
 homepage = "https://github.com/upbit/pixivpy"
 
@@ -55,7 +56,7 @@ profile = "black"
 [tool.black]
 line-length = 127
 preview = true
-target-version = ['py38', 'py39', 'py310', 'py311']
+target-version = ['py38', 'py39', 'py310', 'py311', 'py312']
 
 [tool.ruff]
 line-length = 127
