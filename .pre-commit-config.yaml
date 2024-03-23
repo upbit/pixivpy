@@ -44,9 +44,18 @@ repos:
     rev: 1.5.3
     hooks:
       - id: nbqa-black
+        additional_dependencies:
+          - "setuptools"
+          - "black>=23.1.0"
       - id: nbqa-pyupgrade
         args: [--py38-plus]
+        additional_dependencies:
+          - "setuptools"
+          - "pyupgrade"
       - id: nbqa-isort
+        additional_dependencies:
+          - "setuptools"
+          - "isort"
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.2.0
     hooks:
