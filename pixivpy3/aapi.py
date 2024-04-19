@@ -304,6 +304,13 @@ class _IllustInfo(TypedDict):
     illust_book_style: int
 
 
+class _SearchIllust(TypedDict):
+    illusts: List[_IllustInfo]
+    next_url: Optional[str]
+    search_span_limit: int
+    show_ai: bool
+
+
 class _UserBookmarksIllust(TypedDict):
     illusts: List[_IllustInfo]
     next_url: Optional[str]
@@ -758,7 +765,7 @@ class AppPixivAPI(BasePixivAPI):
             search_ai_type: Literal[0, 1] | None = None,
             offset: int | str | None = None,
             req_auth: bool = True,
-    ) -> ParsedJson:
+    ) -> _SearchIllust | _PixivErrorInfo:
         url = "%s/v1/search/illust" % self.hosts
         params: dict[str, Any] = {
             "word": word,
