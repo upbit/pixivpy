@@ -1,6 +1,6 @@
 # PixivPy3 ![Build Status](https://github.com/upbit/pixivpy/workflows/pixivpy/badge.svg?branch=master) [![PyPI version](https://badge.fury.io/py/PixivPy3.svg)](https://badge.fury.io/py/PixivPy3)
 
-> Due to [#158](https://github.com/upbit/pixivpy/issues) reason, password login
+> Due to [#158](https://github.com/upbit/pixivpy/issues/158) reason, password login
 > no longer exist. Please use `api.auth(refresh_token=REFRESH_TOKEN)` instead
 >
 > To get `refresh_token`, see
