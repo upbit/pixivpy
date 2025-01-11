@@ -2,6 +2,8 @@ name: pixivpy
 
 on:
   push:
+    branches:
+      - master
   pull_request:
   workflow_dispatch:
 
@@ -10,10 +12,7 @@ jobs:
     runs-on: ubuntu-22.04
 
     strategy:
-      max-parallel: 1
-      fail-fast: false
       matrix:
-        # python-version: ["3.7", "3.8", "3.9", "3.10"]
         python-version: ["3.7", "3.12"]
 
     steps:
