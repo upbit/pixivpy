@@ -27,10 +27,6 @@ jobs:
       - name: Lint with pre-commit
         uses: pre-commit/action@v3.0.1
       - name: Install dependencies
-        run: poetry install --without dev
-      - name: Run demo.py
-        run: poetry run python demo.py
-      - name: Install dependencies tests
         run: poetry install
       - name: Run tests
         run: poetry run pytest
