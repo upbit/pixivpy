@@ -19,12 +19,13 @@ classifiers = [
 homepage = "https://github.com/upbit/pixivpy"
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.8"
 cloudscraper = "^1.2.58"
 requests = "^2.31.0"
 requests-toolbelt = "^1.0.0"
 urllib3 = "^2.0.7"
 typing-extensions = "^4.1.1"
+pydantic = "^2.0.0"
 
 [tool.poetry.group.dev.dependencies]
 black = [

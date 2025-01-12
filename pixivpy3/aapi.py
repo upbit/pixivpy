@@ -2,24 +2,18 @@ from __future__ import annotations
 
 import re
 import urllib.parse as up
-from typing import Any
-
-try:
-    # Python>=3.8
-    from typing import Literal
-except ImportError:
-    # Python ==3.7
-    from typing_extensions import Literal  # type: ignore[assignment]
+from typing import Any, Literal, TypeVar
 
 try:
     # Python>=3.10
     from typing import TypeAlias  # type: ignore[attr-defined]
 except ImportError:
-    # Python==3.7, ==3.8, ==3.9
+    # Python==3.8, ==3.9
     from typing_extensions import TypeAlias
 
 from requests.structures import CaseInsensitiveDict
 
+from . import models
 from .api import BasePixivAPI
 from .utils import ParamDict, ParsedJson, PixivError, Response
 
@@ -50,6 +44,8 @@ _SEARCH_TARGET: TypeAlias = Literal["partial_match_for_tags", "exact_match_for_t
 _SORT: TypeAlias = Literal["date_desc", "date_asc", "popular_desc", ""]
 _DURATION: TypeAlias = Literal["within_last_day", "within_last_week", "within_last_month", "", None]
 _BOOL: TypeAlias = Literal["true", "false"]
+
+ModelT = TypeVar("ModelT", bound=models.BasePixivpyModel)
 
 
 # App-API (6.x - app-api.pixiv.net)
@@ -97,6 +93,21 @@ class AppPixivAPI(BasePixivAPI):
         except Exception as e:
             raise PixivError("parse_json() error: %s" % e, header=res.headers, body=res.text)
 
+    def load_result(self, res: Response, model: type[ModelT], /) -> ModelT:
+        json_data = self.parse_result(res)
+
+        try:
+            return model.model_validate(json_data)
+        except Exception as e:
+            raise PixivError("load_result() error: %s" % e, header=res.headers, body=json_data) from e
+
+    @classmethod
+    def load_model(cls, data: ParsedJson, model: type[ModelT], /) -> ModelT:
+        try:
+            return model.model_validate(data)
+        except Exception as e:
+            raise PixivError("load_model() error: %s" % e, body=data) from e
+
     @classmethod
     def format_bool(cls, bool_value: bool | str | None) -> _BOOL:
         if isinstance(bool_value, bool):
@@ -131,14 +142,14 @@ class AppPixivAPI(BasePixivAPI):
         user_id: int | str,
         filter: _FILTER = "for_ios",
         req_auth: bool = True,
-    ) -> ParsedJson:
+    ) -> models.UserInfoFull:
         url = "%s/v1/user/detail" % self.hosts
         params = {
             "user_id": user_id,
             "filter": filter,
         }
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
-        return self.parse_result(r)
+        return self.load_result(r, models.UserInfoFull)
 
     # 用户作品列表
     ## type: [illust, manga] # noqa
@@ -149,7 +160,7 @@ class AppPixivAPI(BasePixivAPI):
         filter: _FILTER = "for_ios",
         offset: int | str | None = None,
         req_auth: bool = True,
-    ) -> ParsedJson:
+    ) -> models.UserIllustrations:
         url = "%s/v1/user/illusts" % self.hosts
         params = {
             "user_id": user_id,
@@ -160,7 +171,7 @@ class AppPixivAPI(BasePixivAPI):
         if offset:
             params["offset"] = offset
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
-        return self.parse_result(r)
+        return self.load_result(r, models.UserIllustrations)
 
     # 用户收藏作品列表
     # tag: 从 user_bookmark_tags_illust 获取的收藏标签
@@ -172,7 +183,7 @@ class AppPixivAPI(BasePixivAPI):
         max_bookmark_id: int | str | None = None,
         tag: str | None = None,
         req_auth: bool = True,
-    ) -> ParsedJson:
+    ) -> models.UserBookmarksIllustrations:
         url = "%s/v1/user/bookmarks/illust" % self.hosts
         params = {
             "user_id": user_id,
@@ -184,7 +195,7 @@ class AppPixivAPI(BasePixivAPI):
         if tag:
             params["tag"] = tag
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
-        return self.parse_result(r)
+        return self.load_result(r, models.UserBookmarksIllustrations)
 
     # 用户收藏小说列表
     def user_bookmarks_novel(
@@ -195,7 +206,7 @@ class AppPixivAPI(BasePixivAPI):
         max_bookmark_id: int | str | None = None,
         tag: str | None = None,
         req_auth: bool = True,
-    ) -> ParsedJson:
+    ) -> models.UserBookmarksNovel:
         url = "%s/v1/user/bookmarks/novel" % self.hosts
         params = {
             "user_id": user_id,
@@ -207,7 +218,7 @@ class AppPixivAPI(BasePixivAPI):
         if tag:
             params["tag"] = tag
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
-        return self.parse_result(r)
+        return self.load_result(r, models.UserBookmarksNovel)
 
     def user_related(
         self,
@@ -372,7 +383,7 @@ class AppPixivAPI(BasePixivAPI):
         offset: int | str | None = None,
         include_total_comments: str | bool | None = None,
         req_auth: bool = True,
-    ) -> ParsedJson:
+    ) -> models.NovelComments:
         url = "%s/v1/novel/comments" % self.hosts
         params = {
             "novel_id": novel_id,
@@ -382,7 +393,7 @@ class AppPixivAPI(BasePixivAPI):
         if include_total_comments:
             params["include_total_comments"] = self.format_bool(include_total_comments)
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
-        return self.parse_result(r)
+        return self.load_result(r, models.NovelComments)
 
     # 小说推荐
     def novel_recommended(
@@ -473,7 +484,7 @@ class AppPixivAPI(BasePixivAPI):
         search_ai_type: Literal[0, 1] | None = None,
         offset: int | str | None = None,
         req_auth: bool = True,
-    ) -> ParsedJson:
+    ) -> models.SearchIllustrations:
         url = "%s/v1/search/illust" % self.hosts
         params: dict[str, Any] = {
             "word": word,
@@ -492,7 +503,7 @@ class AppPixivAPI(BasePixivAPI):
         if offset:
             params["offset"] = offset
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
-        return self.parse_result(r)
+        return self.load_result(r, models.SearchIllustrations)
 
     # 搜索小说 (Search Novel)
     # search_target - 搜索类型
@@ -516,7 +527,7 @@ class AppPixivAPI(BasePixivAPI):
         search_ai_type: Literal[0, 1] | None = None,
         offset: int | str | None = None,
         req_auth: bool = True,
-    ) -> ParsedJson:
+    ) -> models.SearchNovel:
         url = "%s/v1/search/novel" % self.hosts
         params: dict[str, Any] = {
             "word": word,
@@ -535,7 +546,7 @@ class AppPixivAPI(BasePixivAPI):
         if offset:
             params["offset"] = offset
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
-        return self.parse_result(r)
+        return self.load_result(r, models.SearchNovel)
 
     def search_user(
         self,
@@ -649,7 +660,7 @@ class AppPixivAPI(BasePixivAPI):
         restrict: _RESTRICT = "public",
         offset: int | str | None = None,
         req_auth: bool = True,
-    ) -> ParsedJson:
+    ) -> models.UserFollowing:
         url = "%s/v1/user/following" % self.hosts
         params = {
             "user_id": user_id,
@@ -659,7 +670,7 @@ class AppPixivAPI(BasePixivAPI):
             params["offset"] = offset
 
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
-        return self.parse_result(r)
+        return self.load_result(r, models.UserFollowing)
 
     # Followers用户列表
     def user_follower(
@@ -733,7 +744,7 @@ class AppPixivAPI(BasePixivAPI):
         filter: _FILTER = "for_ios",
         offset: int | str | None = None,
         req_auth: bool = True,
-    ) -> ParsedJson:
+    ) -> models.UserNovels:
         url = "%s/v1/user/novels" % self.hosts
         params = {
             "user_id": user_id,
@@ -742,7 +753,7 @@ class AppPixivAPI(BasePixivAPI):
         if offset:
             params["offset"] = offset
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
-        return self.parse_result(r)
+        return self.load_result(r, models.UserNovels)
 
     # 小说系列详情
     def novel_series(
@@ -763,14 +774,19 @@ class AppPixivAPI(BasePixivAPI):
         return self.parse_result(r)
 
     # 小说详情
-    def novel_detail(self, novel_id: int | str, req_auth: bool = True) -> ParsedJson:
+    def novel_detail(
+        self,
+        novel_id: int | str,
+        req_auth: bool = True,
+    ) -> models.NovelInfo:
         url = "%s/v2/novel/detail" % self.hosts
         params = {
             "novel_id": novel_id,
         }
 
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
-        return self.parse_result(r)
+        response_json = self.parse_result(r)
+        return self.load_model(response_json["novel"], models.NovelInfo)
 
     def novel_new(
         self,
@@ -802,7 +818,12 @@ class AppPixivAPI(BasePixivAPI):
 
     # 小说 (webview)
     #  raw=True, return html content directly
-    def webview_novel(self, novel_id: int | str, raw: bool = False, req_auth: bool = True) -> ParsedJson:
+    def webview_novel(
+        self,
+        novel_id: int | str,
+        raw: bool = False,
+        req_auth: bool = True,
+    ) -> models.WebviewNovel | str:
         # change new endpoint due to #337
         url = "%s/webview/v2/novel" % self.hosts
         params = {
@@ -813,18 +834,22 @@ class AppPixivAPI(BasePixivAPI):
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
         if raw:
             return r.text
+
         try:
             # extract JSON content
             json_str = re.search(r"novel:\s({.+}),\s+isOwnWork", r.text).groups()[0].encode()  # type: ignore
-            return self.parse_json(json_str)
+            json_data = self.parse_json(json_str)
         except Exception as e:
             raise PixivError("Extract novel content error: %s" % e, header=r.headers, body=r.text)
 
+        return self.load_model(json_data, models.WebviewNovel)
+
     # 小说正文 (deprecated)
-    def novel_text(self, novel_id: int | str, req_auth: bool = True) -> ParsedJson:
+    def novel_text(self, novel_id: int | str, req_auth: bool = True) -> models.WebviewNovel:
         # /v1/novel/text no longer exist
         json_obj = self.webview_novel(novel_id=novel_id, raw=False)
-        json_obj["novel_text"] = json_obj.text
+        assert isinstance(json_obj, models.WebviewNovel)
+        json_obj.novel_text = json_obj.text  # type: ignore[attr-defined]
         return json_obj
 
     # 大家的新作
