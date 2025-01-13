@@ -293,7 +293,7 @@ class WebviewNovel(BasePixivpyModel):
     marker: Optional[str]
     illusts: List[str]
     images: List[str]
-    series_navigation: Optional[NovelNavigationInfo]
+    series_navigation: Union[NovelNavigationInfo, EmptyObject, None]
     glossary_items: List[str]
     replaceable_item_ids: List[str]
     ai_type: int
