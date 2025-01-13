@@ -93,20 +93,20 @@ class AppPixivAPI(BasePixivAPI):
         except Exception as e:
             raise PixivError("parse_json() error: %s" % e, header=res.headers, body=res.text)
 
-    def load_result(self, res: Response, model: type[ModelT], /) -> ModelT:
+    def _load_result(self, res: Response, model: type[ModelT], /) -> ModelT:
         json_data = self.parse_result(res)
 
         try:
             return model.model_validate(json_data)
         except Exception as e:
-            raise PixivError("load_result() error: %s" % e, header=res.headers, body=json_data) from e
+            raise PixivError("_load_result() error: %s" % e, header=res.headers, body=json_data) from e
 
     @classmethod
-    def load_model(cls, data: ParsedJson, model: type[ModelT], /) -> ModelT:
+    def _load_model(cls, data: ParsedJson, model: type[ModelT], /) -> ModelT:
         try:
             return model.model_validate(data)
         except Exception as e:
-            raise PixivError("load_model() error: %s" % e, body=data) from e
+            raise PixivError("_load_model() error: %s" % e, body=data) from e
 
     @classmethod
     def format_bool(cls, bool_value: bool | str | None) -> _BOOL:
@@ -149,7 +149,7 @@ class AppPixivAPI(BasePixivAPI):
             "filter": filter,
         }
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
-        return self.load_result(r, models.UserInfoFull)
+        return self._load_result(r, models.UserInfoFull)
 
     # 用户作品列表
     ## type: [illust, manga] # noqa
@@ -171,7 +171,7 @@ class AppPixivAPI(BasePixivAPI):
         if offset:
             params["offset"] = offset
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
-        return self.load_result(r, models.UserIllustrations)
+        return self._load_result(r, models.UserIllustrations)
 
     # 用户收藏作品列表
     # tag: 从 user_bookmark_tags_illust 获取的收藏标签
@@ -195,7 +195,7 @@ class AppPixivAPI(BasePixivAPI):
         if tag:
             params["tag"] = tag
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
-        return self.load_result(r, models.UserBookmarksIllustrations)
+        return self._load_result(r, models.UserBookmarksIllustrations)
 
     # 用户收藏小说列表
     def user_bookmarks_novel(
@@ -218,7 +218,7 @@ class AppPixivAPI(BasePixivAPI):
         if tag:
             params["tag"] = tag
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
-        return self.load_result(r, models.UserBookmarksNovel)
+        return self._load_result(r, models.UserBookmarksNovel)
 
     def user_related(
         self,
@@ -393,7 +393,7 @@ class AppPixivAPI(BasePixivAPI):
         if include_total_comments:
             params["include_total_comments"] = self.format_bool(include_total_comments)
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
-        return self.load_result(r, models.NovelComments)
+        return self._load_result(r, models.NovelComments)
 
     # 小说推荐
     def novel_recommended(
@@ -503,7 +503,7 @@ class AppPixivAPI(BasePixivAPI):
         if offset:
             params["offset"] = offset
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
-        return self.load_result(r, models.SearchIllustrations)
+        return self._load_result(r, models.SearchIllustrations)
 
     # 搜索小说 (Search Novel)
     # search_target - 搜索类型
@@ -546,7 +546,7 @@ class AppPixivAPI(BasePixivAPI):
         if offset:
             params["offset"] = offset
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
-        return self.load_result(r, models.SearchNovel)
+        return self._load_result(r, models.SearchNovel)
 
     def search_user(
         self,
@@ -670,7 +670,7 @@ class AppPixivAPI(BasePixivAPI):
             params["offset"] = offset
 
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
-        return self.load_result(r, models.UserFollowing)
+        return self._load_result(r, models.UserFollowing)
 
     # Followers用户列表
     def user_follower(
@@ -753,7 +753,7 @@ class AppPixivAPI(BasePixivAPI):
         if offset:
             params["offset"] = offset
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
-        return self.load_result(r, models.UserNovels)
+        return self._load_result(r, models.UserNovels)
 
     # 小说系列详情
     def novel_series(
@@ -786,7 +786,7 @@ class AppPixivAPI(BasePixivAPI):
 
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
         response_json = self.parse_result(r)
-        return self.load_model(response_json["novel"], models.NovelInfo)
+        return self._load_model(response_json["novel"], models.NovelInfo)
 
     def novel_new(
         self,
@@ -842,7 +842,7 @@ class AppPixivAPI(BasePixivAPI):
         except Exception as e:
             raise PixivError("Extract novel content error: %s" % e, header=r.headers, body=r.text)
 
-        return self.load_model(json_data, models.WebviewNovel)
+        return self._load_model(json_data, models.WebviewNovel)
 
     # 小说正文 (deprecated)
     def novel_text(self, novel_id: int | str, req_auth: bool = True) -> models.WebviewNovel:
