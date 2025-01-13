@@ -3,7 +3,7 @@
 import sys
 from datetime import datetime, timedelta
 
-from pixivpy3 import AppPixivAPI
+from pixivpy3 import AppPixivAPI, enums
 
 sys.dont_write_bytecode = True
 
@@ -19,7 +19,7 @@ def main():
     aapi.set_accept_language("en-us")  # zh-cn
 
     aapi.auth(refresh_token=_REFRESH_TOKEN)
-    json_result = aapi.illust_ranking("day", date=(datetime.now() - timedelta(days=5)).strftime("%Y-%m-%d"))
+    json_result = aapi.illust_ranking(enums.RankingMode.DAY, date=(datetime.now() - timedelta(days=5)).strftime("%Y-%m-%d"))
 
     print("Printing image titles and tags with English tag translations present when available")
 

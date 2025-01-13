@@ -3,7 +3,7 @@
 import sys
 import time
 
-from pixivpy3 import AppPixivAPI, PixivError
+from pixivpy3 import AppPixivAPI, PixivError, enums
 
 sys.dont_write_bytecode = True
 
@@ -131,7 +131,7 @@ def appapi_search(aapi):
             first_tag = trend_tag.tag
         print("{} -  {}(id={})".format(trend_tag.tag, trend_tag.illust.title, trend_tag.illust.id))
 
-    json_result = aapi.search_illust(first_tag, search_target="partial_match_for_tags")
+    json_result = aapi.search_illust(first_tag, search_target=enums.SearchTarget.PARTIAL_MATCH_FOR_TAGS)
     print(json_result)
     illust = json_result.illusts[0]
     print(">>> {}, origin url: {}".format(illust.title, illust.image_urls["large"]))
@@ -145,7 +145,7 @@ def appapi_search(aapi):
         print(">>> {}, origin url: {}".format(illust.title, illust.image_urls["large"]))
 
     # novel
-    json_result = aapi.search_novel("FGO", search_target="keyword")
+    json_result = aapi.search_novel("FGO", search_target=enums.SearchTarget.KEYWORD)
     print(json_result)
     novel = json_result.novels[0]
     print(">>> {}, origin url: {}".format(novel.title, novel.image_urls["large"]))
@@ -158,7 +158,11 @@ def appapi_search(aapi):
         novel = json_result.novels[0]
         print(">>> {}, origin url: {}".format(novel.title, novel.image_urls["large"]))
 
-    json_result = aapi.search_illust("AI生成", search_target="exact_match_for_tags", search_ai_type=0)
+    json_result = aapi.search_illust(
+        "AI生成",
+        search_target=enums.SearchTarget.EXACT_MATCH_FOR_TAGS,
+        search_ai_type=0,
+    )
     # 关闭AI搜索选项后，将过滤掉所有illust_ai_type=2的插画，而illust_ai_type=1 or 0 的插画将被保留
     # 但是，加入了"AI生成"的tag却没有在作品提交时打开“AI生成”的开关的作品不会被筛选出结果列表
     print(json_result["illusts"][0])
