@@ -144,14 +144,14 @@ class AppPixivAPI(BasePixivAPI):
         user_id: int | str,
         filter: _FILTER = "for_ios",
         req_auth: bool = True,
-    ) -> models.UserInfoFull:
+    ) -> models.UserInfoDetailed:
         url = "%s/v1/user/detail" % self.hosts
         params = {
             "user_id": user_id,
             "filter": filter,
         }
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
-        return self._load_result(r, models.UserInfoFull)
+        return self._load_result(r, models.UserInfoDetailed)
 
     # 用户作品列表
     ## type: [illust, manga] # noqa

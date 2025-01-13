@@ -12,7 +12,7 @@ __all__ = (
     "Profile",
     "ProfilePublicity",
     "Workspace",
-    "UserInfoFull",
+    "UserInfoDetailed",
     "ImageUrls",
     "NovelTag",
     "IllustrationTag",
@@ -176,7 +176,7 @@ class Workspace(BasePixivpyModel):
     workspace_image_url: Optional[str]
 
 
-class UserInfoFull(BasePixivpyModel):
+class UserInfoDetailed(BasePixivpyModel):
     user: UserInfo
     profile: Profile
     profile_publicity: ProfilePublicity
