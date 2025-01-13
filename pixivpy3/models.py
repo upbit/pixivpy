@@ -1,22 +1,101 @@
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, List, Optional, TypeVar, Union
 
-from pydantic import BaseModel, ConfigDict, Field
-from pydantic.alias_generators import to_camel
+import pydantic
+from typing_extensions import Self
+
+__all__ = (
+    "BasePixivpyModel",
+    "EmptyObject",
+    "ProfileImageUrls",
+    "UserInfo",
+    "CommentUser",
+    "Profile",
+    "ProfilePublicity",
+    "Workspace",
+    "UserInfoFull",
+    "ImageUrls",
+    "NovelTag",
+    "IllustrationTag",
+    "Series",
+    "NovelInfo",
+    "Comment",
+    "NovelComments",
+    "NovelNavigationInfo",
+    "NovelRating",
+    "WebviewNovel",
+    "UserBookmarksNovel",
+    "UserNovels",
+    "SearchNovel",
+    "MetaSinglePage",
+    "MetaPage",
+    "IllustrationInfo",
+    "SearchIllustrations",
+    "UserBookmarksIllustrations",
+    "UserPreview",
+    "UserFollowing",
+    "UserIllustrations",
+)
+
+# Note: `pydantic` has `__version__` only from `1.9.0`
+_PYDANTIC_MAJOR_VERSION = int(pydantic.__version__.split(".")[0])
+
+
+# Taken from `Pydantic` PR to keep `Pydantic` version lower than 1.10.0:
+# https://github.com/pydantic/pydantic/pull/3473
+def _to_pascal(string: str) -> str:
+    return "".join(word.capitalize() for word in string.split("_"))
+
+
+def _to_camel(string: str) -> str:
+    if len(string) >= 1:
+        pascal_string = _to_pascal(string)
+        return pascal_string[0].lower() + pascal_string[1:]
+    return string.lower()
+
+
+# In the end of those checks, we must have the following variables:
+# - BaseModel
+# - ConfigDict
+# - Field
+# - to_camel
+if _PYDANTIC_MAJOR_VERSION == 1:
+    from pydantic import BaseModel, Field
+
+    to_camel = _to_camel
+    ConfigDict = dict
+elif _PYDANTIC_MAJOR_VERSION == 2:
+    from pydantic import BaseModel, ConfigDict, Field  # type: ignore[assignment]
+    from pydantic.alias_generators import to_camel  # type: ignore[assignment]
+else:
+    msg = f"Unsupported Pydantic version: {pydantic.__version__}"
+    raise ValueError(msg)
+
+ModelT = TypeVar("ModelT", bound=BaseModel)
 
 
 class BasePixivpyModel(BaseModel):
-    # Note for `extra`:
-    # until some version, `pydantic` does not show extra fields on `str` / `repr`
-    model_config = ConfigDict(
-        extra="allow",  # set `forbid` to detect extra fields and update models
-    )
+    if _PYDANTIC_MAJOR_VERSION == 2:
+        model_config = ConfigDict(
+            extra="allow",  # set `forbid` to detect extra fields and update models
+        )
+    else:
+
+        class Config:
+            extra = "allow"
+
+    if _PYDANTIC_MAJOR_VERSION == 1:
+        # Not actually an override, since we add `model_validate` method
+        # only for `pydantic==1.x.x` versions
+        @classmethod
+        def model_validate(cls, obj: Any) -> Self:  # type: ignore[override]
+            return cls.parse_obj(obj)
 
     def __getitem__(self, item: str) -> Any:
         # Allow to access fields using `[]` syntax for backward compatibility
         return getattr(self, item)
 
 
-# Instead of returning `null`, Pixiv return `{}` for empty objects
+# Instead of returning `null`, Pixiv returns `{}` for empty objects
 # Have this class to handle such cases and don't make nullable fields
 class EmptyObject(BasePixivpyModel):
     # By default, `pydantic` always returns `True` for `__bool__` method
@@ -176,13 +255,28 @@ class NovelNavigationInfo(BasePixivpyModel):
     viewable_message: Optional[str]
 
 
+class NovelRating(BasePixivpyModel):
+    like: int
+    bookmark: int
+    view: int
+
+
 class WebviewNovel(BasePixivpyModel):
     # This model is extracted from `HTML`, so it has `camelCase` fields
     # For more details, see: https://github.com/upbit/pixivpy/issues/337
-    model_config = ConfigDict(
-        alias_generator=to_camel,
-        extra="allow",  # see `novel_text` method for reasons
-    )
+
+    if _PYDANTIC_MAJOR_VERSION == 2:
+        model_config = ConfigDict(
+            extra="allow",  # see `novel_text` method for reasons why
+            populate_by_name=True,
+            alias_generator=to_camel,
+        )
+    else:
+
+        class Config:
+            extra = "allow"
+            alias_generator = to_camel
+            allow_population_by_field_name = True
 
     id: str
     title: str
@@ -194,7 +288,7 @@ class WebviewNovel(BasePixivpyModel):
     tags: List[str]
     caption: str
     cdate: str
-    rating: Dict[str, int]
+    rating: NovelRating
     text: str
     marker: Optional[str]
     illusts: List[str]
@@ -229,7 +323,7 @@ class MetaSinglePage(BasePixivpyModel):
 
 
 class MetaPage(BasePixivpyModel):
-    image_urls: Dict[str, str]
+    image_urls: ImageUrls
 
 
 class IllustrationInfo(BasePixivpyModel):
@@ -248,7 +342,7 @@ class IllustrationInfo(BasePixivpyModel):
     height: int
     sanity_level: int
     x_restrict: int
-    series: Any
+    series: Optional[Series]
     meta_single_page: MetaSinglePage
     meta_pages: List[MetaPage]
     total_view: int
