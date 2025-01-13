@@ -99,14 +99,16 @@ class AppPixivAPI(BasePixivAPI):
         try:
             return model.model_validate(json_data)
         except Exception as e:
-            raise PixivError("_load_result() error: %s" % e, header=res.headers, body=json_data) from e
+            msg = f"_load_result() error: {e}"
+            raise PixivError(msg, header=res.headers, body=json_data) from e
 
     @classmethod
     def _load_model(cls, data: ParsedJson, model: type[ModelT], /) -> ModelT:
         try:
             return model.model_validate(data)
         except Exception as e:
-            raise PixivError("_load_model() error: %s" % e, body=data) from e
+            msg = f"_load_model() error: {e}"
+            raise PixivError(msg, body=data) from e
 
     @classmethod
     def format_bool(cls, bool_value: bool | str | None) -> _BOOL:
