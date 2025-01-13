@@ -276,7 +276,15 @@ class AppPixivAPI(BasePixivAPI):
         include_total_comments: str | bool | None = None,
         req_auth: bool = True,
     ) -> ParsedJson:
-        url = "%s/v1/illust/comments" % self.hosts
+        url = "https://www.pixiv.net/ajax/illusts/comments/roots"
+        # Web API，伪造Chrome的User-Agent
+        headers = {
+            "User-Agent": (
+                "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 "
+                + "(KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36"
+            ),
+            "Referer": "https://www.pixiv.net",
+        }
         params = {
             "illust_id": illust_id,
         }
@@ -284,7 +292,7 @@ class AppPixivAPI(BasePixivAPI):
             params["offset"] = offset
         if include_total_comments:
             params["include_total_comments"] = self.format_bool(include_total_comments)
-        r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
+        r = self.no_auth_requests_call("GET", url, headers=headers, params=params, req_auth=req_auth)
         return self.parse_result(r)
 
     # 相关作品列表
