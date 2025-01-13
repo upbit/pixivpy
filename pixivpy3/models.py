@@ -11,6 +11,10 @@ class BasePixivpyModel(BaseModel):
         extra="allow",  # set `forbid` to detect extra fields and update models
     )
 
+    def __getitem__(self, item: str) -> Any:
+        # Allow to access fields using `[]` syntax for backward compatibility
+        return getattr(self, item)
+
 
 # Instead of returning `null`, Pixiv return `{}` for empty objects
 # Have this class to handle such cases and don't make nullable fields
