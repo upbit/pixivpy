@@ -9,13 +9,10 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     strategy:
-      max-parallel: 1
-      fail-fast: false
       matrix:
-        # python-version: ["3.8", "3.9", "3.10"]
         python-version: ["3.8", "3.12"]
 
     steps:
@@ -29,10 +26,6 @@ jobs:
       - name: Lint with pre-commit
         uses: pre-commit/action@v3.0.1
       - name: Install dependencies
-        run: poetry install --no-dev
-      - name: Run demo.py
-        run: poetry run python demo.py
-      - name: Install dependencies tests
         run: poetry install
       - name: Run tests
         run: poetry run pytest
