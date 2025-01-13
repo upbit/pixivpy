@@ -120,6 +120,7 @@ Requirements: [requests](https://pypi.python.org/pypi/requests)
 
 ```python
 from pixivpy3 import *
+from pixivpy3 import enums
 
 api = AppPixivAPI()
 # api.login("username", "password")   # Not required
@@ -131,7 +132,7 @@ print(">>> origin url: %s" % illust.image_urls['large'])
 
 # get ranking: 1-30
 # mode: [day, week, month, day_male, day_female, week_original, week_rookie, day_manga]
-json_result = api.illust_ranking('day')
+json_result = api.illust_ranking(mode=enums.RankingMode.DAY)
 for illust in json_result.illusts:
     print(" p1 [%s] %s" % (illust.title, illust.image_urls.medium))
 
@@ -199,6 +200,9 @@ Find Pixiv API in **Objective-C**? You might also like
 ### App-API (6.0 - app-api.pixiv.net)
 
 ```python
+from pixivpy3 import enums
+
+
 class AppPixivAPI(BasePixivAPI):
 
     # 返回翻页用参数
@@ -209,20 +213,20 @@ class AppPixivAPI(BasePixivAPI):
 
     # 用户作品列表
     ## type: [illust, manga]
-    def user_illusts(user_id, type="illust"):
+    def user_illusts(user_id, type=enums.ContentType.ILLUSTRATION):
 
     # 用户收藏作品列表
     # tag: 从 user_bookmark_tags_illust 获取的收藏标签
-    def user_bookmarks_illust(user_id, restrict="public"):
+    def user_bookmarks_illust(user_id, restrict=enums.Visibility.PUBLIC):
 
     # 用户收藏作品列表中的小说
-    def user_bookmarks_novel(user_id, restrict="public"):
+    def user_bookmarks_novel(user_id, restrict=enums.Visibility.PUBLIC):
 
     def user_related(seed_user_id):
 
     # 关注用户的新作
     # restrict: [public, private]
-    def illust_follow(restrict="public"):
+    def illust_follow(restrict=enums.Visibility.PUBLIC):
 
     # 作品详情 (类似PAPI.works()，iOS中未使用)
     def illust_detail(illust_id):
@@ -235,7 +239,7 @@ class AppPixivAPI(BasePixivAPI):
 
     # 插画推荐 (Home - Main)
     # content_type: [illust, manga]
-    def illust_recommended(content_type="illust"):
+    def illust_recommended(content_type=enums.ContentType.ILLUSTRATION):
 
     # 小说推荐
     def novel_recommended():
@@ -245,7 +249,7 @@ class AppPixivAPI(BasePixivAPI):
     # date: '2016-08-01'
     # mode (Past): [day, week, month, day_male, day_female, week_original, week_rookie,
     #               day_r18, day_male_r18, day_female_r18, week_r18, week_r18g]
-    def illust_ranking(mode="day", date=None):
+    def illust_ranking(mode=enums.RankingMode.DAY, date=None):
 
     # 趋势标签 (Search - tags)
     def trending_tags_illust():
@@ -258,7 +262,14 @@ class AppPixivAPI(BasePixivAPI):
     # sort: [date_desc, date_asc, popular_desc] - popular_desc为会员的热门排序
     # duration: [within_last_day, within_last_week, within_last_month]
     # start_date, end_date: '2020-07-01'
-    def search_illust(word, search_target="partial_match_for_tags", sort="date_desc", duration=None, start_date=None, end_date=None):
+    def search_illust(
+        word,
+        search_target=enums.SearchTarget.PARTIAL_MATCH_FOR_TAGS,
+        sort=enums.Sort.DATE_DESC,
+        duration=None,
+        start_date=None,
+        end_date=None,
+    ):
 
     # 搜索小说 (Search Novel)
     # search_target - 搜索类型
@@ -268,30 +279,36 @@ class AppPixivAPI(BasePixivAPI):
     #   keyword                 - 关键词
     # sort: [date_desc, date_asc]
     # start_date/end_date: 2020-06-01
-    def search_novel(word, search_target="partial_match_for_tags", sort="date_desc", start_date=None, end_date=None):
+    def search_novel(
+        word,
+        search_target=enums.SearchTarget.PARTIAL_MATCH_FOR_TAGS,
+        sort=enums.Sort.DATE_DESC,
+        start_date=None,
+        end_date=None,
+    ):
 
-    def search_user(word, sort='date_desc', duration=None):
+    def search_user(word, sort=enums.Sort.DATE_DESC, duration=None):
 
     # 作品收藏详情
     def illust_bookmark_detail(illust_id):
 
     # 新增收藏
-    def illust_bookmark_add(illust_id, restrict="public", tags=None):
+    def illust_bookmark_add(illust_id, restrict=enums.Visibility.PUBLIC, tags=None):
 
     # 删除收藏
     def illust_bookmark_delete(illust_id):
 
     # 关注用户
-    def user_follow_add(user_id, restrict="public"):
+    def user_follow_add(user_id, restrict=enums.Visibility.PUBLIC):
 
     # 取消关注用户
     def user_follow_delete(user_id):
 
     # 用户收藏标签列表
-    def user_bookmark_tags_illust(restrict="public"):
+    def user_bookmark_tags_illust(restrict=enums.Visibility.PUBLIC):
 
     # Following用户列表
-    def user_following(user_id, restrict="public"):
+    def user_following(user_id, restrict=enums.Visibility.PUBLIC):
 
     # Followers用户列表
     def user_follower(user_id):
@@ -322,7 +339,7 @@ class AppPixivAPI(BasePixivAPI):
 
     # 大家的新作
     # content_type: [illust, manga]
-    def illust_new(content_type="illust", max_illust_id=None):
+    def illust_new(content_type=enums.ContentType.ILLUSTRATION, max_illust_id=None):
 
     def novel_new(max_novel_id=None):
 
@@ -333,6 +350,7 @@ class AppPixivAPI(BasePixivAPI):
 [Usage](https://github.com/upbit/pixivpy/blob/aec177aa7a1979f7ec4c5bbbeed9085cc256bdbd/demo.py#L306):
 
 ```python
+from pixivpy3 import enums
 aapi = AppPixivAPI()
 
 # 作品推荐
@@ -391,7 +409,7 @@ illust = json_result.illusts[0]
 print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
 
 # 标签 "水着" 搜索
-json_result = aapi.search_illust('水着', search_target='partial_match_for_tags')
+json_result = aapi.search_illust('水着', search_target=enums.SearchTarget.PARTIAL_MATCH_FOR_TAGS)
 print(json_result)
 illust = json_result.illusts[0]
 print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
