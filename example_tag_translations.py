@@ -19,7 +19,9 @@ def main():
     aapi.set_accept_language("en-us")  # zh-cn
 
     aapi.auth(refresh_token=_REFRESH_TOKEN)
-    json_result = aapi.illust_ranking(enums.RankingMode.DAY, date=(datetime.now() - timedelta(days=5)).strftime("%Y-%m-%d"))
+    date = datetime.now() - timedelta(days=5)
+    date_str = date.strftime("%Y-%m-%d")
+    json_result = aapi.illust_ranking(enums.RankingMode.DAY, date=date_str)
 
     print("Printing image titles and tags with English tag translations present when available")
 

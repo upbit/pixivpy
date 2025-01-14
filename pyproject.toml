@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pixivpy3"
-version = "3.7.5"
+version = "3.12.3"
 description = "Pixiv API for Python (with 6.x AppAPI supported)"
 authors = ["upbit <rmusique@gmail.com>"]
 license = "Unlicense"
@@ -19,7 +19,7 @@ classifiers = [
 homepage = "https://github.com/upbit/pixivpy"
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.8"
 cloudscraper = "^1.2.58"
 requests = "^2.31.0"
 requests-toolbelt = "^1.0.0"
