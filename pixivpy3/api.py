@@ -95,9 +95,11 @@ class BasePixivAPI:
                     **self.requests_kwargs,
                 )
             else:
-                raise PixivError("Unknown method: %s" % method)
+                msg = f"Unknown method: {method}"
+                raise PixivError(msg)
         except Exception as e:
-            raise PixivError("requests {} {} error: {}".format(method, url, e))
+            msg = f"requests {method} {url} error: {e}"
+            raise PixivError(msg)
 
     def set_auth(self, access_token: str, refresh_token: str | None = None) -> None:
         self.access_token = access_token
@@ -135,7 +137,7 @@ class BasePixivAPI:
             # noinspection PyUnresolvedReferences
             auth_hosts = self.hosts  # BAPI解析成IP的场景
             headers_["host"] = "oauth.secure.pixiv.net"
-        url = "%s/auth/token" % auth_hosts
+        url = f"{auth_hosts}/auth/token"
         data = {
             "get_secure_url": 1,
             "client_id": self.client_id,
@@ -155,14 +157,16 @@ class BasePixivAPI:
         r = self.requests_call("POST", url, headers=headers_, data=data)
         if r.status_code not in {200, 301, 302}:
             if data["grant_type"] == "password":
+                msg = f"[ERROR] auth() failed! check username and password.\nHTTP {r.status_code}: {r.text}"
                 raise PixivError(
-                    "[ERROR] auth() failed! check username and password.\nHTTP {}: {}".format(r.status_code, r.text),
+                    msg,
                     header=r.headers,
                     body=r.text,
                 )
             else:
+                msg = f"[ERROR] auth() failed! check refresh_token.\nHTTP {r.status_code}: {r.text}"
                 raise PixivError(
-                    "[ERROR] auth() failed! check refresh_token.\nHTTP {}: {}".format(r.status_code, r.text),
+                    msg,
                     header=r.headers,
                     body=r.text,
                 )
@@ -175,8 +179,9 @@ class BasePixivAPI:
             self.access_token = token.response.access_token
             self.refresh_token = token.response.refresh_token
         except json.JSONDecodeError:
+            msg = f"Get access_token error! Response: {token}"
             raise PixivError(
-                "Get access_token error! Response: %s" % token,
+                msg,
                 header=r.headers,
                 body=r.text,
             )
