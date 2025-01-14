@@ -37,9 +37,8 @@ def pixiv_url_common():
 
 @pytest.fixture
 def pixiv_image_url():
-    return "https://i.pximg.net/c/600x1200_90/img-master/img/2023/01/01/12/38/38/{}_p0_master1200.jpg".format(
-        random.randint(100_000_000, 999_999_999)
-    )
+    img_id = random.randint(100_000_000, 999_999_999)
+    return f"https://i.pximg.net/c/600x1200_90/img-master/img/2023/01/01/12/38/38/{img_id}_p0_master1200.jpg"
 
 
 @pytest.fixture

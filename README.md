@@ -119,34 +119,37 @@ Requirements: [requests](https://pypi.python.org/pypi/requests)
 ### Example:
 
 ```python
-from pixivpy3 import *
+from pixivpy3 import AppPixivAPI
+
+access_token = "..."
+refresh_token = "..."
 
 api = AppPixivAPI()
-# api.login("username", "password")   # Not required
+api.set_auth(access_token, refresh_token)
 
 # get origin url
 json_result = api.illust_detail(59580629)
 illust = json_result.illust
-print(">>> origin url: %s" % illust.image_urls['large'])
+print(f">>> origin url: {illust.image_urls.large}")
 
 # get ranking: 1-30
 # mode: [day, week, month, day_male, day_female, week_original, week_rookie, day_manga]
 json_result = api.illust_ranking('day')
 for illust in json_result.illusts:
-    print(" p1 [%s] %s" % (illust.title, illust.image_urls.medium))
+    print(f" p1 [{illust.title}] {illust.image_urls.medium}")
 
 # next page: 31-60
 next_qs = api.parse_qs(json_result.next_url)
 json_result = api.illust_ranking(**next_qs)
 for illust in json_result.illusts:
-    print(" p2 [%s] %s" % (illust.title, illust.image_urls.medium))
+    print(f" p2 [{illust.title}] {illust.image_urls.medium}")
 
 # get all page:
 next_qs = {"mode": "day"}
 while next_qs:
     json_result = api.illust_ranking(**next_qs)
     for illust in json_result.illusts:
-        print("[%s] %s" % (illust.title, illust.image_urls.medium))
+        print(f"[{illust.title}] {illust.image_urls.medium}")
     next_qs = api.parse_qs(json_result.next_url)
 ```
 
@@ -160,6 +163,7 @@ while next_qs:
 2. Call `api.download()` like the below:
 
 ```python
+from pixivpy3 import AppPixivAPI
 aapi = AppPixivAPI()
 json_result = aapi.illust_ranking()
 for illust in json_result.illusts[:3]:
@@ -172,16 +176,16 @@ for illust in json_result.illusts[:3]:
 2. Change deprecated SPAI call to Public-API call
 
 ```python
-print(">>> new ranking_all(mode='daily', page=1, per_page=50)")
-#rank_list = api.sapi.ranking("all", 'day', 1)
-rank_list = api.ranking_all('daily', 1, 50)
+from pixivpy3 import AppPixivAPI
+api = AppPixivAPI()
+rank_list = api.illust_ranking('day')
 print(rank_list)
 
 # more fields about response: https://github.com/upbit/pixivpy/wiki/sniffer
 ranking = rank_list.response[0]
 for img in ranking.works:
-	# print(img.work)
-	print("[%s/%s(id=%s)] %s" % (img.work.user.name, img.work.title, img.work.id, img.work.image_urls.px_480mw))
+    # print(img.work)
+    print(f"[{img.work.user.name}/{img.work.title}(id={img.work.id})] {img.work.image_urls.px_480mw}")
 ```
 
 ### About
@@ -199,56 +203,63 @@ Find Pixiv API in **Objective-C**? You might also like
 ### App-API (6.0 - app-api.pixiv.net)
 
 ```python
+from __future__ import annotations
+from typing import Any
+from pixivpy3.utils import ParsedJson
+
+from pixivpy3.api import BasePixivAPI
+
+
 class AppPixivAPI(BasePixivAPI):
 
     # 返回翻页用参数
-    def parse_qs(next_url):
+    def parse_qs(cls, next_url: str | None) -> dict[str, Any] | None: ...
 
     # 用户详情
-    def user_detail(user_id):
+    def user_detail(self, user_id: int | str) -> ParsedJson: ...
 
     # 用户作品列表
     ## type: [illust, manga]
-    def user_illusts(user_id, type="illust"):
+    def user_illusts(self, user_id: int | str, type="illust") -> ParsedJson: ...
 
     # 用户收藏作品列表
     # tag: 从 user_bookmark_tags_illust 获取的收藏标签
-    def user_bookmarks_illust(user_id, restrict="public"):
+    def user_bookmarks_illust(self, user_id: int | str, restrict="public") -> ParsedJson: ...
 
     # 用户收藏作品列表中的小说
-    def user_bookmarks_novel(user_id, restrict="public"):
+    def user_bookmarks_novel(self, user_id: int | str, restrict="public") -> ParsedJson: ...
 
-    def user_related(seed_user_id):
+    def user_related(self, seed_user_id: int | str) -> ParsedJson: ...
 
     # 关注用户的新作
     # restrict: [public, private]
-    def illust_follow(restrict="public"):
+    def illust_follow(self, restrict="public") -> ParsedJson: ...
 
     # 作品详情 (类似PAPI.works()，iOS中未使用)
-    def illust_detail(illust_id):
+    def illust_detail(self, illust_id: int | str) -> ParsedJson: ...
 
     # 作品评论
-    def illust_comments(illust_id, include_total_comments=None):
+    def illust_comments(self, illust_id: int | str, include_total_comments=None) -> ParsedJson: ...
 
     # 相关作品列表
-    def illust_related(illust_id):
+    def illust_related(self, illust_id: int | str) -> ParsedJson: ...
 
     # 插画推荐 (Home - Main)
     # content_type: [illust, manga]
-    def illust_recommended(content_type="illust"):
+    def illust_recommended(self, content_type="illust") -> ParsedJson: ...
 
     # 小说推荐
-    def novel_recommended():
+    def novel_recommended(self) -> ParsedJson: ...
 
     # 作品排行
     # mode: [day, week, month, day_male, day_female, week_original, week_rookie, day_manga]
     # date: '2016-08-01'
     # mode (Past): [day, week, month, day_male, day_female, week_original, week_rookie,
     #               day_r18, day_male_r18, day_female_r18, week_r18, week_r18g]
-    def illust_ranking(mode="day", date=None):
+    def illust_ranking(self, mode="day", date=None) -> ParsedJson: ...
 
     # 趋势标签 (Search - tags)
-    def trending_tags_illust():
+    def trending_tags_illust(self) -> ParsedJson: ...
 
     # 搜索 (Search)
     # search_target - 搜索类型
@@ -258,7 +269,15 @@ class AppPixivAPI(BasePixivAPI):
     # sort: [date_desc, date_asc, popular_desc] - popular_desc为会员的热门排序
     # duration: [within_last_day, within_last_week, within_last_month]
     # start_date, end_date: '2020-07-01'
-    def search_illust(word, search_target="partial_match_for_tags", sort="date_desc", duration=None, start_date=None, end_date=None):
+    def search_illust(
+            self,
+            word: str,
+            search_target="partial_match_for_tags",
+            sort="date_desc",
+            duration=None,
+            start_date=None,
+            end_date=None,
+    ) -> ParsedJson: ...
 
     # 搜索小说 (Search Novel)
     # search_target - 搜索类型
@@ -268,148 +287,156 @@ class AppPixivAPI(BasePixivAPI):
     #   keyword                 - 关键词
     # sort: [date_desc, date_asc]
     # start_date/end_date: 2020-06-01
-    def search_novel(word, search_target="partial_match_for_tags", sort="date_desc", start_date=None, end_date=None):
+    def search_novel(
+            self,
+            word: str,
+            search_target="partial_match_for_tags",
+            sort="date_desc",
+            start_date=None,
+            end_date=None,
+    ) -> ParsedJson: ...
 
-    def search_user(word, sort='date_desc', duration=None):
+    def search_user(self, word: str, sort='date_desc', duration=None) -> ParsedJson: ...
 
     # 作品收藏详情
-    def illust_bookmark_detail(illust_id):
+    def illust_bookmark_detail(self, illust_id: int | str) -> ParsedJson: ...
 
     # 新增收藏
-    def illust_bookmark_add(illust_id, restrict="public", tags=None):
+    def illust_bookmark_add(self, illust_id: int | str, restrict="public", tags=None) -> ParsedJson: ...
 
     # 删除收藏
-    def illust_bookmark_delete(illust_id):
+    def illust_bookmark_delete(self, illust_id: int | str) -> ParsedJson: ...
 
     # 关注用户
-    def user_follow_add(user_id, restrict="public"):
+    def user_follow_add(self, user_id: int | str, restrict="public") -> ParsedJson: ...
 
     # 取消关注用户
-    def user_follow_delete(user_id):
+    def user_follow_delete(self, user_id: int | str) -> ParsedJson: ...
 
     # 用户收藏标签列表
-    def user_bookmark_tags_illust(restrict="public"):
+    def user_bookmark_tags_illust(self, restrict="public") -> ParsedJson: ...
 
     # Following用户列表
-    def user_following(user_id, restrict="public"):
+    def user_following(self, user_id: int | str, restrict="public") -> ParsedJson: ...
 
     # Followers用户列表
-    def user_follower(user_id):
+    def user_follower(self, user_id: int | str) -> ParsedJson: ...
 
     # 好P友
-    def user_mypixiv(user_id):
+    def user_mypixiv(self, user_id: int | str) -> ParsedJson: ...
 
     # 黑名单用户
-    def user_list(user_id):
+    def user_list(self, user_id: int | str) -> ParsedJson: ...
 
     # 获取ugoira信息
-    def ugoira_metadata(illust_id):
+    def ugoira_metadata(self, illust_id: int | str) -> ParsedJson: ...
 
     # 用户小说列表
-    def user_novels(user_id):
+    def user_novels(self, user_id: int | str) -> ParsedJson: ...
 
     # 小说系列详情
-    def novel_series(series_id, last_order=None):
+    def novel_series(self, series_id: int | str, last_order=None) -> ParsedJson: ...
 
     # 小说详情
-    def novel_detail(novel_id):
+    def novel_detail(self, novel_id: int | str) -> ParsedJson: ...
 
     # 小说 (包含正文)
-    def webview_novel(novel_id):
+    def webview_novel(self, novel_id: int | str) -> ParsedJson: ...
 
     # 小说评论
-    def novel_comments(novel_id):
+    def novel_comments(self, novel_id: int | str) -> ParsedJson: ...
 
     # 大家的新作
     # content_type: [illust, manga]
-    def illust_new(content_type="illust", max_illust_id=None):
+    def illust_new(self, content_type="illust", max_illust_id=None) -> ParsedJson: ...
 
-    def novel_new(max_novel_id=None):
+    def novel_new(self, max_novel_id=None) -> ParsedJson: ...
 
     # 特辑详情 (无需登录，调用Web API)
-    def showcase_article(showcase_id):
+    def showcase_article(self, showcase_id) -> ParsedJson: ...
 ```
 
 [Usage](https://github.com/upbit/pixivpy/blob/aec177aa7a1979f7ec4c5bbbeed9085cc256bdbd/demo.py#L306):
 
 ```python
-aapi = AppPixivAPI()
+from pixivpy3 import AppPixivAPI
+api = AppPixivAPI()
 
 # 作品推荐
-json_result = aapi.illust_recommended()
+json_result = api.illust_recommended()
 print(json_result)
 illust = json_result.illusts[0]
-print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+print(f">>> {illust.title}, origin url: {illust.image_urls.large}")
 
 # 作品相关推荐
-json_result = aapi.illust_related(57065990)
+json_result = api.illust_related(57065990)
 print(json_result)
 illust = json_result.illusts[0]
-print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+print(f">>> {illust.title}, origin url: {illust.image_urls.large}")
 
 # 作品相关推荐-下一页 (.parse_qs(next_url) 用法)
-next_qs = aapi.parse_qs(json_result.next_url)
-json_result = aapi.illust_related(**next_qs)
+next_qs = api.parse_qs(json_result.next_url)
+json_result = api.illust_related(**next_qs)
 print(json_result)
 illust = json_result.illusts[0]
-print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+print(f">>> {illust.title}, origin url: {illust.image_urls.large}")
 
 # 用户详情
-json_result = aapi.user_detail(660788)
+json_result = api.user_detail(660788)
 print(json_result)
 user = json_result.user
-print("%s(@%s) region=%s" % (user.name, user.account, json_result.profile.region))
+print(f"{user.name}(@{user.account}) region={json_result.profile.region}")
 
 # 用户作品列表
-json_result = aapi.user_illusts(660788)
+json_result = api.user_illusts(660788)
 print(json_result)
 illust = json_result.illusts[0]
-print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+print(f">>> {illust.title}, origin url: {illust.image_urls.large}")
 
 # 用户收藏列表
-json_result = aapi.user_bookmarks_illust(2088434)
+json_result = api.user_bookmarks_illust(2088434)
 print(json_result)
 illust = json_result.illusts[0]
-print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+print(f">>> {illust.title}, origin url: {illust.image_urls.large}")
 
 # 用户收藏列表中的小说
-json_result = aapi.user_bookmarks_novel(42862448)
+json_result = api.user_bookmarks_novel(42862448)
 print(json_result)
 novel = json_result.novels[0]
-print(">>> {}, text_length: {}, series: {}".format(novel.title, novel.text_length, novel.series))
+print(f">>> {novel.title}, text_length: {novel.text_length}, series: {novel.series}")
 
 # 2016-07-15 日的过去一周排行
-json_result = aapi.illust_ranking('week', date='2016-07-15')
+json_result = api.illust_ranking('week', date='2016-07-15')
 print(json_result)
 illust = json_result.illusts[0]
-print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+print(f">>> {illust.title}, origin url: {illust.image_urls.large}")
 
 # 关注用户的新作 (需要login)
-json_result = aapi.illust_follow(req_auth=True)
+json_result = api.illust_follow(req_auth=True)
 print(json_result)
 illust = json_result.illusts[0]
-print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+print(f">>> {illust.title}, origin url: {illust.image_urls.large}")
 
 # 标签 "水着" 搜索
-json_result = aapi.search_illust('水着', search_target='partial_match_for_tags')
+json_result = api.search_illust('水着', search_target='partial_match_for_tags')
 print(json_result)
 illust = json_result.illusts[0]
-print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+print(f">>> {illust.title}, origin url: {illust.image_urls.large}")
 
 # 用户 "gomzi" 搜索
-json_result = aapi.search_user("gomzi")
+json_result = api.search_user("gomzi")
 print(json_result)
 illust = json_result.user_previews[0].illusts[0]
-print(">>> %s, origin url: %s" % (illust.title, illust.image_urls['large']))
+print(f">>> {illust.title}, origin url: {illust.image_urls.large}")
 
 # 展示小说评论区
-json_result = aapi.novel_comments(16509454, include_total_comments=True)
-print("Total comments = {}".format(json_result["total_comments"]))
-for comment in json_result["comments"]:
-    if comment["parent_comment"] != dict():
-        print("{user} replied to {target} at {time} : {content}".format(user = comment["user"]["name"], time = comment["date"], content = comment["comment"], target = comment["parent_comment"]["user"]["name"]))
+json_result = api.novel_comments(16509454, include_total_comments=True)
+print(f"Total comments = {json_result.total_comments}")
+for comment in json_result.comments:
+    if comment.parent_comment:
+        print(f"{comment.user.name} replied to {comment.parent_comment.user.name} at {comment.date} : {comment.comment}")
     else:
-        print("{user} at {time} : {content}".format(user=comment["user"]["name"], time=comment["date"], content=comment["comment"]))
+        print(f"{comment.user.name} at {comment.date} : {comment.comment}")
 ```
 
 ## Package Publishing Instructions
