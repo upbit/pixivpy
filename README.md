@@ -410,7 +410,7 @@ novel = json_result.novels[0]
 print(f">>> {novel.title}, text_length: {novel.text_length}, series: {novel.series}")
 
 # 2016-07-15 日的过去一周排行
-json_result = api.illust_ranking('week', date='2016-07-15')
+json_result = api.illust_ranking(enums.RankingMode.WEEK, date='2016-07-15')
 print(json_result)
 illust = json_result.illusts[0]
 print(f">>> {illust.title}, origin url: {illust.image_urls.large}")
