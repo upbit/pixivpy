@@ -26,10 +26,10 @@ jobs:
       - name: Lint with pre-commit
         uses: pre-commit/action@v3.0.1
       - name: Install dependencies
-        run: poetry install --no-dev
-      - name: Run demo.py
+        run: poetry install
+      - name: Run demo.py for API check
         run: poetry run python demo.py
       - name: Install dependencies tests
-        run: poetry install
+        run: poetry install --with test
       - name: Run tests
         run: poetry run pytest
