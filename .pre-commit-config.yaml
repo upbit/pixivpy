@@ -63,6 +63,7 @@ repos:
         files: ^pixivpy3/
         additional_dependencies:
           - types-requests
+          - pydantic
         args: [--show-error-codes, --pretty, --strict]
   - repo: https://github.com/pre-commit/mirrors-prettier
     rev: "v2.7.1"
