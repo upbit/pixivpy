@@ -165,6 +165,7 @@ while next_qs:
 
 ```python
 from pixivpy3 import AppPixivAPI
+
 aapi = AppPixivAPI()
 json_result = aapi.illust_ranking()
 for illust in json_result.illusts[:3]:
@@ -177,9 +178,10 @@ for illust in json_result.illusts[:3]:
 2. Change deprecated SPAI call to Public-API call
 
 ```python
-from pixivpy3 import AppPixivAPI
+from pixivpy3 import AppPixivAPI, enums
+
 api = AppPixivAPI()
-rank_list = api.illust_ranking('day')
+rank_list = api.illust_ranking(enums.RankingMode.DAY)
 print(rank_list)
 
 # more fields about response: https://github.com/upbit/pixivpy/wiki/sniffer
@@ -209,6 +211,7 @@ from typing import Any
 from pixivpy3 import enums
 from pixivpy3.utils import ParsedJson
 from pixivpy3.api import BasePixivAPI
+
 
 class AppPixivAPI(BasePixivAPI):
 
@@ -288,12 +291,12 @@ class AppPixivAPI(BasePixivAPI):
     # sort: [date_desc, date_asc]
     # start_date/end_date: 2020-06-01
     def search_novel(
-            self,
-            word: str,
-            search_target=enums.SearchTarget.PARTIAL_MATCH_FOR_TAGS,
-            sort=enums.Sort.DATE_DESC,
-            start_date=None,
-            end_date=None,
+        self,
+        word: str,
+        search_target=enums.SearchTarget.PARTIAL_MATCH_FOR_TAGS,
+        sort=enums.Sort.DATE_DESC,
+        start_date=None,
+        end_date=None,
     ) -> ParsedJson: ...
 
     def search_user(self, word: str, sort=enums.Sort.DATE_DESC, duration=None) -> ParsedJson: ...
@@ -360,6 +363,7 @@ class AppPixivAPI(BasePixivAPI):
 
 ```python
 from pixivpy3 import AppPixivAPI, enums
+
 api = AppPixivAPI()
 
 # 作品推荐
@@ -434,9 +438,11 @@ json_result = api.novel_comments(16509454, include_total_comments=True)
 print(f"Total comments = {json_result.total_comments}")
 for comment in json_result.comments:
     if comment.parent_comment:
-        print(f"{comment.user.name} replied to {comment.parent_comment.user.name} at {comment.date} : {comment.comment}")
+        text = f"{comment.user.name} replied to {comment.parent_comment.user.name} at {comment.date} : {comment.comment}"
+        print(text)
     else:
-        print(f"{comment.user.name} at {comment.date} : {comment.comment}")
+        text = f"{comment.user.name} at {comment.date} : {comment.comment}"
+        print(text)
 ```
 
 ## Package Publishing Instructions
