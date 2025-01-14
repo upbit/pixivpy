@@ -98,14 +98,15 @@ class AppPixivAPI(BasePixivAPI):
             return self.requests_call(method, url, headers_, params, data)
         else:
             self.require_auth()
-            headers_["Authorization"] = "Bearer %s" % self.access_token
+            headers_["Authorization"] = f"Bearer {self.access_token}"
             return self.requests_call(method, url, headers_, params, data)
 
     def parse_result(self, res: Response) -> ParsedJson:
         try:
             return self.parse_json(res.text)
         except Exception as e:
-            raise PixivError("parse_json() error: %s" % e, header=res.headers, body=res.text)
+            msg = f"parse_json() error: {e}"
+            raise PixivError(msg, header=res.headers, body=res.text)
 
     @classmethod
     def format_bool(cls, bool_value: bool | str | None) -> _BOOL:
@@ -828,7 +829,8 @@ class AppPixivAPI(BasePixivAPI):
             json_str = re.search(r"novel:\s({.+}),\s+isOwnWork", r.text).groups()[0].encode()  # type: ignore
             return self.parse_json(json_str)
         except Exception as e:
-            raise PixivError("Extract novel content error: %s" % e, header=r.headers, body=r.text)
+            msg = f"Extract novel content error: {e}"
+            raise PixivError(msg, header=r.headers, body=r.text)
 
     # 小说正文 (deprecated)
     def novel_text(self, novel_id: int | str, req_auth: bool = True) -> ParsedJson:
