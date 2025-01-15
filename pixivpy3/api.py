@@ -4,7 +4,7 @@ import hashlib
 import json
 import os
 import shutil
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import IO, Any
 
 import cloudscraper  # type: ignore[import]
@@ -120,7 +120,7 @@ class BasePixivAPI:
         headers: ParamDict = None,
     ) -> ParsedJson:
         """Login with password, or use the refresh_token to acquire a new bearer token"""
-        local_time = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S+00:00")
+        local_time = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S+00:00")
         headers_ = CaseInsensitiveDict(headers or {})
         headers_["x-client-time"] = local_time
         headers_["x-client-hash"] = hashlib.md5((local_time + self.hash_secret).encode("utf-8")).hexdigest()
