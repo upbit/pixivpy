@@ -20,8 +20,7 @@ def main():
     # api.login(_USERNAME, _PASSWORD)
     print(api.auth(refresh_token=_REFRESH_TOKEN))
     date = datetime.now() - timedelta(days=5)
-    date_str = date.strftime("%Y-%m-%d")
-    json_result = api.illust_ranking("day", date=date_str)
+    json_result = api.illust_ranking("day", date=date)
 
     print("Printing image titles and tags with English tag translations present when available")
 
