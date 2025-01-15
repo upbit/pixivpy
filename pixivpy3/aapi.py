@@ -71,10 +71,6 @@ class AppPixivAPI(BasePixivAPI):
     def _url(self, endpoint: str) -> str:
         return f"{self.hosts}{endpoint}"
 
-    @classmethod
-    def _ajax_url(cls, endpoint: str) -> str:
-        return f"https://www.pixiv.net{endpoint}"
-
     # Check auth and set BearerToken to headers
     def no_auth_requests_call(
         self,
@@ -871,7 +867,7 @@ class AppPixivAPI(BasePixivAPI):
 
     # 特辑详情 (无需登录，调用Web API)
     def showcase_article(self, showcase_id: int | str) -> ParsedJson:
-        url = self._ajax_url("/ajax/showcase/article")
+        url = "https://www.pixiv.net/ajax/showcase/article"
         # Web API，伪造Chrome的User-Agent
         headers = {
             "User-Agent": (
