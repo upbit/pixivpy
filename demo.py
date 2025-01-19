@@ -304,16 +304,17 @@ def main() -> None:
     # app-api
     aapi = AppPixivAPI(**_REQUESTS_KWARGS)
 
-    _e: Exception | None = None
+    er: Exception | None = None
     for _ in range(3):
         try:
             aapi.auth(refresh_token=_REFRESH_TOKEN)
             break
         except PixivError as e:
-            _e = e
+            er = e
             time.sleep(10)
     else:  # failed 3 times
-        raise _e  # type: ignore[misc]  # False positive
+        assert isinstance(er, Exception)
+        raise er
 
     appapi_illust(aapi)
     appapi_recommend(aapi)
