@@ -1,3 +1,8 @@
+# To keep code compatibility with previous versions:
+# ruff: noqa: A002: Function argument `filter` is shadowing a Python builtin
+# To keep code compatibility with previous versions:
+# ruff: noqa: ARG002: Unused method argument: `req_auth`
+
 from __future__ import annotations
 
 import datetime as dt
@@ -60,7 +65,7 @@ DateOrStr = Union[dt.date, str]
 # @typechecked
 class AppPixivAPI(BasePixivAPI):
     def __init__(self, **requests_kwargs: Any) -> None:
-        """initialize requests kwargs if need be"""
+        """Initialize requests kwargs if need be"""
         super().__init__(**requests_kwargs)
 
     # noinspection HttpUrlsUsage
@@ -89,17 +94,16 @@ class AppPixivAPI(BasePixivAPI):
 
         if not req_auth:
             return self.requests_call(method, url, headers_, params, data)
-        else:
-            self.require_auth()
-            headers_["Authorization"] = f"Bearer {self.access_token}"
-            return self.requests_call(method, url, headers_, params, data)
+        self.require_auth()
+        headers_["Authorization"] = f"Bearer {self.access_token}"
+        return self.requests_call(method, url, headers_, params, data)
 
     def parse_result(self, res: Response) -> ParsedJson:
         try:
             return self.parse_json(res.text)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             msg = f"parse_json() error: {e}"
-            raise PixivError(msg, header=res.headers, body=res.text)
+            raise PixivError(msg, header=res.headers, body=res.text) from None
 
     @classmethod
     def format_bool(cls, bool_value: bool | str | None) -> _BOOL:
@@ -107,8 +111,7 @@ class AppPixivAPI(BasePixivAPI):
             return "true" if bool_value else "false"
         if bool_value in {"true", "True"}:
             return "true"
-        else:
-            return "false"
+        return "false"
 
     @classmethod
     def _format_date(cls, date: DateOrStr) -> str:
@@ -153,7 +156,7 @@ class AppPixivAPI(BasePixivAPI):
         return self.parse_result(r)
 
     # 用户作品列表
-    ## type: [illust, manga] # noqa
+    ## type: [illust, manga]
     def user_illusts(
         self,
         user_id: int | str,
@@ -271,7 +274,7 @@ class AppPixivAPI(BasePixivAPI):
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
         return self.parse_result(r)
 
-    # 作品详情 (类似PAPI.works()，iOS中未使用)
+    # 作品详情 (类似PAPI.works(),iOS中未使用)
     def illust_detail(self, illust_id: int | str, req_auth: bool = True) -> ParsedJson:
         url = f"{self.hosts}/v1/illust/detail"
         params = {
@@ -827,11 +830,11 @@ class AppPixivAPI(BasePixivAPI):
             return r.text
         try:
             # extract JSON content
-            json_str = re.search(r"novel:\s({.+}),\s+isOwnWork", r.text).groups()[0].encode()  # type: ignore
+            json_str = re.search(r"novel:\s({.+}),\s+isOwnWork", r.text).groups()[0].encode()  # type: ignore[union-attr]
             return self.parse_json(json_str)
         except Exception as e:
             msg = f"Extract novel content error: {e}"
-            raise PixivError(msg, header=r.headers, body=r.text)
+            raise PixivError(msg, header=r.headers, body=r.text) from e
 
     # 小说正文 (deprecated)
     def novel_text(self, novel_id: int | str, req_auth: bool = True) -> ParsedJson:
@@ -859,14 +862,13 @@ class AppPixivAPI(BasePixivAPI):
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
         return self.parse_result(r)
 
-    # 特辑详情 (无需登录，调用Web API)
+    # 特辑详情 (无需登录,调用Web API)
     def showcase_article(self, showcase_id: int | str) -> ParsedJson:
         url = "https://www.pixiv.net/ajax/showcase/article"
-        # Web API，伪造Chrome的User-Agent
+        # Web API, 伪造Chrome的User-Agent
         headers = {
             "User-Agent": (
-                "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 "
-                + "(KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36"
+                "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36"
             ),
             "Referer": "https://www.pixiv.net",
         }
