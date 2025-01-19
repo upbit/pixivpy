@@ -1,6 +1,4 @@
-"""
-Pixiv API library
-"""
+"""Pixiv API library"""
 
 from .aapi import AppPixivAPI
 from .bapi import ByPassSniApi

@@ -10,10 +10,10 @@ sys.dont_write_bytecode = True
 
 # get your refresh_token, and replace _REFRESH_TOKEN
 #  https://github.com/upbit/pixivpy/issues/158#issuecomment-778919084
-_REFRESH_TOKEN = "0zeYA-PllRYp1tfrsq_w3vHGU1rPy237JMf5oDt73c4"
+_REFRESH_TOKEN = "<your_refresh_token>"
 
 
-def main():
+def main() -> None:
     sni = False
     if not sni:
         api = AppPixivAPI()
@@ -27,7 +27,7 @@ def main():
 
     directory = "illusts"
     if not os.path.exists(directory):
-        os.makedirs(directory)
+        os.makedirs(directory)  # noqa: PTH103
 
     # download top3 day rankings to 'illusts' dir
     for idx, illust in enumerate(json_result.illusts[:4]):
@@ -39,10 +39,10 @@ def main():
             api.download(image_url, path=directory, name=None)
         elif idx == 1:
             url_basename = os.path.basename(image_url)
-            extension = os.path.splitext(url_basename)[1]
+            extension = os.path.splitext(url_basename)[1]  # noqa: PTH122
             name = f"illust_id_{illust.id}_{illust.title}{extension}"
             api.download(image_url, path=directory, name=name)
-        elif idx == 2:
+        elif idx == 2:  # noqa: PLR2004; Valid, but I don't know myself
             fname = f"illust_{illust.id}.jpg"
             api.download(image_url, path=directory, fname=fname)
         else:
@@ -51,7 +51,7 @@ def main():
             api.download(
                 image_url,
                 path="/foo/bar",
-                fname=open(fname, "wb"),
+                fname=open(fname, "wb"),  # noqa: SIM115
             )
 
 

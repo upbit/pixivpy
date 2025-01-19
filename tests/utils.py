@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -8,7 +9,7 @@ FIXTURES_DIR = "tests/fixtures"
 JSON_FIXTURES_DIR = "tests/fixtures/json"
 
 
-def load_data_from_file(filename):
+def load_data_from_file(filename: str) -> str:
     try:
         with open(os.path.join(FIXTURES_DIR, filename)) as fp:
             return fp.read()
@@ -21,7 +22,7 @@ def load_data_from_file(filename):
         raise
 
 
-def load_json_from_file(filename):
+def load_json_from_file(filename: str) -> Any:
     try:
         with open(os.path.join(JSON_FIXTURES_DIR, filename)) as fp:
             return json.load(fp)

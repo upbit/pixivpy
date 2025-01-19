@@ -1,31 +1,33 @@
 #!/usr/bin/env python
+from __future__ import annotations
 
 import sys
 import time
+from typing import Any
 
 from pixivpy3 import AppPixivAPI, PixivError
 
 sys.dont_write_bytecode = True
 
-
 # get your refresh_token, and replace _REFRESH_TOKEN
 #  https://github.com/upbit/pixivpy/issues/158#issuecomment-778919084
-_REFRESH_TOKEN = "0zeYA-PllRYp1tfrsq_w3vHGU1rPy237JMf5oDt73c4"
+_REFRESH_TOKEN = "<your_refresh_token>"
 _TEST_WRITE = False
 
 # If a special network environment is meet, please configure requests as you need.
 # Otherwise, just keep it empty.
-_REQUESTS_KWARGS = {
+_REQUESTS_KWARGS: dict[str, Any] = {
     # 'proxies': {
     #     'https': 'http://127.0.0.1:1087',
     # },
     # 'verify': False,       # PAPI use https, an easy way is disable requests SSL verify
 }
 
+
 # AppAPI start
 
 
-def appapi_illust(aapi):
+def appapi_illust(aapi: AppPixivAPI) -> None:
     json_result = aapi.illust_detail(59580629)
     print(json_result)
     illust = json_result.illust
@@ -41,7 +43,7 @@ def appapi_illust(aapi):
     # print(f">>> frames={len(metadata.frames)} {metadata.zip_urls.medium}")
 
 
-def appapi_recommend(aapi):
+def appapi_recommend(aapi: AppPixivAPI) -> None:
     json_result = aapi.illust_recommended(bookmark_illust_ids=[59580629])
     print(json_result)
     illust = json_result.illusts[0]
@@ -69,7 +71,7 @@ def appapi_recommend(aapi):
         print(f"  > {illust.title}, origin url: {illust.image_urls.large}")
 
 
-def appapi_users(aapi):
+def appapi_users(aapi: AppPixivAPI) -> None:
     json_result = aapi.user_detail(275527)
     print(json_result)
     user = json_result.user
@@ -123,8 +125,8 @@ def appapi_users(aapi):
     print(json_result)
 
 
-def appapi_search(aapi):
-    first_tag = None
+def appapi_search(aapi: AppPixivAPI) -> None:
+    first_tag: str = ""
     response = aapi.trending_tags_illust()
     for trend_tag in response.trend_tags[:10]:
         if not first_tag:
@@ -159,12 +161,12 @@ def appapi_search(aapi):
         print(f">>> {novel.title}, origin url: {novel.image_urls['large']}")
 
     json_result = aapi.search_illust("AI生成", search_target="exact_match_for_tags", search_ai_type=0)
-    # 关闭AI搜索选项后，将过滤掉所有illust_ai_type=2的插画，而illust_ai_type=1 or 0 的插画将被保留
-    # 但是，加入了"AI生成"的tag却没有在作品提交时打开“AI生成”的开关的作品不会被筛选出结果列表
+    # 关闭AI搜索选项后,将过滤掉所有illust_ai_type=2的插画,而illust_ai_type=1 or 0 的插画将被保留
+    # 但是,加入了"AI生成"的tag却没有在作品提交时打开“AI生成”的开关的作品不会被筛选出结果列表
     print(json_result.illusts[0])
 
 
-def appapi_user_search(aapi):
+def appapi_user_search(aapi: AppPixivAPI) -> None:
     json_result = aapi.illust_ranking("day_male")
     name = json_result.illusts[0].user.name
     print(f">>> {name}")
@@ -183,7 +185,7 @@ def appapi_user_search(aapi):
         print(f">>> {illust.title}, origin url: {illust.image_urls.large}")
 
 
-def appapi_ranking(aapi):
+def appapi_ranking(aapi: AppPixivAPI) -> None:
     json_result = aapi.illust_ranking("day_male")
     print(json_result)
     illust = json_result.illusts[0]
@@ -204,7 +206,7 @@ def appapi_ranking(aapi):
     print(f">>> {illust.title}, origin url: {illust.image_urls.large}")
 
 
-def appapi_auth_api(aapi):
+def appapi_auth_api(aapi: AppPixivAPI) -> None:
     json_result = aapi.illust_follow(req_auth=True)
     print(json_result)
     illust = json_result.illusts[0]
@@ -224,7 +226,7 @@ def appapi_auth_api(aapi):
     print(f">>> {illust.title}, origin url: {illust.image_urls.large}")
 
 
-def appapi_bookmark_add(aapi):
+def appapi_bookmark_add(aapi: AppPixivAPI) -> None:
     illust_id = 74187223
     tags = ["Fate/GO", "50000users入り", "私服"]
     aapi.illust_bookmark_add(illust_id, tags=tags)
@@ -234,7 +236,7 @@ def appapi_bookmark_add(aapi):
     print(f">>> {illust_id}, tags added: {tags_added}")
 
 
-def appapi_novel(aapi):
+def appapi_novel(aapi: AppPixivAPI) -> None:
     json_result = aapi.novel_recommended()
     print(json_result)
     novel = json_result.novels[0]
@@ -298,20 +300,21 @@ def appapi_novel(aapi):
             print(text)
 
 
-def main():
+def main() -> None:
     # app-api
     aapi = AppPixivAPI(**_REQUESTS_KWARGS)
 
-    _e = None
+    er: Exception | None = None
     for _ in range(3):
         try:
             aapi.auth(refresh_token=_REFRESH_TOKEN)
             break
         except PixivError as e:
-            _e = e
+            er = e
             time.sleep(10)
     else:  # failed 3 times
-        raise _e
+        assert isinstance(er, Exception)
+        raise er
 
     appapi_illust(aapi)
     appapi_recommend(aapi)
