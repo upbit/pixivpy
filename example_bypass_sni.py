@@ -22,10 +22,18 @@ def main() -> None:
     date = datetime.now() - timedelta(days=5)
     json_result = api.illust_ranking("day", date=date)
 
-    print("Printing image titles and tags with English tag translations present when available")
+    print(
+        "Printing image titles and tags with English tag translations present when available"
+    )
 
     for illust in json_result.illusts[:3]:
-        print('Illustration: "' + str(illust.title) + '"\nTags: ' + str(illust.tags) + "\n")
+        print(
+            'Illustration: "'
+            + str(illust.title)
+            + '"\nTags: '
+            + str(illust.tags)
+            + "\n"
+        )
 
 
 if __name__ == "__main__":

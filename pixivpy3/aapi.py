@@ -12,9 +12,8 @@ from typing import Any, Literal, Union
 
 try:
     # Python>=3.10
-    from typing import TypeAlias  # type: ignore[attr-defined]
+    from typing import TypeAlias
 except ImportError:
-    # Python==3.8, ==3.9
     from typing_extensions import TypeAlias
 
 from requests.structures import CaseInsensitiveDict
@@ -53,7 +52,9 @@ _SEARCH_TARGET: TypeAlias = Literal[
     "",
 ]
 _SORT: TypeAlias = Literal["date_desc", "date_asc", "popular_desc", ""]
-_DURATION: TypeAlias = Literal["within_last_day", "within_last_week", "within_last_month", "", None]
+_DURATION: TypeAlias = Literal[
+    "within_last_day", "within_last_week", "within_last_month", "", None
+]
 _BOOL: TypeAlias = Literal["true", "false"]
 
 DateOrStr = Union[dt.date, str]
@@ -268,7 +269,7 @@ class AppPixivAPI(BasePixivAPI):
             "filter": filter,
         }
         if offset:
-            params["offset"] = offset
+            params["offset"] = offset  # type: ignore[assignment]
 
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
         return self.parse_result(r)
@@ -373,11 +374,15 @@ class AppPixivAPI(BasePixivAPI):
         if max_bookmark_id_for_recommend:
             params["max_bookmark_id_for_recommend"] = max_bookmark_id_for_recommend
         if min_bookmark_id_for_recent_illust:
-            params["min_bookmark_id_for_recent_illust"] = min_bookmark_id_for_recent_illust
+            params["min_bookmark_id_for_recent_illust"] = (
+                min_bookmark_id_for_recent_illust
+            )
         if offset:
             params["offset"] = offset
         if include_ranking_illusts:
-            params["include_ranking_illusts"] = self.format_bool(include_ranking_illusts)
+            params["include_ranking_illusts"] = self.format_bool(
+                include_ranking_illusts
+            )
         if isinstance(viewed, str):
             params["viewed[]"] = [viewed]
         elif isinstance(viewed, list):
@@ -442,7 +447,9 @@ class AppPixivAPI(BasePixivAPI):
             if isinstance(already_recommended, str):
                 params["already_recommended"] = already_recommended
             elif isinstance(already_recommended, list):
-                params["already_recommended"] = ",".join(str(iid) for iid in already_recommended)
+                params["already_recommended"] = ",".join(
+                    str(iid) for iid in already_recommended
+                )
         if include_privacy_policy:
             params["include_privacy_policy"] = include_privacy_policy
 
@@ -475,7 +482,9 @@ class AppPixivAPI(BasePixivAPI):
         return self.parse_result(r)
 
     # 趋势标签 (Search - tags)
-    def trending_tags_illust(self, filter: _FILTER = "for_ios", req_auth: bool = True) -> ParsedJson:
+    def trending_tags_illust(
+        self, filter: _FILTER = "for_ios", req_auth: bool = True
+    ) -> ParsedJson:
         url = f"{self.hosts}/v1/trending-tags/illust"
         params = {
             "filter": filter,
@@ -591,7 +600,9 @@ class AppPixivAPI(BasePixivAPI):
         return self.parse_result(r)
 
     # 作品收藏详情
-    def illust_bookmark_detail(self, illust_id: int | str, req_auth: bool = True) -> ParsedJson:
+    def illust_bookmark_detail(
+        self, illust_id: int | str, req_auth: bool = True
+    ) -> ParsedJson:
         url = f"{self.hosts}/v2/illust/bookmark/detail"
         params = {
             "illust_id": illust_id,
@@ -621,7 +632,9 @@ class AppPixivAPI(BasePixivAPI):
         return self.parse_result(r)
 
     # 删除收藏
-    def illust_bookmark_delete(self, illust_id: int | str, req_auth: bool = True) -> ParsedJson:
+    def illust_bookmark_delete(
+        self, illust_id: int | str, req_auth: bool = True
+    ) -> ParsedJson:
         url = f"{self.hosts}/v1/illust/bookmark/delete"
         data = {
             "illust_id": illust_id,
@@ -642,14 +655,18 @@ class AppPixivAPI(BasePixivAPI):
         return self.parse_result(r)
 
     # 取消关注用户
-    def user_follow_delete(self, user_id: int | str, req_auth: bool = True) -> ParsedJson:
+    def user_follow_delete(
+        self, user_id: int | str, req_auth: bool = True
+    ) -> ParsedJson:
         url = f"{self.hosts}/v1/user/follow/delete"
         data = {"user_id": user_id}
         r = self.no_auth_requests_call("POST", url, data=data, req_auth=req_auth)
         return self.parse_result(r)
 
     # 设置用户选项中是否展现AI生成作品
-    def user_edit_ai_show_settings(self, setting: _BOOL, req_auth: bool = True) -> ParsedJson:
+    def user_edit_ai_show_settings(
+        self, setting: _BOOL, req_auth: bool = True
+    ) -> ParsedJson:
         url = f"{self.hosts}/v1/user/ai-show-settings/edit"
         data = {"show_ai": setting}
         r = self.no_auth_requests_call("POST", url, data=data, req_auth=req_auth)
@@ -748,7 +765,9 @@ class AppPixivAPI(BasePixivAPI):
         return self.parse_result(r)
 
     # 获取ugoira信息
-    def ugoira_metadata(self, illust_id: int | str, req_auth: bool = True) -> ParsedJson:
+    def ugoira_metadata(
+        self, illust_id: int | str, req_auth: bool = True
+    ) -> ParsedJson:
         url = f"{self.hosts}/v1/ugoira/metadata"
         params = {
             "illust_id": illust_id,
@@ -855,18 +874,20 @@ class AppPixivAPI(BasePixivAPI):
         if raw:
             return r.text
 
-        try:
-            # extract JSON content
-            json_str = re.search(r"novel:\s({.+}),\s+isOwnWork", r.text).groups()[0].encode()  # type: ignore[union-attr]
-            json_data = self.parse_json(json_str)
-        except Exception as e:
-            msg = f"Extract novel content error: {e}"
-            raise PixivError(msg, header=r.headers, body=r.text) from e
+        # extract JSON content
+        match = re.search(r"novel:\s({.+}),\s+isOwnWork", r.text)
+        if not match or len(match.groups()) < 1:
+            msg = f"Extract novel content error: {r.text}"
+            raise PixivError(msg, header=r.headers, body=r.text)
 
+        json_str = match.groups()[0].encode()
+        json_data = self.parse_json(json_str)
         return self._load_model(json_data, models.WebviewNovel)
 
     # 小说正文 (deprecated)
-    def novel_text(self, novel_id: int | str, req_auth: bool = True) -> models.WebviewNovel:
+    def novel_text(
+        self, novel_id: int | str, req_auth: bool = True
+    ) -> models.WebviewNovel:
         # /v1/novel/text no longer exist
         json_obj = self.webview_novel(novel_id=novel_id, raw=False)
         assert isinstance(json_obj, models.WebviewNovel)
@@ -906,5 +927,7 @@ class AppPixivAPI(BasePixivAPI):
             "article_id": showcase_id,
         }
 
-        r = self.no_auth_requests_call("GET", url, headers=headers, params=params, req_auth=False)
+        r = self.no_auth_requests_call(
+            "GET", url, headers=headers, params=params, req_auth=False
+        )
         return self.parse_result(r)

@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import datetime
 import hashlib
 import json
 import os
@@ -8,12 +7,10 @@ import shutil
 from datetime import datetime
 from typing import IO, Any, cast
 
-import cloudscraper  # type: ignore  # noqa: PGH003: False positive
+import cloudscraper  # type: ignore[unused-ignore]
 from requests.structures import CaseInsensitiveDict
 
 from .utils import JsonDict, ParamDict, ParsedJson, PixivError, Response
-
-# from typeguard import typechecked
 
 
 # @typechecked
@@ -32,7 +29,7 @@ class BasePixivAPI:
         # self.requests = requests.Session()
         self.requests = cloudscraper.create_scraper()  # fix due to #140
         self.additional_headers = CaseInsensitiveDict(
-            requests_kwargs.pop("headers", {})
+            requests_kwargs.pop("headers", {}),
         )  # type: CaseInsensitiveDict[Any]
         self.requests_kwargs = requests_kwargs
 
@@ -81,7 +78,7 @@ class BasePixivAPI:
                     **self.requests_kwargs,
                 )
                 return cast(Response, response)
-            elif method == "POST":
+            if method == "POST":
                 response = self.requests.post(
                     url,
                     params=params,
@@ -91,7 +88,7 @@ class BasePixivAPI:
                     **self.requests_kwargs,
                 )
                 return cast(Response, response)
-            elif method == "DELETE":
+            if method == "DELETE":
                 response = self.requests.delete(
                     url,
                     params=params,
@@ -101,9 +98,8 @@ class BasePixivAPI:
                     **self.requests_kwargs,
                 )
                 return cast(Response, response)
-            else:
-                msg = f"Unknown method: {method}"
-                raise PixivError(msg)
+            msg = f"Unknown method: {method}"
+            raise PixivError(msg)
         except Exception as e:
             msg = f"requests {method} {url} error: {e}"
             raise PixivError(msg) from e
@@ -127,10 +123,12 @@ class BasePixivAPI:
         headers: ParamDict = None,
     ) -> ParsedJson:
         """Login with password, or use the refresh_token to acquire a new bearer token"""
-        local_time = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S+00:00")
+        local_time = datetime.now().strftime("%Y-%m-%dT%H:%M:%S+00:00")
         headers_ = CaseInsensitiveDict(headers or {})
         headers_["x-client-time"] = local_time
-        headers_["x-client-hash"] = hashlib.md5((local_time + self.hash_secret).encode("utf-8")).hexdigest()
+        headers_["x-client-hash"] = hashlib.md5(
+            (local_time + self.hash_secret).encode("utf-8")
+        ).hexdigest()
         # Allow mock UA due to #171: https://github.com/upbit/pixivpy/issues/171
         if "user-agent" not in headers_:
             headers_["app-os"] = "ios"
@@ -207,20 +205,19 @@ class BasePixivAPI:
         referer: str = "https://app-api.pixiv.net/",
     ) -> bool:
         """Download image to file (use 6.0 app-api)"""
-        if hasattr(fname, "write"):
+        if fname is not None and hasattr(fname, "write"):
             # A file-like object has been provided.
             file = fname
         else:
             # Determine file path by parameters.
             name = prefix + str(name or fname or os.path.basename(url))
-            file = os.path.join(path, name)
-            if os.path.exists(file) and not replace:
+            filename = os.path.join(path, name)
+            if os.path.exists(filename) and not replace:
                 return False
+            file = open(filename, "wb")
 
-        with self.requests_call("GET", url, headers={"Referer": referer}, stream=True) as response:
-            if isinstance(file, str):
-                with open(file, "wb") as out_file:
-                    shutil.copyfileobj(response.raw, out_file)
-            else:
-                shutil.copyfileobj(response.raw, file)
+        with self.requests_call(
+            "GET", url, headers={"Referer": referer}, stream=True
+        ) as response:
+            shutil.copyfileobj(response.raw, file)
         return True

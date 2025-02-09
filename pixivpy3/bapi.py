@@ -4,7 +4,7 @@ import logging
 from typing import Any
 
 import requests
-from requests_toolbelt.adapters import host_header_ssl  # type: ignore  # noqa: PGH003: False positive
+from requests_toolbelt.adapters import host_header_ssl  # type: ignore[unused-ignore]
 
 from .aapi import AppPixivAPI
 
@@ -20,7 +20,9 @@ class ByPassSniApi(AppPixivAPI):
         session.mount("https://", host_header_ssl.HostHeaderSSLAdapter())
         self.requests = session
 
-    def require_appapi_hosts(self, hostname: str = "app-api.secure.pixiv.net", timeout: int = 3) -> str | bool:
+    def require_appapi_hosts(
+        self, hostname: str = "app-api.secure.pixiv.net", timeout: int = 3
+    ) -> str | bool:
         """通过 DoH 服务请求真实的 IP 地址。"""
         URLS = (
             "https://1.0.0.1/dns-query",
@@ -38,11 +40,19 @@ class ByPassSniApi(AppPixivAPI):
 
         for url in URLS:
             try:
-                response = requests.get(url, headers=headers, params=params, timeout=timeout)
+                response = requests.get(
+                    url, headers=headers, params=params, timeout=timeout
+                )
             except (requests.exceptions.JSONDecodeError, KeyError):
-                logger.debug(f"Unable to get according hostname info from '{url}', skipping...", exc_info=True)
+                logger.debug(
+                    f"Unable to get according hostname info from '{url}', skipping...",
+                    exc_info=True,
+                )
             except requests.ConnectionError:
-                logger.debug(f"Unable to establish connection to '{url}', skipping...", exc_info=True)
+                logger.debug(
+                    f"Unable to establish connection to '{url}', skipping...",
+                    exc_info=True,
+                )
             else:
                 domain_data = response.json()["Answer"][0]["data"]
                 self.hosts = f"https://{domain_data}"

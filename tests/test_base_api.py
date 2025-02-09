@@ -31,7 +31,9 @@ class TestBasePixivAPI:
         res = api.requests_call(method="GET", url=pixiv_url_common)
         assert res == pixiv_response_200
 
-        scraper_mock.return_value.get.assert_called_once_with(pixiv_url_common, headers={}, params=None, stream=False)
+        scraper_mock.return_value.get.assert_called_once_with(
+            pixiv_url_common, headers={}, params=None, stream=False
+        )
 
     @patch("cloudscraper.create_scraper")
     def test_request_call_post(
@@ -46,7 +48,9 @@ class TestBasePixivAPI:
         api = BasePixivAPI()
         scraper_mock.assert_called_once()
 
-        res = api.requests_call(method="POST", url=pixiv_url_common, data=pixiv_post_payload)
+        res = api.requests_call(
+            method="POST", url=pixiv_url_common, data=pixiv_post_payload
+        )
         assert res == pixiv_response_201
 
         scraper_mock.return_value.post.assert_called_once_with(
@@ -70,7 +74,9 @@ class TestBasePixivAPI:
         api = BasePixivAPI()
         scraper_mock.assert_called_once()
 
-        res = api.requests_call(method="DELETE", url=pixiv_url_common, data=pixiv_post_payload)
+        res = api.requests_call(
+            method="DELETE", url=pixiv_url_common, data=pixiv_post_payload
+        )
         assert res == pixiv_response_200
 
         scraper_mock.return_value.delete.assert_called_once_with(

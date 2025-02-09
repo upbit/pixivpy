@@ -98,7 +98,9 @@ def appapi_users(aapi: AppPixivAPI) -> None:
     json_result = aapi.user_bookmarks_novel(42862448)
     print(json_result)
     novel = json_result.novels[0]
-    print(f">>> {novel.title}, text_length: {novel.text_length}, series: {novel.series}")
+    print(
+        f">>> {novel.title}, text_length: {novel.text_length}, series: {novel.series}"
+    )
 
     json_result = aapi.user_following(7314824)
     print(json_result)
@@ -160,7 +162,9 @@ def appapi_search(aapi: AppPixivAPI) -> None:
         novel = json_result.novels[0]
         print(f">>> {novel.title}, origin url: {novel.image_urls['large']}")
 
-    json_result = aapi.search_illust("AI生成", search_target="exact_match_for_tags", search_ai_type=0)
+    json_result = aapi.search_illust(
+        "AI生成", search_target="exact_match_for_tags", search_ai_type=0
+    )
     # 关闭AI搜索选项后,将过滤掉所有illust_ai_type=2的插画,而illust_ai_type=1 or 0 的插画将被保留
     # 但是,加入了"AI生成"的tag却没有在作品提交时打开“AI生成”的开关的作品不会被筛选出结果列表
     print(json_result.illusts[0])
@@ -232,7 +236,9 @@ def appapi_bookmark_add(aapi: AppPixivAPI) -> None:
     aapi.illust_bookmark_add(illust_id, tags=tags)
     json_result = aapi.illust_bookmark_detail(illust_id)
     print(json_result.bookmark_detail)
-    tags_added = [tag.name for tag in json_result.bookmark_detail.tags if tag.is_registered]
+    tags_added = [
+        tag.name for tag in json_result.bookmark_detail.tags if tag.is_registered
+    ]
     print(f">>> {illust_id}, tags added: {tags_added}")
 
 
@@ -240,26 +246,34 @@ def appapi_novel(aapi: AppPixivAPI) -> None:
     json_result = aapi.novel_recommended()
     print(json_result)
     novel = json_result.novels[0]
-    print(f">>> {novel.title}, text_length: {novel.text_length}, series: {novel.series}")
+    print(
+        f">>> {novel.title}, text_length: {novel.text_length}, series: {novel.series}"
+    )
 
     # get next page
     next_qs = aapi.parse_qs(json_result.next_url)
     if next_qs is not None:
         json_result = aapi.novel_recommended(**next_qs)
         novel = json_result.novels[0]
-        print(f">>> {novel.title}, text_length: {novel.text_length}, series: {novel.series}")
+        print(
+            f">>> {novel.title}, text_length: {novel.text_length}, series: {novel.series}"
+        )
 
     json_result = aapi.user_novels(59216290)
     print(json_result)
     novel = json_result.novels[0]
-    print(f">>> {novel.title}, text_length: {novel.text_length}, series: {novel.series}")
+    print(
+        f">>> {novel.title}, text_length: {novel.text_length}, series: {novel.series}"
+    )
 
     # get next page
     next_qs = aapi.parse_qs(json_result.next_url)
     if next_qs is not None:
         json_result = aapi.user_novels(**next_qs)
         novel = json_result.novels[0]
-        print(f">>> {novel.title}, text_length: {novel.text_length}, series: {novel.series}")
+        print(
+            f">>> {novel.title}, text_length: {novel.text_length}, series: {novel.series}"
+        )
 
     json_result = aapi.novel_series(1206600)
     print(json_result)
@@ -271,13 +285,17 @@ def appapi_novel(aapi: AppPixivAPI) -> None:
     if next_qs is not None:
         json_result = aapi.novel_series(**next_qs)
         detail = json_result.novel_series_detail
-        print(f">>> {detail.title}, total_character_count: {detail.total_character_count}")
+        print(
+            f">>> {detail.title}, total_character_count: {detail.total_character_count}"
+        )
 
     novel_id = 12438689
     json_result = aapi.novel_detail(novel_id)
     print(json_result)
     novel = json_result.novel
-    print(f">>> {novel.title}, text_length: {novel.text_length}, series: {novel.series}")
+    print(
+        f">>> {novel.title}, text_length: {novel.text_length}, series: {novel.series}"
+    )
 
     json_result = aapi.novel_text(novel_id)
     print(json_result)
@@ -286,7 +304,9 @@ def appapi_novel(aapi: AppPixivAPI) -> None:
     json_result = aapi.novel_follow()
     print(json_result)
     novel = json_result.novels[0]
-    print(f">>> {novel.title}, text_length: {novel.text_length}, series: {novel.series}")
+    print(
+        f">>> {novel.title}, text_length: {novel.text_length}, series: {novel.series}"
+    )
 
     # List the comments of the novel
     json_result = aapi.novel_comments(16509454, include_total_comments=True)
