@@ -3,7 +3,7 @@ from __future__ import annotations
 import datetime as dt
 import re
 import urllib.parse as up
-from typing import Any, Literal, TypeVar
+from typing import Any, Union, Literal
 
 try:
     # Python>=3.10
@@ -18,9 +18,8 @@ from . import models
 from .api import BasePixivAPI
 from .utils import ParamDict, ParsedJson, PixivError, Response
 
+
 # from typeguard import typechecked
-
-
 _FILTER: TypeAlias = Literal["for_ios", ""]
 _TYPE: TypeAlias = Literal["illust", "manga", ""]
 _RESTRICT: TypeAlias = Literal["public", "private", ""]
