@@ -211,13 +211,16 @@ class BasePixivAPI:
         else:
             # Determine file path by parameters.
             name = prefix + str(name or fname or os.path.basename(url))
-            filename = os.path.join(path, name)
-            if os.path.exists(filename) and not replace:
+            file = os.path.join(path, name)
+            if os.path.exists(file) and not replace:
                 return False
-            file = open(filename, "wb")
 
         with self.requests_call(
             "GET", url, headers={"Referer": referer}, stream=True
         ) as response:
-            shutil.copyfileobj(response.raw, file)
+            if isinstance(file, str):
+                with open(file, "wb") as out_file:
+                    shutil.copyfileobj(response.raw, out_file)
+            else:
+                shutil.copyfileobj(response.raw, file)
         return True
