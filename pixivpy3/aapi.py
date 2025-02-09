@@ -3,7 +3,7 @@ from __future__ import annotations
 import datetime as dt
 import re
 import urllib.parse as up
-from typing import Any, Union, Literal, TypeVar
+from typing import Any, Literal, Union
 
 try:
     # Python>=3.10
@@ -15,10 +15,9 @@ except ImportError:
 from requests.structures import CaseInsensitiveDict
 
 from . import models
-from .models import ModelT
 from .api import BasePixivAPI
+from .models import ModelT
 from .utils import ParamDict, ParsedJson, PixivError, Response
-
 
 # from typeguard import typechecked
 _FILTER: TypeAlias = Literal["for_ios", ""]
@@ -41,9 +40,7 @@ _MODE: TypeAlias = Literal[
     "week_r18g",
     "",
 ]
-_SEARCH_TARGET: TypeAlias = Literal[
-    "partial_match_for_tags", "exact_match_for_tags", "title_and_caption", "keyword", ""
-]
+_SEARCH_TARGET: TypeAlias = Literal["partial_match_for_tags", "exact_match_for_tags", "title_and_caption", "keyword", ""]
 _SORT: TypeAlias = Literal["date_desc", "date_asc", "popular_desc", ""]
 _DURATION: TypeAlias = Literal["within_last_day", "within_last_week", "within_last_month", "", None]
 _BOOL: TypeAlias = Literal["true", "false"]
