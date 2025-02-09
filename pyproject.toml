@@ -28,16 +28,7 @@ typing-extensions = "^4.1.1"
 pydantic = "^1.9.0"
 
 [tool.poetry.group.dev.dependencies]
-black = [
-  { version = ">=23.1.0", extras = ["jupyter"], markers = "python_version < '3.12'" },
-  { version = ">=23.12.0", extras = ["jupyter"], markers = "python_version >= '3.12'" }
-]
-ruff = ">=0.1,<0.3"
-isort = ">=5.11.5"
-mypy = ">=0.931"
 pre-commit = ">=2.18.1"
-pytest = ">=7.3"
-types-requests = ">=2.27.10"
 
 [tool.poetry.group.test.dependencies]
 pytest = ">=7.3"
@@ -53,20 +44,61 @@ log_cli_level = 20
 log_cli_format = "%(asctime)s [%(levelname)8s] %(message)s (%(filename)s:%(lineno)s)"
 log_cli_date_format = "%Y-%m-%d %H:%M:%S"
 
-[tool.isort]
-profile = "black"
-
-[tool.black]
-line-length = 127
-preview = true
-target-version = ['py38', 'py39', 'py310', 'py311']
-
 [tool.ruff]
 line-length = 127
+target-version = "py38"
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+  # Handled:
+  "DTZ003", # `datetime.datetime.utcnow()` used
+  # `datetime.UTC` added in version python 3.11.
+  #
+  # Not handled yet:
+  "TRY400", # Use `logging.exception` instead of `logging.error`
+  "PTH118", # `os.path.join()` should be replaced by `Path` with `/` operator
+  "PTH123", # `open()` should be replaced by `Path.open()`
+  "ANN401", # Dynamically typed expressions (typing.Any) are disallowed in `XXX`
+  "D103", # Missing docstring in public function
+  "D100", # Missing docstring in public module
+  "D101", # Missing docstring in public class
+  "D102", # Missing docstring in public method
+  "D104", #  Missing docstring in public package
+  "D105", # Missing docstring in magic method
+  "D107", # Missing docstring in `__init__`
+  "D400", # First line should end with a period
+  "D415", # First line should end with a period, question mark, or exclamation point
+  "S101", # Use of `assert` detected
+  "S311", # Standard pseudo-random generators are not suitable for cryptographic purposes
+  "ERA001", # Found commented out code
+  "G004", # Logging statement uses f-string
+  "PERF203", # `try`-`except` within a loop incurs performance overhead
+  "N806", #  Variable `XXX` in function should be lowercase
+  "PTH110", # `os.path.exists()` should be replaced by `Path.exists()`
+  "PTH119", # `os.path.basename()` should be replaced by `Path.name`
+  "FBT001", # Boolean-typed positional argument in function definition
+  "FBT002", # Boolean default positional argument in function definition
+  "PLR0913", # Too many arguments in function definition (X > 5)
+  "S324", # Probable use of insecure hash functions in `hashlib`: `md5`
+  "TRY301", # Abstract `raise` to an inner function
+  "D401", # First line of docstring should be in imperative mood: "XXX"
+  "SIM108", # Use ternary operator `XXX` instead of `if`-`else`-block
+  "PTH102", # `os.mkdir()` should be replaced by `Path.mkdir()`
+  "PTH113", # `os.path.isfile()` should be replaced by `Path.is_file()`
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Example files
+"*.py" = [
+  "T201", # `print` found
+  "DTZ005", # `datetime.datetime.now()` called without a `tz` argument
+  "S105", # Possible hardcoded password assigned to: "XXX"
+
+]
 
 [tool.mypy]
 python_version = 3.8
 show_error_codes = true
 pretty = true
 strict = true
-files = "pixivpy3"

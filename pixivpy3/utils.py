@@ -1,9 +1,12 @@
 from __future__ import annotations
 
+import typing
 from typing import Any, Dict, Optional
 
 import requests
-from requests.structures import CaseInsensitiveDict
+if typing.TYPE_CHECKING:
+    from requests.structures import CaseInsensitiveDict
+
 
 # from typeguard import typechecked
 
@@ -21,7 +24,7 @@ class PixivError(Exception):
         reason: str,
         header: dict[str, Any] | CaseInsensitiveDict[Any] | None = None,
         body: str | None = None,
-    ):
+    ) -> None:
         self.reason = str(reason)
         self.header = header
         self.body = body

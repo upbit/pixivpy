@@ -79,7 +79,7 @@ Requirements: [requests](https://pypi.python.org/pypi/requests)
 
 ### [Mikubill/PixivPy-Async](https://github.com/Mikubill/pixivpy-async): Async Pixiv API for Python 3
 
-> 性能对比（需要高性能访问场景，可以参
+> 性能对比（需要高性能访问场景,可以参
 > 考[这个脚本](https://github.com/Mikubill/pixivpy-async/blob/master/Perf.py)）
 
 > Warning: The rate limit was hit multiple times during the test, so the result
@@ -236,7 +236,7 @@ class AppPixivAPI(BasePixivAPI):
     # restrict: [public, private]
     def illust_follow(self, restrict="public") -> ParsedJson: ...
 
-    # 作品详情 (类似PAPI.works()，iOS中未使用)
+    # 作品详情 (类似PAPI.works(),iOS中未使用)
     def illust_detail(self, illust_id: int | str) -> ParsedJson: ...
 
     # 作品评论
@@ -353,7 +353,7 @@ class AppPixivAPI(BasePixivAPI):
 
     def novel_new(self, max_novel_id=None) -> ParsedJson: ...
 
-    # 特辑详情 (无需登录，调用Web API)
+    # 特辑详情 (无需登录,调用Web API)
     def showcase_article(self, showcase_id) -> ParsedJson: ...
 ```
 
