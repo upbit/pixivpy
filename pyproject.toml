@@ -32,7 +32,7 @@ black = [
   { version = ">=23.1.0", extras = ["jupyter"], markers = "python_version < '3.12'" },
   { version = ">=23.12.0", extras = ["jupyter"], markers = "python_version >= '3.12'" }
 ]
-ruff = ">=0.1,<0.3"
+ruff = ">=0.1,<0.10"
 isort = ">=5.11.5"
 mypy = ">=0.931"
 pre-commit = ">=2.18.1"
