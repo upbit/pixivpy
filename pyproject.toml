@@ -25,12 +25,13 @@ requests = "^2.31.0"
 requests-toolbelt = "^1.0.0"
 urllib3 = "^2.0.7"
 typing-extensions = "^4.1.1"
+pydantic = "^1.9.0"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = ">=2.18.1"
 
 [tool.poetry.group.test.dependencies]
-pytest = "^7.3.0"
+pytest = ">=7.3"
 
 [build-system]
 requires = ["poetry-core"]
@@ -38,7 +39,6 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
 minversion = 7.3
-adops = "-ra"
 log_cli = true
 log_cli_level = 20
 log_cli_format = "%(asctime)s [%(levelname)8s] %(message)s (%(filename)s:%(lineno)s)"
@@ -86,7 +86,6 @@ ignore = [
   "SIM108", # Use ternary operator `XXX` instead of `if`-`else`-block
   "PTH102", # `os.mkdir()` should be replaced by `Path.mkdir()`
   "PTH113", # `os.path.isfile()` should be replaced by `Path.is_file()`
-
 ]
 
 [tool.ruff.lint.per-file-ignores]

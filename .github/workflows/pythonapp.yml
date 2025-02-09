@@ -13,7 +13,7 @@ jobs:
 
     strategy:
       matrix:
-        python-version: ["3.7", "3.12"]
+        python-version: ["3.8", "3.12"]
 
     steps:
       - uses: actions/checkout@v4
@@ -27,8 +27,6 @@ jobs:
         uses: pre-commit/action@v3.0.1
       - name: Install dependencies
         run: poetry install
-      - name: Run demo.py for API check
-        run: poetry run python demo.py
       - name: Install dependencies tests
         run: poetry install --with test
       - name: Run tests

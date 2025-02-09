@@ -38,6 +38,7 @@ repos:
         additional_dependencies:
           - types-requests
           - pytest
+          - pydantic
         args: [--show-error-codes, --pretty, --strict]
 
   - repo: https://github.com/pre-commit/mirrors-prettier

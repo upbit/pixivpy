@@ -3,14 +3,16 @@ from __future__ import annotations
 import typing
 from typing import Any, Dict, Optional
 
+import requests
 if typing.TYPE_CHECKING:
     from requests.structures import CaseInsensitiveDict
+
 
 # from typeguard import typechecked
 
 ParamDict = Optional[Dict[str, Any]]
 ParsedJson = Any
-Response = Any
+Response = requests.Response
 
 
 # @typechecked

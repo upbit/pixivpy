@@ -440,6 +440,20 @@ for comment in json_result.comments:
         print(f"{comment.user.name} at {comment.date} : {comment.comment}")
 ```
 
+## Develop Instructions
+
+```sh
+# Updating dependencies
+$ poetry update --with=dev,test
+```
+
+Fork this project and create a new branch for your changes. Push your changes to
+your fork and create a pull request.
+
+```sh
+poetry run pytest
+```
+
 ## Package Publishing Instructions
 
 Follow these simple steps to publish your Poetry package. We recommend

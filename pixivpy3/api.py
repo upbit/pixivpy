@@ -5,7 +5,8 @@ import hashlib
 import json
 import os
 import shutil
-from typing import IO, Any
+from datetime import datetime
+from typing import IO, Any, cast
 
 import cloudscraper  # type: ignore  # noqa: PGH003: False positive
 from requests.structures import CaseInsensitiveDict
@@ -70,24 +71,16 @@ class BasePixivAPI:
             merged_headers.update(headers)
         try:
             if method == "GET":
-                return self.requests.get(
+                response = self.requests.get(
                     url,
                     params=params,
                     headers=merged_headers,
                     stream=stream,
                     **self.requests_kwargs,
                 )
-            if method == "POST":
-                return self.requests.post(
-                    url,
-                    params=params,
-                    data=data,
-                    headers=merged_headers,
-                    stream=stream,
-                    **self.requests_kwargs,
-                )
-            if method == "DELETE":
-                return self.requests.delete(
+                return cast(Response, response)
+            elif method == "POST":
+                response = self.requests.post(
                     url,
                     params=params,
                     data=data,
@@ -95,8 +88,20 @@ class BasePixivAPI:
                     stream=stream,
                     **self.requests_kwargs,
                 )
-            msg = f"Unknown method: {method}"
-            raise PixivError(msg)
+                return cast(Response, response)
+            elif method == "DELETE":
+                response = self.requests.delete(
+                    url,
+                    params=params,
+                    data=data,
+                    headers=merged_headers,
+                    stream=stream,
+                    **self.requests_kwargs,
+                )
+                return cast(Response, response)
+            else:
+                msg = f"Unknown method: {method}"
+                raise PixivError(msg)
         except Exception as e:
             msg = f"requests {method} {url} error: {e}"
             raise PixivError(msg) from e
