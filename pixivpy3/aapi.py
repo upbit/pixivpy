@@ -45,11 +45,7 @@ _MODE: TypeAlias = Literal[
     "",
 ]
 _SEARCH_TARGET: TypeAlias = Literal[
-    "partial_match_for_tags",
-    "exact_match_for_tags",
-    "title_and_caption",
-    "keyword",
-    "",
+    "partial_match_for_tags", "exact_match_for_tags", "title_and_caption", "keyword", ""
 ]
 _SORT: TypeAlias = Literal["date_desc", "date_asc", "popular_desc", ""]
 _DURATION: TypeAlias = Literal[
