@@ -6,7 +6,9 @@
 >
 > To get `refresh_token`, see
 > [@ZipFile Pixiv OAuth Flow](https://gist.github.com/ZipFile/c9ebedb224406f4f11845ab700124362)
-> or
+> /
+> [gppt: get-pixivpy-token](https://github.com/eggplants/get-pixivpy-token) (Easy to use 👍 base on selenium)
+> /
 > [OAuth with Selenium/ChromeDriver](https://gist.github.com/upbit/6edda27cb1644e94183291109b8a5fde)
 
 _Pixiv API for Python (with Auth supported)_

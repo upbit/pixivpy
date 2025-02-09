@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import datetime as dt
 import re
 import urllib.parse as up
 from typing import Any, Literal, TypeVar
@@ -45,7 +46,7 @@ _SORT: TypeAlias = Literal["date_desc", "date_asc", "popular_desc", ""]
 _DURATION: TypeAlias = Literal["within_last_day", "within_last_week", "within_last_month", "", None]
 _BOOL: TypeAlias = Literal["true", "false"]
 
-ModelT = TypeVar("ModelT", bound=models.BasePixivpyModel)
+DateOrStr = Union[dt.date, str]
 
 
 # App-API (6.x - app-api.pixiv.net)
@@ -119,6 +120,14 @@ class AppPixivAPI(BasePixivAPI):
             return "true"
         else:
             return "false"
+
+    @classmethod
+    def _format_date(cls, date: DateOrStr) -> str:
+        if isinstance(date, dt.datetime):
+            return date.strftime("%Y-%m-%d")
+        # `Pixiv` raises an error if the date is not in the format `YYYY-MM-DD`
+        assert isinstance(date, str)
+        return date
 
     # 返回翻页用参数
     @classmethod
@@ -441,7 +450,7 @@ class AppPixivAPI(BasePixivAPI):
         self,
         mode: _MODE = "day",
         filter: _FILTER = "for_ios",
-        date: str | None = None,
+        date: DateOrStr | None = None,
         offset: int | str | None = None,
         req_auth: bool = True,
     ) -> ParsedJson:
@@ -451,7 +460,7 @@ class AppPixivAPI(BasePixivAPI):
             "filter": filter,
         }
         if date:
-            params["date"] = date
+            params["date"] = self._format_date(date)
         if offset:
             params["offset"] = offset
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
@@ -481,8 +490,8 @@ class AppPixivAPI(BasePixivAPI):
         search_target: _SEARCH_TARGET = "partial_match_for_tags",
         sort: _SORT = "date_desc",
         duration: _DURATION = None,
-        start_date: str | None = None,
-        end_date: str | None = None,
+        start_date: DateOrStr | None = None,
+        end_date: DateOrStr | None = None,
         filter: _FILTER = "for_ios",
         search_ai_type: Literal[0, 1] | None = None,
         offset: int | str | None = None,
@@ -496,9 +505,9 @@ class AppPixivAPI(BasePixivAPI):
             "filter": filter,
         }
         if start_date:
-            params["start_date"] = start_date
+            params["start_date"] = self._format_date(start_date)
         if end_date:
-            params["end_date"] = end_date
+            params["end_date"] = self._format_date(end_date)
         if duration:
             params["duration"] = duration
         if search_ai_type:
@@ -524,8 +533,8 @@ class AppPixivAPI(BasePixivAPI):
         sort: _SORT = "date_desc",
         merge_plain_keyword_results: _BOOL = "true",
         include_translated_tag_results: _BOOL = "true",
-        start_date: str | None = None,
-        end_date: str | None = None,
+        start_date: DateOrStr | None = None,
+        end_date: DateOrStr | None = None,
         filter: str | None = None,
         search_ai_type: Literal[0, 1] | None = None,
         offset: int | str | None = None,
@@ -541,9 +550,9 @@ class AppPixivAPI(BasePixivAPI):
             "filter": filter,
         }
         if start_date:
-            params["start_date"] = start_date
+            params["start_date"] = self._format_date(start_date)
         if end_date:
-            params["end_date"] = end_date
+            params["end_date"] = self._format_date(end_date)
         if search_ai_type:
             params["search_ai_type"] = search_ai_type
         if offset:
