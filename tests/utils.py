@@ -2,7 +2,7 @@ import json
 import logging
 import os
 import inspect
-from typing import Any, Dict
+from typing import Any, Optional, Dict
 
 logger = logging.getLogger(__name__)
 
@@ -14,9 +14,9 @@ class ResponseFixture:
     def __init__(
         self,
         status_code: int,
-        headers: Dict[str, str] | None = None,
-        json_data: Dict[str, Any] | None = None,
-        text_data: str | None = None,
+        headers: Optional[Dict[str, str]] = None,
+        json_data: Optional[Dict[str, Any]] = None,
+        text_data: Optional[str] = None,
     ) -> None:
         self.status_code = status_code
         self.headers = headers or {}
