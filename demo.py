@@ -293,7 +293,10 @@ def appapi_novel(aapi: AppPixivAPI) -> None:
     print(f"Total comments = {json_result.total_comments}")
     for comment in json_result.comments:
         if comment.parent_comment:
-            text = f"{comment.user.name} replied to {comment.parent_comment.user.name} at {comment.date} : {comment.comment}"
+            text = (
+                f"{comment.user.name} replied to {comment.parent_comment.user.name} at {comment.date} :"
+                f" {comment.comment}"
+            )
             print(text)
         else:
             text = f"{comment.user.name} at {comment.date} : {comment.comment}"

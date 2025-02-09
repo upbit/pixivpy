@@ -45,7 +45,13 @@ _MODE: TypeAlias = Literal[
     "week_r18g",
     "",
 ]
-_SEARCH_TARGET: TypeAlias = Literal["partial_match_for_tags", "exact_match_for_tags", "title_and_caption", "keyword", ""]
+_SEARCH_TARGET: TypeAlias = Literal[
+    "partial_match_for_tags",
+    "exact_match_for_tags",
+    "title_and_caption",
+    "keyword",
+    "",
+]
 _SORT: TypeAlias = Literal["date_desc", "date_asc", "popular_desc", ""]
 _DURATION: TypeAlias = Literal["within_last_day", "within_last_week", "within_last_month", "", None]
 _BOOL: TypeAlias = Literal["true", "false"]

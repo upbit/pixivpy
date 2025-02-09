@@ -1,5 +1,4 @@
-"""
-File to check all methods of the Pixiv API.
+"""File to check all methods of the Pixiv API.
 When some new ids are found, that break models in code, add them here.
 Also add the reason why a new id is added (e.g., breaks `Model.some_field`).
 

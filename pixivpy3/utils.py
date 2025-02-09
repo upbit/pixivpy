@@ -4,6 +4,7 @@ import typing
 from typing import Any, Dict, Optional
 
 import requests
+
 if typing.TYPE_CHECKING:
     from requests.structures import CaseInsensitiveDict
 

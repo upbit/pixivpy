@@ -31,7 +31,9 @@ class BasePixivAPI:
 
         # self.requests = requests.Session()
         self.requests = cloudscraper.create_scraper()  # fix due to #140
-        self.additional_headers = CaseInsensitiveDict(requests_kwargs.pop("headers", {}))  # type: CaseInsensitiveDict[Any]
+        self.additional_headers = CaseInsensitiveDict(
+            requests_kwargs.pop("headers", {})
+        )  # type: CaseInsensitiveDict[Any]
         self.requests_kwargs = requests_kwargs
 
     def set_additional_headers(self, headers: ParamDict) -> None:
@@ -220,5 +222,5 @@ class BasePixivAPI:
                 with open(file, "wb") as out_file:
                     shutil.copyfileobj(response.raw, out_file)
             else:
-                shutil.copyfileobj(response.raw, file)  # type: ignore[arg-type]
+                shutil.copyfileobj(response.raw, file)
         return True

@@ -8,9 +8,6 @@ from requests_toolbelt.adapters import host_header_ssl  # type: ignore  # noqa: 
 
 from .aapi import AppPixivAPI
 
-# from typeguard import typechecked
-
-
 logger = logging.getLogger(__name__)
 
 
