@@ -19,7 +19,7 @@ classifiers = [
 homepage = "https://github.com/upbit/pixivpy"
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.8.1"
 cloudscraper = "^1.2.58"
 requests = "^2.31.0"
 requests-toolbelt = "^1.0.0"
@@ -32,15 +32,14 @@ black = [
   { version = ">=23.1.0", extras = ["jupyter"], markers = "python_version < '3.12'" },
   { version = ">=23.12.0", extras = ["jupyter"], markers = "python_version >= '3.12'" }
 ]
-ruff = ">=0.1,<0.3"
-isort = ">=5.11.5"
-mypy = ">=0.931"
-pre-commit = ">=2.18.1"
 pytest = ">=7.3"
+pre-commit = ">=2.18.1"
+mypy = ">=0.931"
 types-requests = ">=2.27.10"
+flake8 = "^7.1.1"
 
 [tool.poetry.group.test.dependencies]
-pytest = "^7.3.1"
+pytest = ">=7.3"
 
 [build-system]
 requires = ["poetry-core"]
@@ -48,26 +47,33 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
 minversion = 7.3
-adops = "-ra"
 log_cli = true
 log_cli_level = 20
 log_cli_format = "%(asctime)s [%(levelname)8s] %(message)s (%(filename)s:%(lineno)s)"
 log_cli_date_format = "%Y-%m-%d %H:%M:%S"
 
-[tool.isort]
-profile = "black"
-
-[tool.black]
-line-length = 127
-preview = true
-target-version = ['py38', 'py39', 'py310', 'py311']
-
-[tool.ruff]
-line-length = 127
-
 [tool.mypy]
-python_version = 3.8
-show_error_codes = true
-pretty = true
-strict = true
-files = "pixivpy3"
+exclude = ['tests', 'demo.py']
+ignore_missing_imports = true
+
+[tool.ruff.lint.per-file-ignores]
+select = [
+  "F", # pyflakes
+  "E", # pycodestyle
+  "W", # pycodestyle warnings
+  "I", # isort
+  "D", # pydocstyle
+
+]
+ignore = []
+extend-ignore = [
+  "D105", # undocumented-magic-method
+  "D107", # undocumented-public-init
+  "D205", # blank-line-after-summary
+  "D415"
+  # ends-in-punctuation
+]
+"__init__.py" = ["F401"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
