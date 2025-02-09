@@ -12,6 +12,8 @@
 
 _Pixiv API for Python (with Auth supported)_
 
+- [2025/02/09] Add `pydantic` models for App-API (thanks
+  [@Danipulok](https://github.com/Danipulok))
 - [2024/03/03] _v3.7.5_ Fix `novel_text()` BUG, add `webview_novel()`, see
   [#337](https://github.com/upbit/pixivpy/issues/337) (thanks
   [@xiyihan](https://github.com/xiyihan0))

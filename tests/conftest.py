@@ -6,19 +6,7 @@ from typing import Any
 
 import pytest
 
-from tests.utils import load_data_from_file, load_json_from_file
-
-
-class ResponseFixture:
-    def __init__(
-        self,
-        status_code: int,
-        headers: dict[str, str] | None = None,
-        json_data: dict[str, Any] | None = None,
-    ) -> None:
-        self.status_code = status_code
-        self.headers = headers or {}
-        self.json = json_data or {}
+from tests.utils import ResponseFixture, load_data_from_file, load_json_from_file
 
 
 @pytest.fixture
