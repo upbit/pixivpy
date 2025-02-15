@@ -1,4 +1,4 @@
-from typing import Any, List, Optional, TypeVar, Union
+from typing import Any, List, Optional, Union
 
 import pydantic
 from typing_extensions import Self
@@ -69,8 +69,6 @@ elif _PYDANTIC_MAJOR_VERSION == 2:
 else:
     msg = f"Unsupported Pydantic version: {pydantic.__version__}"
     raise ValueError(msg)
-
-ModelT = TypeVar("ModelT", bound=BaseModel)
 
 
 class BasePixivpyModel(BaseModel):

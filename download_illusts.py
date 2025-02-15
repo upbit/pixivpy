@@ -3,7 +3,7 @@
 import os
 import sys
 
-from pixivpy3 import AppPixivAPI, ByPassSniApi
+from pixivpy3 import AppPixivAPI, ByPassSniApi, enums
 
 sys.dont_write_bytecode = True
 
@@ -23,7 +23,7 @@ def main() -> None:
     api.auth(refresh_token=_REFRESH_TOKEN)
 
     # get rankings
-    json_result = api.illust_ranking("day", date="2019-01-01")
+    json_result = api.illust_ranking(enums.RankingMode.DAY, date="2019-01-01")
 
     directory = "illusts"
     if not os.path.exists(directory):

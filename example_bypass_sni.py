@@ -1,7 +1,7 @@
 import sys
 from datetime import datetime, timedelta
 
-from pixivpy3 import ByPassSniApi
+from pixivpy3 import ByPassSniApi, enums
 
 sys.dont_write_bytecode = True
 
@@ -20,7 +20,7 @@ def main() -> None:
     # api.login(_USERNAME, _PASSWORD)
     print(api.auth(refresh_token=_REFRESH_TOKEN))
     date = datetime.now() - timedelta(days=5)
-    json_result = api.illust_ranking("day", date=date)
+    json_result = api.illust_ranking(enums.RankingMode.DAY, date=date)
 
     print(
         "Printing image titles and tags with English tag translations present when available"
