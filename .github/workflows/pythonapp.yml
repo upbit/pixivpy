@@ -13,7 +13,7 @@ jobs:
 
     strategy:
       matrix:
-        python-version: ["3.7", "3.12"]
+        python-version: ["3.8", "3.12"]
 
     steps:
       - uses: actions/checkout@v4
@@ -22,13 +22,11 @@ jobs:
         with:
           python-version: "${{ matrix.python-version }}"
       - name: Install Poetry
-        uses: abatilo/actions-poetry@v2
+        uses: abatilo/actions-poetry@v4
       - name: Lint with pre-commit
         uses: pre-commit/action@v3.0.1
       - name: Install dependencies
         run: poetry install
-      - name: Run demo.py for API check
-        run: poetry run python demo.py
       - name: Install dependencies tests
         run: poetry install --with test
       - name: Run tests

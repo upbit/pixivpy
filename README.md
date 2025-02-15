@@ -6,13 +6,14 @@
 >
 > To get `refresh_token`, see
 > [@ZipFile Pixiv OAuth Flow](https://gist.github.com/ZipFile/c9ebedb224406f4f11845ab700124362)
-> /
-> [gppt: get-pixivpy-token](https://github.com/eggplants/get-pixivpy-token) (Easy to use 👍 base on selenium)
-> /
+> / [gppt: get-pixivpy-token](https://github.com/eggplants/get-pixivpy-token)
+> (Easy to use 👍 base on selenium) /
 > [OAuth with Selenium/ChromeDriver](https://gist.github.com/upbit/6edda27cb1644e94183291109b8a5fde)
 
 _Pixiv API for Python (with Auth supported)_
 
+- [2025/02/09] Add `pydantic` models for App-API (thanks
+  [@Danipulok](https://github.com/Danipulok))
 - [2024/03/03] _v3.7.5_ Fix `novel_text()` BUG, add `webview_novel()`, see
   [#337](https://github.com/upbit/pixivpy/issues/337) (thanks
   [@xiyihan](https://github.com/xiyihan0))
@@ -80,7 +81,7 @@ Requirements: [requests](https://pypi.python.org/pypi/requests)
 
 ### [Mikubill/PixivPy-Async](https://github.com/Mikubill/pixivpy-async): Async Pixiv API for Python 3
 
-> 性能对比（需要高性能访问场景，可以参
+> 性能对比（需要高性能访问场景,可以参
 > 考[这个脚本](https://github.com/Mikubill/pixivpy-async/blob/master/Perf.py)）
 
 > Warning: The rate limit was hit multiple times during the test, so the result
@@ -237,7 +238,7 @@ class AppPixivAPI(BasePixivAPI):
     # restrict: [public, private]
     def illust_follow(self, restrict="public") -> ParsedJson: ...
 
-    # 作品详情 (类似PAPI.works()，iOS中未使用)
+    # 作品详情 (类似PAPI.works(),iOS中未使用)
     def illust_detail(self, illust_id: int | str) -> ParsedJson: ...
 
     # 作品评论
@@ -354,7 +355,7 @@ class AppPixivAPI(BasePixivAPI):
 
     def novel_new(self, max_novel_id=None) -> ParsedJson: ...
 
-    # 特辑详情 (无需登录，调用Web API)
+    # 特辑详情 (无需登录,调用Web API)
     def showcase_article(self, showcase_id) -> ParsedJson: ...
 ```
 
@@ -439,6 +440,20 @@ for comment in json_result.comments:
         print(f"{comment.user.name} replied to {comment.parent_comment.user.name} at {comment.date} : {comment.comment}")
     else:
         print(f"{comment.user.name} at {comment.date} : {comment.comment}")
+```
+
+## Develop Instructions
+
+```sh
+# Updating dependencies
+$ poetry update --with=dev,test
+```
+
+Fork this project and create a new branch for your changes. Push your changes to
+your fork and create a pull request.
+
+```sh
+poetry run pytest
 ```
 
 ## Package Publishing Instructions

@@ -5,14 +5,12 @@ import json
 import os
 import shutil
 from datetime import datetime
-from typing import IO, Any
+from typing import IO, Any, cast
 
-import cloudscraper  # type: ignore[import]
+import cloudscraper  # type: ignore[unused-ignore]
 from requests.structures import CaseInsensitiveDict
 
 from .utils import JsonDict, ParamDict, ParsedJson, PixivError, Response
-
-# from typeguard import typechecked
 
 
 # @typechecked
@@ -22,7 +20,7 @@ class BasePixivAPI:
     hash_secret = "28c1fdd170a5204386cb1313c7077b34f83e4aaf4aa829ce78c231e05b0bae2c"
 
     def __init__(self, **requests_kwargs: Any) -> None:
-        """initialize requests kwargs if need be"""
+        """Initialize requests kwargs if need be"""
         self.user_id: int | str = 0
         self.access_token: str | None = None
         self.refresh_token: str | None = None
@@ -30,27 +28,30 @@ class BasePixivAPI:
 
         # self.requests = requests.Session()
         self.requests = cloudscraper.create_scraper()  # fix due to #140
-        self.additional_headers = CaseInsensitiveDict(requests_kwargs.pop("headers", {}))  # type: CaseInsensitiveDict[Any]
+        self.additional_headers = CaseInsensitiveDict(
+            requests_kwargs.pop("headers", {}),
+        )  # type: CaseInsensitiveDict[Any]
         self.requests_kwargs = requests_kwargs
 
     def set_additional_headers(self, headers: ParamDict) -> None:
-        """manually specify additional headers. will overwrite API default headers in case of collision"""
+        """Manually specify additional headers. will overwrite API default headers in case of collision"""
         self.additional_headers = CaseInsensitiveDict(headers)
 
     # 设置HTTP的Accept-Language (用于获取tags的对应语言translated_name)
     # language: en-us, zh-cn, ...
     def set_accept_language(self, language: str) -> None:
-        """set header Accept-Language for all requests (useful for get tags.translated_name)"""
+        """Set header Accept-Language for all requests (useful for get tags.translated_name)"""
         self.additional_headers["Accept-Language"] = language
 
     @classmethod
     def parse_json(cls, json_str: str | bytes) -> ParsedJson:
-        """parse str into JsonDict"""
+        """Parse str into JsonDict"""
         return json.loads(json_str, object_hook=JsonDict)
 
     def require_auth(self) -> None:
         if self.access_token is None:
-            raise PixivError("Authentication required! Call login() or set_auth() first!")
+            msg = "Authentication required! Call login() or set_auth() first!"
+            raise PixivError(msg)
 
     def requests_call(
         self,
@@ -61,7 +62,7 @@ class BasePixivAPI:
         data: ParamDict | None = None,
         stream: bool = False,
     ) -> Response:
-        """requests http/https call for Pixiv API"""
+        """Requests http/https call for Pixiv API"""
         merged_headers = self.additional_headers.copy()
         if headers:
             # Use the headers in the parameter to override the
@@ -69,24 +70,16 @@ class BasePixivAPI:
             merged_headers.update(headers)
         try:
             if method == "GET":
-                return self.requests.get(
+                response = self.requests.get(
                     url,
                     params=params,
                     headers=merged_headers,
                     stream=stream,
                     **self.requests_kwargs,
                 )
-            elif method == "POST":
-                return self.requests.post(
-                    url,
-                    params=params,
-                    data=data,
-                    headers=merged_headers,
-                    stream=stream,
-                    **self.requests_kwargs,
-                )
-            elif method == "DELETE":
-                return self.requests.delete(
+                return cast(Response, response)
+            if method == "POST":
+                response = self.requests.post(
                     url,
                     params=params,
                     data=data,
@@ -94,12 +87,22 @@ class BasePixivAPI:
                     stream=stream,
                     **self.requests_kwargs,
                 )
-            else:
-                msg = f"Unknown method: {method}"
-                raise PixivError(msg)
+                return cast(Response, response)
+            if method == "DELETE":
+                response = self.requests.delete(
+                    url,
+                    params=params,
+                    data=data,
+                    headers=merged_headers,
+                    stream=stream,
+                    **self.requests_kwargs,
+                )
+                return cast(Response, response)
+            msg = f"Unknown method: {method}"
+            raise PixivError(msg)
         except Exception as e:
             msg = f"requests {method} {url} error: {e}"
-            raise PixivError(msg)
+            raise PixivError(msg) from e
 
     def set_auth(self, access_token: str, refresh_token: str | None = None) -> None:
         self.access_token = access_token
@@ -120,10 +123,12 @@ class BasePixivAPI:
         headers: ParamDict = None,
     ) -> ParsedJson:
         """Login with password, or use the refresh_token to acquire a new bearer token"""
-        local_time = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S+00:00")
+        local_time = datetime.now().strftime("%Y-%m-%dT%H:%M:%S+00:00")
         headers_ = CaseInsensitiveDict(headers or {})
         headers_["x-client-time"] = local_time
-        headers_["x-client-hash"] = hashlib.md5((local_time + self.hash_secret).encode("utf-8")).hexdigest()
+        headers_["x-client-hash"] = hashlib.md5(
+            (local_time + self.hash_secret).encode("utf-8")
+        ).hexdigest()
         # Allow mock UA due to #171: https://github.com/upbit/pixivpy/issues/171
         if "user-agent" not in headers_:
             headers_["app-os"] = "ios"
@@ -152,7 +157,8 @@ class BasePixivAPI:
             data["grant_type"] = "refresh_token"
             data["refresh_token"] = refresh_token or self.refresh_token
         else:
-            raise PixivError("[ERROR] auth() but no password or refresh_token is set.")
+            msg = "[ERROR] auth() but no password or refresh_token is set."
+            raise PixivError(msg)
 
         r = self.requests_call("POST", url, headers=headers_, data=data)
         if r.status_code not in {200, 301, 302}:
@@ -163,13 +169,12 @@ class BasePixivAPI:
                     header=r.headers,
                     body=r.text,
                 )
-            else:
-                msg = f"[ERROR] auth() failed! check refresh_token.\nHTTP {r.status_code}: {r.text}"
-                raise PixivError(
-                    msg,
-                    header=r.headers,
-                    body=r.text,
-                )
+            msg = f"[ERROR] auth() failed! check refresh_token.\nHTTP {r.status_code}: {r.text}"
+            raise PixivError(
+                msg,
+                header=r.headers,
+                body=r.text,
+            )
 
         token = None
         try:
@@ -184,7 +189,7 @@ class BasePixivAPI:
                 msg,
                 header=r.headers,
                 body=r.text,
-            )
+            ) from None
 
         # return auth/token response
         return token
@@ -200,7 +205,7 @@ class BasePixivAPI:
         referer: str = "https://app-api.pixiv.net/",
     ) -> bool:
         """Download image to file (use 6.0 app-api)"""
-        if hasattr(fname, "write"):
+        if fname is not None and hasattr(fname, "write"):
             # A file-like object has been provided.
             file = fname
         else:
@@ -210,10 +215,12 @@ class BasePixivAPI:
             if os.path.exists(file) and not replace:
                 return False
 
-        with self.requests_call("GET", url, headers={"Referer": referer}, stream=True) as response:
+        with self.requests_call(
+            "GET", url, headers={"Referer": referer}, stream=True
+        ) as response:
             if isinstance(file, str):
                 with open(file, "wb") as out_file:
                     shutil.copyfileobj(response.raw, out_file)
             else:
-                shutil.copyfileobj(response.raw, file)  # type: ignore[arg-type]
+                shutil.copyfileobj(response.raw, file)
         return True
