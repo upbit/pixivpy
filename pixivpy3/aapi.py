@@ -1,37 +1,33 @@
+# To keep code compatibility with previous versions:
+# ruff: noqa: A002: Function argument `filter` is shadowing a Python builtin
+# To keep code compatibility with previous versions:
+# ruff: noqa: ARG002: Unused method argument: `req_auth`
+
 from __future__ import annotations
 
+import datetime as dt
 import re
 import urllib.parse as up
-from typing import Any
+from typing import Any, Literal, TypeVar, Union
 
-try:
-    # Python>=3.8
-    from typing import Literal
-except ImportError:
-    # Python ==3.7
-    from typing_extensions import Literal  # type: ignore[assignment]
-
-try:
-    # Python>=3.10
-    from typing import TypeAlias  # type: ignore[attr-defined]
-except ImportError:
-    # Python==3.7, ==3.8, ==3.9
-    from typing_extensions import TypeAlias
-
+from pydantic import BaseModel
 from requests.structures import CaseInsensitiveDict
+from typing_extensions import TypeAlias  # present in `typing` only from `3.10`
 
-from . import enums
+from . import enums, models
 from .api import BasePixivAPI
 from .utils import ParamDict, ParsedJson, PixivError, Response
 
 # from typeguard import typechecked
-
-
 __all__ = ("AppPixivAPI",)
+
+ModelT = TypeVar("ModelT", bound=BaseModel)
 
 BoolStr: TypeAlias = Literal["true", "false"]
 Filter: TypeAlias = Literal["for_ios"]
 FILTER = "for_ios"
+
+DateOrStr = Union[dt.date, str]
 
 
 # App-API (6.x - app-api.pixiv.net)
@@ -39,7 +35,7 @@ FILTER = "for_ios"
 # @typechecked
 class AppPixivAPI(BasePixivAPI):
     def __init__(self, **requests_kwargs: Any) -> None:
-        """initialize requests kwargs if need be"""
+        """Initialize requests kwargs if need be"""
         super().__init__(**requests_kwargs)
 
     # noinspection HttpUrlsUsage
@@ -68,17 +64,33 @@ class AppPixivAPI(BasePixivAPI):
 
         if not req_auth:
             return self.requests_call(method, url, headers_, params, data)
-        else:
-            self.require_auth()
-            headers_["Authorization"] = f"Bearer {self.access_token}"
-            return self.requests_call(method, url, headers_, params, data)
+        self.require_auth()
+        headers_["Authorization"] = f"Bearer {self.access_token}"
+        return self.requests_call(method, url, headers_, params, data)
 
     def parse_result(self, res: Response) -> ParsedJson:
         try:
             return self.parse_json(res.text)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             msg = f"parse_json() error: {e}"
-            raise PixivError(msg, header=res.headers, body=res.text)
+            raise PixivError(msg, header=res.headers, body=res.text) from None
+
+    def _load_result(self, res: Response, model: type[ModelT], /) -> ModelT:
+        json_data = self.parse_result(res)
+
+        try:
+            return model.model_validate(json_data)
+        except Exception as e:
+            msg = f"_load_result() error: {e}"
+            raise PixivError(msg, header=res.headers, body=json_data) from e
+
+    @classmethod
+    def _load_model(cls, data: ParsedJson, model: type[ModelT], /) -> ModelT:
+        try:
+            return model.model_validate(data)
+        except Exception as e:
+            msg = f"_load_model() error: {e}"
+            raise PixivError(msg, body=data) from e
 
     @classmethod
     def format_bool(cls, bool_value: bool | str | None) -> BoolStr:
@@ -86,8 +98,15 @@ class AppPixivAPI(BasePixivAPI):
             return "true" if bool_value else "false"
         if bool_value in {"true", "True"}:
             return "true"
-        else:
-            return "false"
+        return "false"
+
+    @classmethod
+    def _format_date(cls, date: DateOrStr) -> str:
+        if isinstance(date, dt.datetime):
+            return date.strftime("%Y-%m-%d")
+        # `Pixiv` raises an error if the date is not in the format `YYYY-MM-DD`
+        assert isinstance(date, str)
+        return date
 
     # 返回翻页用参数
     @classmethod
@@ -114,17 +133,17 @@ class AppPixivAPI(BasePixivAPI):
         user_id: int | str,
         filter: Filter = FILTER,
         req_auth: bool = True,
-    ) -> ParsedJson:
+    ) -> models.UserInfoDetailed:
         url = f"{self.hosts}/v1/user/detail"
         params = {
             "user_id": user_id,
             "filter": filter,
         }
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
-        return self.parse_result(r)
+        return self._load_result(r, models.UserInfoDetailed)
 
     # 用户作品列表
-    ## type: [illust, manga] # noqa
+    ## type: [illust, manga]
     def user_illusts(
         self,
         user_id: int | str,
@@ -132,7 +151,7 @@ class AppPixivAPI(BasePixivAPI):
         filter: Filter = FILTER,
         offset: int | str | None = None,
         req_auth: bool = True,
-    ) -> ParsedJson:
+    ) -> models.UserIllustrations:
         url = f"{self.hosts}/v1/user/illusts"
         params = {
             "user_id": user_id,
@@ -143,7 +162,7 @@ class AppPixivAPI(BasePixivAPI):
         if offset:
             params["offset"] = offset
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
-        return self.parse_result(r)
+        return self._load_result(r, models.UserIllustrations)
 
     # 用户收藏作品列表
     # tag: 从 user_bookmark_tags_illust 获取的收藏标签
@@ -155,7 +174,7 @@ class AppPixivAPI(BasePixivAPI):
         max_bookmark_id: int | str | None = None,
         tag: str | None = None,
         req_auth: bool = True,
-    ) -> ParsedJson:
+    ) -> models.UserBookmarksIllustrations:
         url = f"{self.hosts}/v1/user/bookmarks/illust"
         params = {
             "user_id": user_id,
@@ -167,7 +186,7 @@ class AppPixivAPI(BasePixivAPI):
         if tag:
             params["tag"] = tag
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
-        return self.parse_result(r)
+        return self._load_result(r, models.UserBookmarksIllustrations)
 
     # 用户收藏小说列表
     def user_bookmarks_novel(
@@ -178,7 +197,7 @@ class AppPixivAPI(BasePixivAPI):
         max_bookmark_id: int | str | None = None,
         tag: str | None = None,
         req_auth: bool = True,
-    ) -> ParsedJson:
+    ) -> models.UserBookmarksNovel:
         url = f"{self.hosts}/v1/user/bookmarks/novel"
         params = {
             "user_id": user_id,
@@ -190,7 +209,7 @@ class AppPixivAPI(BasePixivAPI):
         if tag:
             params["tag"] = tag
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
-        return self.parse_result(r)
+        return self._load_result(r, models.UserBookmarksNovel)
 
     def user_related(
         self,
@@ -220,7 +239,7 @@ class AppPixivAPI(BasePixivAPI):
             "filter": filter,
         }
         if offset:
-            params["offset"] = offset
+            params["offset"] = offset  # type: ignore[assignment]
 
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
         return self.parse_result(r)
@@ -242,7 +261,7 @@ class AppPixivAPI(BasePixivAPI):
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
         return self.parse_result(r)
 
-    # 作品详情 (类似PAPI.works()，iOS中未使用)
+    # 作品详情 (类似PAPI.works(),iOS中未使用)
     def illust_detail(self, illust_id: int | str, req_auth: bool = True) -> ParsedJson:
         url = f"{self.hosts}/v1/illust/detail"
         params = {
@@ -325,11 +344,15 @@ class AppPixivAPI(BasePixivAPI):
         if max_bookmark_id_for_recommend:
             params["max_bookmark_id_for_recommend"] = max_bookmark_id_for_recommend
         if min_bookmark_id_for_recent_illust:
-            params["min_bookmark_id_for_recent_illust"] = min_bookmark_id_for_recent_illust
+            params["min_bookmark_id_for_recent_illust"] = (
+                min_bookmark_id_for_recent_illust
+            )
         if offset:
             params["offset"] = offset
         if include_ranking_illusts:
-            params["include_ranking_illusts"] = self.format_bool(include_ranking_illusts)
+            params["include_ranking_illusts"] = self.format_bool(
+                include_ranking_illusts
+            )
         if isinstance(viewed, str):
             params["viewed[]"] = [viewed]
         elif isinstance(viewed, list):
@@ -355,7 +378,7 @@ class AppPixivAPI(BasePixivAPI):
         offset: int | str | None = None,
         include_total_comments: str | bool | None = None,
         req_auth: bool = True,
-    ) -> ParsedJson:
+    ) -> models.NovelComments:
         url = f"{self.hosts}/v1/novel/comments"
         params = {
             "novel_id": novel_id,
@@ -365,7 +388,7 @@ class AppPixivAPI(BasePixivAPI):
         if include_total_comments:
             params["include_total_comments"] = self.format_bool(include_total_comments)
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
-        return self.parse_result(r)
+        return self._load_result(r, models.NovelComments)
 
     # 小说推荐
     def novel_recommended(
@@ -394,7 +417,9 @@ class AppPixivAPI(BasePixivAPI):
             if isinstance(already_recommended, str):
                 params["already_recommended"] = already_recommended
             elif isinstance(already_recommended, list):
-                params["already_recommended"] = ",".join(str(iid) for iid in already_recommended)
+                params["already_recommended"] = ",".join(
+                    str(iid) for iid in already_recommended
+                )
         if include_privacy_policy:
             params["include_privacy_policy"] = include_privacy_policy
 
@@ -410,7 +435,7 @@ class AppPixivAPI(BasePixivAPI):
         self,
         mode: enums.RankingMode = enums.RankingMode.DAY,
         filter: Filter = FILTER,
-        date: str | None = None,
+        date: DateOrStr | None = None,
         offset: int | str | None = None,
         req_auth: bool = True,
     ) -> ParsedJson:
@@ -420,14 +445,16 @@ class AppPixivAPI(BasePixivAPI):
             "filter": filter,
         }
         if date:
-            params["date"] = date
+            params["date"] = self._format_date(date)
         if offset:
             params["offset"] = offset
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
         return self.parse_result(r)
 
     # 趋势标签 (Search - tags)
-    def trending_tags_illust(self, filter: Filter = FILTER, req_auth: bool = True) -> ParsedJson:
+    def trending_tags_illust(
+        self, filter: Filter = FILTER, req_auth: bool = True
+    ) -> ParsedJson:
         url = "%s/v1/trending-tags/illust" % self.hosts
         params = {
             "filter": filter,
@@ -450,13 +477,13 @@ class AppPixivAPI(BasePixivAPI):
         search_target: enums.SearchTarget = enums.SearchTarget.PARTIAL_MATCH_FOR_TAGS,
         sort: enums.Sort = enums.Sort.DATE_DESC,
         duration: enums.Duration | None = None,
-        start_date: str | None = None,
-        end_date: str | None = None,
+        start_date: DateOrStr | None = None,
+        end_date: DateOrStr | None = None,
         filter: Filter = FILTER,
         search_ai_type: Literal[0, 1] | None = None,
         offset: int | str | None = None,
         req_auth: bool = True,
-    ) -> ParsedJson:
+    ) -> models.SearchIllustrations:
         url = f"{self.hosts}/v1/search/illust"
         params: dict[str, Any] = {
             "word": word,
@@ -465,9 +492,9 @@ class AppPixivAPI(BasePixivAPI):
             "filter": filter,
         }
         if start_date:
-            params["start_date"] = start_date
+            params["start_date"] = self._format_date(start_date)
         if end_date:
-            params["end_date"] = end_date
+            params["end_date"] = self._format_date(end_date)
         if duration:
             params["duration"] = duration
         if search_ai_type:
@@ -475,7 +502,7 @@ class AppPixivAPI(BasePixivAPI):
         if offset:
             params["offset"] = offset
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
-        return self.parse_result(r)
+        return self._load_result(r, models.SearchIllustrations)
 
     # 搜索小说 (Search Novel)
     # search_target - 搜索类型
@@ -493,13 +520,13 @@ class AppPixivAPI(BasePixivAPI):
         sort: enums.Sort = enums.Sort.DATE_DESC,
         merge_plain_keyword_results: BoolStr = "true",
         include_translated_tag_results: BoolStr = "true",
-        start_date: str | None = None,
-        end_date: str | None = None,
+        start_date: DateOrStr | None = None,
+        end_date: DateOrStr | None = None,
         filter: str | None = None,
         search_ai_type: Literal[0, 1] | None = None,
         offset: int | str | None = None,
         req_auth: bool = True,
-    ) -> ParsedJson:
+    ) -> models.SearchNovel:
         url = f"{self.hosts}/v1/search/novel"
         params: dict[str, Any] = {
             "word": word,
@@ -510,15 +537,15 @@ class AppPixivAPI(BasePixivAPI):
             "filter": filter,
         }
         if start_date:
-            params["start_date"] = start_date
+            params["start_date"] = self._format_date(start_date)
         if end_date:
-            params["end_date"] = end_date
+            params["end_date"] = self._format_date(end_date)
         if search_ai_type:
             params["search_ai_type"] = search_ai_type
         if offset:
             params["offset"] = offset
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
-        return self.parse_result(r)
+        return self._load_result(r, models.SearchNovel)
 
     def search_user(
         self,
@@ -543,7 +570,9 @@ class AppPixivAPI(BasePixivAPI):
         return self.parse_result(r)
 
     # 作品收藏详情
-    def illust_bookmark_detail(self, illust_id: int | str, req_auth: bool = True) -> ParsedJson:
+    def illust_bookmark_detail(
+        self, illust_id: int | str, req_auth: bool = True
+    ) -> ParsedJson:
         url = f"{self.hosts}/v2/illust/bookmark/detail"
         params = {
             "illust_id": illust_id,
@@ -573,7 +602,9 @@ class AppPixivAPI(BasePixivAPI):
         return self.parse_result(r)
 
     # 删除收藏
-    def illust_bookmark_delete(self, illust_id: int | str, req_auth: bool = True) -> ParsedJson:
+    def illust_bookmark_delete(
+        self, illust_id: int | str, req_auth: bool = True
+    ) -> ParsedJson:
         url = f"{self.hosts}/v1/illust/bookmark/delete"
         data = {
             "illust_id": illust_id,
@@ -594,14 +625,18 @@ class AppPixivAPI(BasePixivAPI):
         return self.parse_result(r)
 
     # 取消关注用户
-    def user_follow_delete(self, user_id: int | str, req_auth: bool = True) -> ParsedJson:
+    def user_follow_delete(
+        self, user_id: int | str, req_auth: bool = True
+    ) -> ParsedJson:
         url = f"{self.hosts}/v1/user/follow/delete"
         data = {"user_id": user_id}
         r = self.no_auth_requests_call("POST", url, data=data, req_auth=req_auth)
         return self.parse_result(r)
 
     # 设置用户选项中是否展现AI生成作品
-    def user_edit_ai_show_settings(self, setting: BoolStr, req_auth: bool = True) -> ParsedJson:
+    def user_edit_ai_show_settings(
+        self, setting: BoolStr, req_auth: bool = True
+    ) -> ParsedJson:
         url = f"{self.hosts}/v1/user/ai-show-settings/edit"
         data = {"show_ai": setting}
         r = self.no_auth_requests_call("POST", url, data=data, req_auth=req_auth)
@@ -632,7 +667,7 @@ class AppPixivAPI(BasePixivAPI):
         restrict: enums.Visibility = enums.Visibility.PUBLIC,
         offset: int | str | None = None,
         req_auth: bool = True,
-    ) -> ParsedJson:
+    ) -> models.UserFollowing:
         url = f"{self.hosts}/v1/user/following"
         params = {
             "user_id": user_id,
@@ -642,7 +677,7 @@ class AppPixivAPI(BasePixivAPI):
             params["offset"] = offset
 
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
-        return self.parse_result(r)
+        return self._load_result(r, models.UserFollowing)
 
     # Followers用户列表
     def user_follower(
@@ -700,7 +735,9 @@ class AppPixivAPI(BasePixivAPI):
         return self.parse_result(r)
 
     # 获取ugoira信息
-    def ugoira_metadata(self, illust_id: int | str, req_auth: bool = True) -> ParsedJson:
+    def ugoira_metadata(
+        self, illust_id: int | str, req_auth: bool = True
+    ) -> ParsedJson:
         url = f"{self.hosts}/v1/ugoira/metadata"
         params = {
             "illust_id": illust_id,
@@ -716,7 +753,7 @@ class AppPixivAPI(BasePixivAPI):
         filter: Filter = FILTER,
         offset: int | str | None = None,
         req_auth: bool = True,
-    ) -> ParsedJson:
+    ) -> models.UserNovels:
         url = f"{self.hosts}/v1/user/novels"
         params = {
             "user_id": user_id,
@@ -725,7 +762,7 @@ class AppPixivAPI(BasePixivAPI):
         if offset:
             params["offset"] = offset
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
-        return self.parse_result(r)
+        return self._load_result(r, models.UserNovels)
 
     # 小说系列详情
     def novel_series(
@@ -746,14 +783,19 @@ class AppPixivAPI(BasePixivAPI):
         return self.parse_result(r)
 
     # 小说详情
-    def novel_detail(self, novel_id: int | str, req_auth: bool = True) -> ParsedJson:
+    def novel_detail(
+        self,
+        novel_id: int | str,
+        req_auth: bool = True,
+    ) -> models.NovelInfo:
         url = f"{self.hosts}/v2/novel/detail"
         params = {
             "novel_id": novel_id,
         }
 
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
-        return self.parse_result(r)
+        response_json = self.parse_result(r)
+        return self._load_model(response_json["novel"], models.NovelInfo)
 
     def novel_new(
         self,
@@ -785,7 +827,12 @@ class AppPixivAPI(BasePixivAPI):
 
     # 小说 (webview)
     #  raw=True, return html content directly
-    def webview_novel(self, novel_id: int | str, raw: bool = False, req_auth: bool = True) -> ParsedJson:
+    def webview_novel(
+        self,
+        novel_id: int | str,
+        raw: bool = False,
+        req_auth: bool = True,
+    ) -> models.WebviewNovel | str:
         # change new endpoint due to #337
         url = f"{self.hosts}/webview/v2/novel"
         params = {
@@ -796,19 +843,25 @@ class AppPixivAPI(BasePixivAPI):
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
         if raw:
             return r.text
-        try:
-            # extract JSON content
-            json_str = re.search(r"novel:\s({.+}),\s+isOwnWork", r.text).groups()[0].encode()  # type: ignore
-            return self.parse_json(json_str)
-        except Exception as e:
-            msg = f"Extract novel content error: {e}"
+
+        # extract JSON content
+        match = re.search(r"novel:\s({.+}),\s+isOwnWork", r.text)
+        if not match or len(match.groups()) < 1:
+            msg = f"Extract novel content error: {r.text}"
             raise PixivError(msg, header=r.headers, body=r.text)
 
+        json_str = match.groups()[0].encode()
+        json_data = self.parse_json(json_str)
+        return self._load_model(json_data, models.WebviewNovel)
+
     # 小说正文 (deprecated)
-    def novel_text(self, novel_id: int | str, req_auth: bool = True) -> ParsedJson:
+    def novel_text(
+        self, novel_id: int | str, req_auth: bool = True
+    ) -> models.WebviewNovel:
         # /v1/novel/text no longer exist
         json_obj = self.webview_novel(novel_id=novel_id, raw=False)
-        json_obj["novel_text"] = json_obj.text
+        assert isinstance(json_obj, models.WebviewNovel)
+        json_obj.novel_text = json_obj.text  # type: ignore[attr-defined]
         return json_obj
 
     # 大家的新作
@@ -830,14 +883,13 @@ class AppPixivAPI(BasePixivAPI):
         r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
         return self.parse_result(r)
 
-    # 特辑详情 (无需登录，调用Web API)
+    # 特辑详情 (无需登录,调用Web API)
     def showcase_article(self, showcase_id: int | str) -> ParsedJson:
         url = "https://www.pixiv.net/ajax/showcase/article"
-        # Web API，伪造Chrome的User-Agent
+        # Web API, 伪造Chrome的User-Agent
         headers = {
             "User-Agent": (
-                "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 "
-                + "(KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36"
+                "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36"
             ),
             "Referer": "https://www.pixiv.net",
         }
@@ -845,5 +897,7 @@ class AppPixivAPI(BasePixivAPI):
             "article_id": showcase_id,
         }
 
-        r = self.no_auth_requests_call("GET", url, headers=headers, params=params, req_auth=False)
+        r = self.no_auth_requests_call(
+            "GET", url, headers=headers, params=params, req_auth=False
+        )
         return self.parse_result(r)

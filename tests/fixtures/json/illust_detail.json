@@ -1,0 +1,78 @@
+{
+  "illust": {
+    "id": 126839540,
+    "title": "\u30a2\u30a4\u30c9\u30eb\u30d7\u30ea\u30ad\u30e5\u30a2",
+    "type": "illust",
+    "image_urls": {
+      "square_medium": "https://i.pximg.net/c/360x360_70/img-master/img/2025/02/03/00/03/17/126839540_p0_square1200.jpg",
+      "medium": "https://i.pximg.net/c/540x540_70/img-master/img/2025/02/03/00/03/17/126839540_p0_master1200.jpg",
+      "large": "https://i.pximg.net/c/600x1200_90/img-master/img/2025/02/03/00/03/17/126839540_p0_master1200.jpg"
+    },
+    "caption": "\u63a8\u3057\u6d3b\u304c\u59cb\u307e\u308a\u307e\u3059\u301c\u301c",
+    "restrict": 0,
+    "user": {
+      "id": 1697179,
+      "name": "XING/\u30b7\u30f3",
+      "account": "xingspresent",
+      "profile_image_urls": {
+        "medium": "https://i.pximg.net/user-profile/img/2016/08/11/12/54/58/11330714_5010f461f6437d6a9fe3eeb1ac0427e3_170.jpg"
+      },
+      "is_followed": false
+    },
+    "tags": [
+      {
+        "name": "\u30ad\u30df\u3068\u30a2\u30a4\u30c9\u30eb\u30d7\u30ea\u30ad\u30e5\u30a2\u266a",
+        "translated_name": null
+      },
+      {
+        "name": "\u30ad\u30df\u30d7\u30ea",
+        "translated_name": null
+      },
+      {
+        "name": "\u30d7\u30ea\u30ad\u30e5\u30a2",
+        "translated_name": "precure"
+      },
+      {
+        "name": "\u30a2\u30a4\u30a6\u30a4\u30f3\u30ad\u30e5\u30f3",
+        "translated_name": null
+      },
+      {
+        "name": "\u30ad\u30e5\u30a2\u30a2\u30a4\u30c9\u30eb",
+        "translated_name": null
+      },
+      {
+        "name": "\u30a2\u30a4\u30c9\u30eb",
+        "translated_name": "idol"
+      },
+      {
+        "name": "\u30ad\u30e5\u30a2\u30a6\u30a4\u30f3\u30af",
+        "translated_name": null
+      },
+      {
+        "name": "\u30ad\u30df\u30d7\u30ea1000users\u5165\u308a",
+        "translated_name": null
+      }
+    ],
+    "tools": [],
+    "create_date": "2025-02-03T00:03:17+09:00",
+    "page_count": 1,
+    "width": 1299,
+    "height": 871,
+    "sanity_level": 2,
+    "x_restrict": 0,
+    "series": null,
+    "meta_single_page": {
+      "original_image_url": "https://i.pximg.net/img-original/img/2025/02/03/00/03/17/126839540_p0.jpg"
+    },
+    "meta_pages": [],
+    "total_view": 14138,
+    "total_bookmarks": 2196,
+    "is_bookmarked": false,
+    "visible": true,
+    "is_muted": false,
+    "total_comments": 4,
+    "illust_ai_type": 1,
+    "illust_book_style": 0,
+    "comment_access_control": 0
+  }
+}
