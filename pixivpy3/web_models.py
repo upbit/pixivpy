@@ -92,7 +92,7 @@ class WebNovelBookmarkData(BaseWebModel):
 
 class WebUserInfoShort(BaseWebModel):
     """Model for the short user info returned by /ajax/user/{USER_ID}."""
-    user_id: str # Note: API returns user ID as string here
+    user_id: int
     name: str
     image: str # URL for 50px avatar
     image_big: str # URL for 170px avatar
@@ -156,7 +156,7 @@ class WebUserWorkspace(BaseWebModel):
     workspace_image_url: Optional[str] = Field(default=None, alias='userWorkspaceImageUrl')
 
 class WebUserGroup(BaseWebModel):
-    id: str
+    id: int
     title: str
     icon_url: str
 
@@ -173,7 +173,7 @@ class WebUserInfoFull(WebUserInfoShort): # Inherits fields from short version
     comment: Optional[str] = None # User profile comment (plain text)
     comment_html: Optional[str] = None # User profile comment (HTML)
     webpage: Optional[str] = None
-    social: list[Any] # List of social media links
+    social: Any # List of social media links
     can_send_message: bool # Whether the requesting user can send message
     region: WebUserRegion
     age: WebUserAge
@@ -191,8 +191,8 @@ class WebUserInfoFull(WebUserInfoShort): # Inherits fields from short version
 # --- Models for /ajax/user/{USER_ID}/profile/all ---
 
 class WebMangaSeries(BaseWebModel):
-    id: str
-    user_id: str
+    id: int
+    user_id: int
     title: str
     description: str
     caption: str
@@ -200,8 +200,8 @@ class WebMangaSeries(BaseWebModel):
     content_order: Optional[Any] = None # Type unclear from example
     url: Optional[str] = None # Always null in example?
     cover_image_sl: Optional[int] = None # Sanity level?
-    first_illust_id: str
-    latest_illust_id: str
+    first_illust_id: int
+    latest_illust_id: int
     create_date: datetime.datetime # ISO 8601 format with timezone
     update_date: datetime.datetime # ISO 8601 format with timezone
     watch_count: Optional[int] = None # Always null?
@@ -236,7 +236,7 @@ class WebCoverUrls(BaseWebModel):
     url_original: Optional[str] = Field(default=None, alias="original")
 
 class WebPickupIllust(BaseWebModel):
-    id: str
+    id: int
     title: str
     illust_type: int # 0 for illust, 1 for manga?
     x_restrict: int
@@ -245,7 +245,7 @@ class WebPickupIllust(BaseWebModel):
     url: str # Thumbnail URL? Matches urls['250x250'] base
     description: str
     tags: List[str]
-    user_id: str
+    user_id: int
     user_name: str
     width: int
     height: int
@@ -288,7 +288,7 @@ class WebNovelInfoBase(BaseWebModel):
     update_date: datetime.datetime = Field(validation_alias=AliasChoices("updateDate", "uploadDate"))
     cover_url: str = Field(validation_alias=AliasChoices("url", "coverUrl"))# Novel cover image URL
     use_word_count: bool
-    user_id: str
+    user_id: int
     user_name: str
     visibility_scope: int
     word_count: int
@@ -301,11 +301,11 @@ class TagItem(BaseWebModel):
     tag: str
     locked: bool
     deletable: bool
-    user_id: str
+    user_id: int
     user_name: str
 
 class TagsInfo(BaseWebModel):
-    author_id: str
+    author_id: int
     is_locked: bool
     tags: List[TagItem]
     writable: bool
@@ -394,7 +394,7 @@ class WebNovelSeries(BaseWebModel):
     update_date: datetime.datetime
     updated_timestamp: int
     use_word_count: bool
-    user_id: str
+    user_id: int
     user_name: str
     watch_count: Optional[Any] = None
     x_restrict: int
@@ -450,7 +450,7 @@ class WebUserProfileAll(BaseWebModel):
 
 class WebListedUserIllust(BaseWebModel):
     """Model for illustrations embedded within the following user list."""
-    id: str
+    id: int
     title: str
     illust_type: int
     x_restrict: int
@@ -483,7 +483,7 @@ class WebUserCommision(BaseWebModel):
 
 class WebListedUserInfo(BaseWebModel):
     """Model for a single user in the following list."""
-    user_id: str
+    user_id: int
     user_name: str
     profile_image_url: str
     user_comment: str
