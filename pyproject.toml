@@ -10,22 +10,23 @@ classifiers = [
   "Operating System :: OS Independent",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
 ]
 homepage = "https://github.com/upbit/pixivpy"
 
 [tool.poetry.dependencies]
-python = "^3.8.1"
+python = ">=3.9,<3.14" # Updated minimum Python version and added upper bound
 cloudscraper = "^1.2.58"
 requests = "^2.31.0"
 requests-toolbelt = "^1.0.0"
-urllib3 = "^2.0.7"
+urllib3 = "^2.4.0"
 typing-extensions = "^4.1.1"
 pydantic = ">=1.9.0 <3.0.0"
+httpx = "^0.28.1"
 
 [tool.poetry.group.dev.dependencies]
 black = [
@@ -37,6 +38,8 @@ pre-commit = ">=2.18.1"
 mypy = ">=0.931"
 types-requests = ">=2.27.10"
 flake8 = "^7.1.1"
+respx = "^0.22.0"
+pytest-asyncio = "^0.26.0"
 
 [tool.poetry.group.test.dependencies]
 pytest = ">=7.3"
