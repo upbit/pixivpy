@@ -1,5 +1,6 @@
 import datetime
-from typing import Any, Generic, List, Optional, TypeVar, Union, Annotated
+from typing import Any, Generic, List, Optional, TypeVar, Union
+from typing_extensions import Annotated
 
 import pydantic
 
