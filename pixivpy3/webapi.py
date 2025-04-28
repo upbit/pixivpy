@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-from typing import Any, Generic, TypeVar, Type, Union
+from typing import Any, TypeVar, Type, Union
 
 import httpx
 from httpx import Headers, QueryParams, RequestError
@@ -13,7 +13,6 @@ from .web_models import (
     BaseAjaxResponse,
     WebAjaxApiError,
     WebUserInfoFull,
-    WebListedUser,
     WebFollowingUser,
     WebFollowersUser,
     WebUserInfoShort,
@@ -26,8 +25,8 @@ from .web_models import (
 AJAX_BASE_URL = "https://www.pixiv.net/ajax"
 
 # 定义泛型类型T，限定为BaseWebModel的子类
-T = TypeVar('T', bound=BaseWebModel)
-ResponseT = TypeVar('ResponseT', bound=BaseAjaxResponse)
+T = TypeVar("T", bound=BaseWebModel)
+ResponseT = TypeVar("ResponseT", bound=BaseAjaxResponse)
 
 # 定义API结果类型，可以是成功结果或错误结果
 ApiResult = Union[T, WebAjaxApiError]
@@ -36,7 +35,7 @@ ApiResult = Union[T, WebAjaxApiError]
 class WebPixivAPI:
     """
     API class for interacting with Pixiv's Web Ajax endpoints.
-    
+
     Requires authentication via cookies (specifically PHPSESSID).
     Uses httpx for both synchronous and asynchronous requests.
     """
@@ -81,7 +80,7 @@ class WebPixivAPI:
                 base_url=AJAX_BASE_URL,
                 headers=self.base_headers,
                 timeout=self.timeout,
-                mounts=self.proxies, # Corrected parameter name
+                mounts=self.proxies,  # Corrected parameter name
                 cookies=self._get_cookies(),
                 **self.httpx_kwargs,
             )
@@ -94,7 +93,7 @@ class WebPixivAPI:
                 base_url=AJAX_BASE_URL,
                 headers=self.base_headers,
                 timeout=self.timeout,
-                mounts=self.proxies, # Corrected parameter name
+                mounts=self.proxies,  # Corrected parameter name
                 cookies=self._get_cookies(),
                 **self.httpx_kwargs,
             )
@@ -111,10 +110,12 @@ class WebPixivAPI:
         if self._client is not None and not self._client.is_closed:
             self._client.cookies = httpx.Cookies(self._get_cookies())
         if self._async_client is not None and not self._async_client.is_closed:
-            self._async_client.cookies = httpx.Cookies(self._get_cookies()) # type: ignore
+            self._async_client.cookies = httpx.Cookies(self._get_cookies())  # type: ignore
 
     @staticmethod
-    def parse_json(response_text: str | bytes) -> Any: # Return Any, let Pydantic handle dict
+    def parse_json(
+        response_text: str | bytes,
+    ) -> Any:  # Return Any, let Pydantic handle dict
         """
         Parse JSON string. Checks for Pixiv's structured error format
         but does NOT raise PixivError for it anymore, returning the dict instead.
@@ -125,9 +126,11 @@ class WebPixivAPI:
             data: Any = json.loads(response_text)
             # We no longer raise PixivError for {"error": True} here,
             # the calling method will handle it.
-            return data # Return the raw dict/list/etc.
+            return data  # Return the raw dict/list/etc.
         except (json.JSONDecodeError, TypeError) as e:
-            raise PixivError(f"Failed to parse JSON response: {e}", body=response_text) from e
+            raise PixivError(
+                f"Failed to parse JSON response: {e}", body=response_text
+            ) from e
 
     def _request(
         self,
@@ -145,23 +148,24 @@ class WebPixivAPI:
         client = self._get_client()
         merged_headers = self.base_headers.copy()
         if headers:
-             merged_headers.update(headers)
+            merged_headers.update(headers)
 
         try:
             response = client.request(
                 method,
                 url,
                 params=params,
-                json=data if method == "POST" else None, # Assume POST uses JSON body
-                headers=merged_headers
+                json=data if method == "POST" else None,  # Assume POST uses JSON body
+                headers=merged_headers,
             )
             response.raise_for_status()  # Raise HTTPStatusError for bad responses (4xx or 5xx)
             return response
         except RequestError as e:
             raise PixivError(f"HTTP request failed: {e}", body=e.request) from e
         except Exception as e:
-             raise PixivError(f"An unexpected error occurred during the request: {e}") from e
-
+            raise PixivError(
+                f"An unexpected error occurred during the request: {e}"
+            ) from e
 
     async def _async_request(
         self,
@@ -186,27 +190,31 @@ class WebPixivAPI:
                 method,
                 url,
                 params=params,
-                json=data if method == "POST" else None, # Assume POST uses JSON body
-                headers=merged_headers
+                json=data if method == "POST" else None,  # Assume POST uses JSON body
+                headers=merged_headers,
             )
             response.raise_for_status()  # Raise HTTPStatusError for bad responses (4xx or 5xx)
             return response
         except RequestError as e:
             raise PixivError(f"HTTP request failed: {e}", body=e.request) from e
         except Exception as e:
-            raise PixivError(f"An unexpected error occurred during the request: {e}") from e
+            raise PixivError(
+                f"An unexpected error occurred during the request: {e}"
+            ) from e
 
-    def _parse_and_validate_response(self, response: HttpxResponse, body_class: Type[T]) -> ApiResult[T]:
+    def _parse_and_validate_response(
+        self, response: HttpxResponse, body_class: Type[T]
+    ) -> ApiResult[T]:
         """
         解析并验证API响应，转换为相应的模型对象或错误对象。
-        
+
         Args:
             response: HTTP响应对象
             body_class: 用于验证响应体的Pydantic模型类 (必须是 BaseWebModel 的子类)
-            
+
         Returns:
             成功时返回类型T的实例，失败时返回WebAjaxApiError
-            
+
         Raises:
             PixivError: JSON解析错误或响应结构不符合预期
         """
@@ -215,53 +223,73 @@ class WebPixivAPI:
         except PixivError as pe:
             pe.header = response.headers
             raise pe
-            
+
         if not isinstance(json_data, dict):
-            raise PixivError(f"Unexpected API response format (not a dict)", body=json_data, header=response.headers)
-        
+            raise PixivError(
+                "Unexpected API response format (not a dict)",
+                body=json_data,
+                header=response.headers,
+            )
+
         # 检查是否是错误响应
         if json_data.get("error", False):
             try:
                 return WebAjaxApiError.model_validate(json_data)
             except Exception as e:
-                raise PixivError(f"Failed to validate error response: {e}", body=json_data, header=response.headers) from e
-        
+                raise PixivError(
+                    f"Failed to validate error response: {e}",
+                    body=json_data,
+                    header=response.headers,
+                ) from e
+
         # 成功响应，验证body
         if "body" not in json_data:
-            raise PixivError("Unexpected API response format (missing 'body')", body=json_data, header=response.headers)
-        
+            raise PixivError(
+                "Unexpected API response format (missing 'body')",
+                body=json_data,
+                header=response.headers,
+            )
+
         try:
             return body_class.model_validate(json_data["body"])
         except Exception as e:
-            raise PixivError(f"Failed to validate API response body: {e}", body=json_data, header=response.headers) from e
-    
-    def _process_response(self, response: HttpxResponse, body_class: Type[T]) -> ApiResult[T]:
+            raise PixivError(
+                f"Failed to validate API response body: {e}",
+                body=json_data,
+                header=response.headers,
+            ) from e
+
+    def _process_response(
+        self, response: HttpxResponse, body_class: Type[T]
+    ) -> ApiResult[T]:
         """
         统一处理同步API响应，转换为相应的模型对象或错误对象。
-        
+
         Args:
             response: HTTP响应对象
             body_class: 用于验证响应体的Pydantic模型类 (必须是 BaseWebModel 的子类)
-            
+
         Returns:
             成功时返回类型T的实例，失败时返回WebAjaxApiError
-            
+
         Raises:
             PixivError: JSON解析错误或响应结构不符合预期
         """
         return self._parse_and_validate_response(response, body_class)
-    
-    async def _async_process_response(self, response: HttpxResponse, body_class: Type[T]) -> ApiResult[T]:
+
+    async def _async_process_response(
+        self, response: HttpxResponse, body_class: Type[T]
+    ) -> ApiResult[T]:
         """
         异步版本：统一处理API响应，转换为相应的模型对象或错误对象。
-        
+
         Args:
             response: HTTP响应对象
             body_class: 用于验证响应体的Pydantic模型类 (必须是 BaseWebModel 的子类)
-            
+
         Returns:
             成功时返回类型T的实例，失败时返回WebAjaxApiError
-            
+
         Raises:
             PixivError: JSON解析错误或响应结构不符合预期
         """
@@ -280,11 +308,10 @@ class WebPixivAPI:
 
     # --- User Information ---
 
-
     def get_user_info_short(self, user_id: int | str) -> ApiResult[WebUserInfoShort]:
         """
         Get user information in a simplified format. (Corresponds to /ajax/user/{USER_ID})
-        
+
         Returns:
             成功时返回WebUserInfoShort实例，失败时返回WebAjaxApiError
         Raises:
@@ -294,11 +321,12 @@ class WebPixivAPI:
         response = self._request("GET", url, require_auth=True)
         return self._process_response(response, WebUserInfoShort)
 
-
-    async def async_get_user_info_short(self, user_id: int | str) -> ApiResult[WebUserInfoShort]:
+    async def async_get_user_info_short(
+        self, user_id: int | str
+    ) -> ApiResult[WebUserInfoShort]:
         """
         Get user information in a simplified format. (Async) (Corresponds to /ajax/user/{USER_ID})
-        
+
         Returns:
             成功时返回WebUserInfoShort实例，失败时返回WebAjaxApiError
         Raises:
@@ -308,11 +336,10 @@ class WebPixivAPI:
         response = await self._async_request("GET", url, require_auth=True)
         return await self._async_process_response(response, WebUserInfoShort)
 
-
     def get_user_info_full(self, user_id: int | str) -> ApiResult[WebUserInfoFull]:
         """
         Get full user information. (Corresponds to /ajax/user/{USER_ID}?full=1)
-        
+
         Returns:
             成功时返回WebUserInfoFull实例，失败时返回WebAjaxApiError
         Raises:
@@ -323,10 +350,12 @@ class WebPixivAPI:
         response = self._request("GET", url, params=params, require_auth=True)
         return self._process_response(response, WebUserInfoFull)
 
-    async def async_get_user_info_full(self, user_id: int | str) -> ApiResult[WebUserInfoFull]:
+    async def async_get_user_info_full(
+        self, user_id: int | str
+    ) -> ApiResult[WebUserInfoFull]:
         """
         Get full user information. (Async) (Corresponds to /ajax/user/{USER_ID}?full=1)
-        
+
         Returns:
             成功时返回WebUserInfoFull实例，失败时返回WebAjaxApiError
         Raises:
@@ -334,15 +363,16 @@ class WebPixivAPI:
         """
         url = f"/user/{user_id}"
         params = {"full": "1"}
-        response = await self._async_request("GET", url, params=params, require_auth=True)
+        response = await self._async_request(
+            "GET", url, params=params, require_auth=True
+        )
         return await self._async_process_response(response, WebUserInfoFull)
-
 
     def get_user_profile_all(self, user_id: int | str) -> ApiResult[WebUserProfileAll]:
         """
         Get user information along with information about artwork posted by the user.
         (Corresponds to /ajax/user/{USER_ID}/profile/all)
-        
+
         Returns:
             成功时返回WebUserProfileAll实例，失败时返回WebAjaxApiError
         Raises:
@@ -352,11 +382,13 @@ class WebPixivAPI:
         response = self._request("GET", url, require_auth=True)
         return self._process_response(response, WebUserProfileAll)
 
-    async def async_get_user_profile_all(self, user_id: int | str) -> ApiResult[WebUserProfileAll]:
+    async def async_get_user_profile_all(
+        self, user_id: int | str
+    ) -> ApiResult[WebUserProfileAll]:
         """
         Get user information along with information about artwork posted by the user. (Async)
         (Corresponds to /ajax/user/{USER_ID}/profile/all)
-        
+
         Returns:
             成功时返回WebUserProfileAll实例，失败时返回WebAjaxApiError
         Raises:
@@ -366,24 +398,20 @@ class WebPixivAPI:
         response = await self._async_request("GET", url, require_auth=True)
         return await self._async_process_response(response, WebUserProfileAll)
 
-
     def get_user_following(
-        self,
-        user_id: int | str,
-        limit: int = 30,
-        offset: int = 0
+        self, user_id: int | str, limit: int = 30, offset: int = 0
     ) -> ApiResult[WebFollowingUser]:
         """
         Get the list of users followed by the specified user.
         (Corresponds to /ajax/user/{USER_ID}/following)
-        
+
         Requires authentication (PHPSESSID).
-        
+
         Args:
             user_id: The target user ID.
             offset: Starting offset for pagination.
             limit: Number of users to return per page.
-            
+
         Returns:
             成功时返回WebFollowingUser实例，失败时返回WebAjaxApiError
         Raises:
@@ -401,22 +429,19 @@ class WebPixivAPI:
         return self._process_response(response, WebFollowingUser)
 
     async def async_get_user_following(
-        self,
-        user_id: int | str,
-        limit: int = 30,
-        offset: int = 0
+        self, user_id: int | str, limit: int = 30, offset: int = 0
     ) -> ApiResult[WebFollowingUser]:
         """
         Get the list of users followed by the specified user. (Async)
         (Corresponds to /ajax/user/{USER_ID}/following)
-        
+
         Requires authentication (PHPSESSID).
-        
+
         Args:
             user_id: The target user ID.
             offset: Starting offset for pagination.
             limit: Number of users to return per page.
-            
+
         Returns:
             成功时返回WebFollowingUser实例，失败时返回WebAjaxApiError
         Raises:
@@ -429,15 +454,14 @@ class WebPixivAPI:
         if limit is not None:
             params["limit"] = limit
 
-        response = await self._async_request("GET", url, params=params, require_auth=True)
+        response = await self._async_request(
+            "GET", url, params=params, require_auth=True
+        )
 
         return self._process_response(response, WebFollowingUser)
 
     def get_user_followers(
-        self,
-        user_id: int | str,
-        limit: int = 30,
-        offset: int = 0
+        self, user_id: int | str, limit: int = 30, offset: int = 0
     ) -> WebFollowersUser:
         """
         Get the list of users who follow the specified user.
@@ -466,10 +490,7 @@ class WebPixivAPI:
         return self._process_response(response, WebFollowersUser)
 
     async def async_get_user_followers(
-        self,
-        user_id: int | str,
-        limit: int = 30,
-        offset: int = 0
+        self, user_id: int | str, limit: int = 30, offset: int = 0
     ) -> WebFollowersUser:
         """
         Get the list of users who follow the specified user. (Async)
@@ -494,13 +515,13 @@ class WebPixivAPI:
         if limit is not None:
             params["limit"] = limit
 
-        response = await self._async_request("GET", url, params=params, require_auth=True)
+        response = await self._async_request(
+            "GET", url, params=params, require_auth=True
+        )
         return self._process_response(response, WebFollowersUser)
 
     def get_novel_series_info(
-        self,
-        novel_series_id: int | str,
-        language: str | None = 'zh'
+        self, novel_series_id: int | str, language: str | None = "zh"
     ) -> ApiResult[WebNovelSeriesInfo]:
         """
         获取小说系列信息。
@@ -524,9 +545,7 @@ class WebPixivAPI:
         return self._process_response(response, WebNovelSeriesInfo)
 
     async def async_get_novel_series_info(
-        self,
-        novel_series_id: int | str,
-        language: str | None = 'zh'
+        self, novel_series_id: int | str, language: str | None = "zh"
     ) -> ApiResult[WebNovelSeriesInfo]:
         """
         获取小说系列信息。(异步版本)
@@ -546,13 +565,13 @@ class WebPixivAPI:
         if language is not None:
             params["lang"] = language
 
-        response = await self._async_request("GET", url, params=params, require_auth=False)
+        response = await self._async_request(
+            "GET", url, params=params, require_auth=False
+        )
         return await self._async_process_response(response, WebNovelSeriesInfo)
 
     def get_novel_info(
-        self,
-        novel_id: int | str,
-        language: str | None = 'zh'
+        self, novel_id: int | str, language: str | None = "zh"
     ) -> ApiResult[WebNovelInfoFull]:
         """
         获取小说信息。
@@ -589,14 +608,14 @@ class WebPixivAPI:
     #     return self.parse_json(response.content)
 
     def __enter__(self) -> WebPixivAPI:
-        self._get_client() # Ensure client is initialized
+        self._get_client()  # Ensure client is initialized
         return self
 
     def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
         self.close()
 
     async def __aenter__(self) -> WebPixivAPI:
-        self._get_async_client() # Ensure async client is initialized
+        self._get_async_client()  # Ensure async client is initialized
         return self
 
     async def __aexit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
