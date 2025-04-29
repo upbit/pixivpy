@@ -1,5 +1,5 @@
 import datetime
-from typing import Any, Generic, List, Optional, TypeVar, Union
+from typing import Any, Generic, List, Optional, TypeVar, Union, Dict
 from typing_extensions import Annotated
 
 import pydantic
@@ -28,7 +28,7 @@ else:
     from pydantic.alias_generators import to_camel  # type: ignore[assignment]
 
 
-def convert_dict_to_intlist(v: Any) -> list[int]:
+def convert_dict_to_intlist(v: Any) -> List[int]:
     if isinstance(v, dict):
         return [int(key) for key in v.keys()]
     elif isinstance(v, list):
@@ -38,7 +38,7 @@ def convert_dict_to_intlist(v: Any) -> list[int]:
 
 # 定义可复用的类型别名
 DictKeysAsIntList = Annotated[
-    list[int],  # 静态类型和运行时类型
+    List[int],  # 静态类型和运行时类型
     BeforeValidator(convert_dict_to_intlist),  # 转换逻辑
 ]
 
@@ -308,7 +308,7 @@ class WebNovelInfoBase(BaseWebModel):
         validation_alias=AliasChoices("textCount", "characterCount")
     )
     title: str
-    title_caption_translation: Optional[dict[str, Optional[str]]] = None
+    title_caption_translation: Optional[Dict[str, Optional[str]]] = None
     update_date: datetime.datetime = Field(
         validation_alias=AliasChoices("updateDate", "uploadDate")
     )
@@ -368,7 +368,7 @@ class WebNovelInfoFull(WebNovelInfoBase):
     view_count: int
     is_bungei: bool
     content: str
-    suggested_settings: Optional[dict[str, Any]] = None
+    suggested_settings: Optional[Dict[str, Any]] = None
     like_data: bool
     poll_data: Optional[Any] = None
     series_nav_data: Optional[Any] = None
@@ -382,7 +382,7 @@ class WebNovelInfoFull(WebNovelInfoBase):
     image_response_out_data: List[Any] = Field(default_factory=list)
     image_response_data: List[Any] = Field(default_factory=list)
     image_response_count: int
-    user_novels: dict[int, Optional[WebListedUserNovel]]
+    user_novels: Dict[int, Optional[WebListedUserNovel]]
     has_glossary: bool
     language: str
     text_embedded_images: Optional[Any] = None
@@ -396,12 +396,12 @@ class WebNovelInfoFull(WebNovelInfoBase):
 class WebNovelSeries(BaseWebModel):
     ai_type: int
     caption: str
-    cover: dict[str, dict[str, str]]
+    cover: Dict[str, Dict[str, str]]
     cover_setting_data: Optional[Any] = None
     create_date: datetime.datetime
     created_timestamp: int
     display_series_content_count: int
-    first_episode: dict[str, str]
+    first_episode: Dict[str, str]
     first_novel_id: int
     genre_id: int
     id: int
@@ -539,7 +539,7 @@ class WebListedUser(BaseWebModel):
 
 
 class WebFollowingUser(WebListedUser):
-    follow_user_tags: list[Any]
+    follow_user_tags: List[Any]
 
 
 class WebFollowersUser(WebListedUser):
@@ -561,5 +561,5 @@ class WebUserLatestWorks(BaseWebModel):
     """Model for the body of the user latest works response."""
 
     # Keys are illust IDs (str). Values can be illust details or null.
-    illusts: Optional[dict[str, Optional[WebListedUserIllust]]] = None
+    illusts: Optional[Dict[str, Optional[WebListedUserIllust]]] = None
     novels: Optional[List[Any]] = None  # Structure unknown, empty in example

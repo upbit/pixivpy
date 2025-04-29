@@ -20,7 +20,7 @@ classifiers = [
 homepage = "https://github.com/upbit/pixivpy"
 
 [tool.poetry.dependencies]
-python = "^3.8.1" # Updated minimum Python version and added upper bound
+python = "^3.8.1"
 cloudscraper = "^1.2.58"
 requests = "^2.31.0"
 requests-toolbelt = "^1.0.0"

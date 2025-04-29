@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-from typing import Any, TypeVar, Type, Union
+from typing import Any, TypeVar, Type, Union, Dict
 
 import httpx
 from httpx import Headers, QueryParams, RequestError
@@ -99,7 +99,7 @@ class WebPixivAPI:
             )
         return self._async_client
 
-    def _get_cookies(self) -> dict[str, str]:
+    def _get_cookies(self) -> Dict[str, str]:
         """Return cookies dictionary based on PHPSESSID."""
         return {"PHPSESSID": self.PHPSESSID} if self.PHPSESSID else {}
 
@@ -418,7 +418,7 @@ class WebPixivAPI:
             PixivError: For network issues, non-2xx HTTP status, JSON parsing errors, or missing auth.
         """
         url = f"/user/{user_id}/following"
-        params: dict[str, Any] = {"rest": "show"}
+        params: Dict[str, Any] = {"rest": "show"}
         if offset is not None:
             params["offset"] = offset
         if limit is not None:
@@ -448,7 +448,7 @@ class WebPixivAPI:
             PixivError: For network issues, non-2xx HTTP status, JSON parsing errors, or missing auth.
         """
         url = f"/user/{user_id}/following"
-        params: dict[str, Any] = {"rest": "show"}
+        params: Dict[str, Any] = {"rest": "show"}
         if offset is not None:
             params["offset"] = offset
         if limit is not None:
@@ -480,7 +480,7 @@ class WebPixivAPI:
             PixivError: For network issues, non-2xx HTTP status, JSON parsing errors, or missing auth.
         """
         url = f"/user/{user_id}/followers"
-        params: dict[str, Any] = {}
+        params: Dict[str, Any] = {}
         if offset is not None:
             params["offset"] = offset
         if limit is not None:
@@ -509,7 +509,7 @@ class WebPixivAPI:
             PixivError: For network issues, non-2xx HTTP status, JSON parsing errors, or missing auth.
         """
         url = f"/user/{user_id}/followers"
-        params: dict[str, Any] = {}
+        params: Dict[str, Any] = {}
         if offset is not None:
             params["offset"] = offset
         if limit is not None:
@@ -537,7 +537,7 @@ class WebPixivAPI:
             PixivError: 网络问题、非2xx HTTP状态码、JSON解析错误或缺少认证信息
         """
         url = f"/novel/series/{novel_series_id}"
-        params: dict[str, Any] = {}
+        params: Dict[str, Any] = {}
         if language is not None:
             params["lang"] = language
 
@@ -561,7 +561,7 @@ class WebPixivAPI:
             PixivError: 网络问题、非2xx HTTP状态码、JSON解析错误或缺少认证信息
         """
         url = f"/novel/series/{novel_series_id}"
-        params: dict[str, Any] = {}
+        params: Dict[str, Any] = {}
         if language is not None:
             params["lang"] = language
 
@@ -586,7 +586,7 @@ class WebPixivAPI:
             PixivError: 网络问题、非2xx HTTP状态码、JSON解析错误或缺少认证信息
         """
         url = f"/novel/{novel_id}"
-        params: dict[str, Any] = {}
+        params: Dict[str, Any] = {}
         if language is not None:
             params["lang"] = language
 
