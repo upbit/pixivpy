@@ -6,7 +6,6 @@
 from __future__ import annotations
 
 import datetime as dt
-import re
 import urllib.parse as up
 from typing import Any, Literal, Union
 
@@ -860,85 +859,93 @@ class AppPixivAPI(BasePixivAPI):
         req_auth: bool = True,
     ) -> models.WebviewNovel | str:
         """使用AJAX API获取小说内容（按照TypeScript代码思路）"""
-        
+
         # 构建AJAX URL - 注意要用www而不是app-api
         if "app-api" in self.hosts:
             base_url = self.hosts.replace("app-api", "www")
         else:
             base_url = self.hosts
-        
+
         url = f"{base_url}/ajax/novel/{novel_id}"
-        
+
         headers = {
-            'Accept': 'application/json, text/plain, */*',
-            'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'X-Requested-With': 'XMLHttpRequest',
-            'Referer': f'{base_url}/novel/show.php?id={novel_id}',
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-            'DNT': '1',
-            'Connection': 'keep-alive',
-            'Sec-Fetch-Dest': 'empty',
-            'Sec-Fetch-Mode': 'cors',
-            'Sec-Fetch-Site': 'same-origin',
-            'Cache-Control': 'no-cache',
-            'Pragma': 'no-cache',
-            'Sec-Ch-Ua': '"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
-            'Sec-Ch-Ua-Mobile': '?0',
-            'Sec-Ch-Ua-Platform': '"Windows"',
+            "Accept": "application/json, text/plain, */*",
+            "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8",
+            "Accept-Encoding": "gzip, deflate, br",
+            "X-Requested-With": "XMLHttpRequest",
+            "Referer": f"{base_url}/novel/show.php?id={novel_id}",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "DNT": "1",
+            "Connection": "keep-alive",
+            "Sec-Fetch-Dest": "empty",
+            "Sec-Fetch-Mode": "cors",
+            "Sec-Fetch-Site": "same-origin",
+            "Cache-Control": "no-cache",
+            "Pragma": "no-cache",
+            "Sec-Ch-Ua": '"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
+            "Sec-Ch-Ua-Mobile": "?0",
+            "Sec-Ch-Ua-Platform": '"Windows"',
         }
-        
-        
+
         # 添加随机延迟，避免被检测
         import time
         import random
+
         time.sleep(random.uniform(1, 3))
         r = self.no_auth_requests_call("GET", url, headers=headers, req_auth=req_auth)
         if raw:
             return r.text
-        
+
         try:
             # 使用现有的parse_result方法
             json_data = self.parse_result(r)
-            
+
             # 检查API错误
-            if 'error' in json_data and json_data['error']:
-                error_msg = json_data.get('message', '未知错误')
+            if "error" in json_data and json_data["error"]:
+                error_msg = json_data.get("message", "未知错误")
                 raise PixivError(f"API错误: {error_msg}")
-            
+
             # 按照TS代码，数据在body中
-            if 'body' not in json_data:
+            if "body" not in json_data:
                 msg = f"AJAX API响应格式不正确: {list(json_data.keys())}"
                 raise PixivError(msg, header=r.headers, body=r.text)
-            
-            novel_data = json_data['body']
+
+            novel_data = json_data["body"]
             if not novel_data:
                 raise PixivError("API返回空数据")
-            
+
             # 直接返回原始数据，避免模型验证问题
             if raw:
                 return novel_data
-            
+
             # 创建一个简化的结果对象，包含主要信息
             class SimpleNovelResult:
                 def __init__(self, data):
                     self.raw_data = data
-                    self.title = data.get('title', '')
+                    self.title = data.get("title", "")
                     # 尝试多个可能的字段名来获取小说内容
-                    self.text = data.get('text', '') or data.get('content', '') or data.get('novelText', '')
-                    self.description = data.get('description', '')
-                    self.author_name = data.get('authorName', '') or data.get('userName', '')
-                    self.create_date = data.get('createDate', '')
-                    self.bookmark_count = data.get('bookmarkCount', 0)
-                    self.comment_count = data.get('commentCount', 0)
-                    self.total_view = data.get('totalView', 0) or data.get('viewCount', 0)
-                    
+                    self.text = (
+                        data.get("text", "")
+                        or data.get("content", "")
+                        or data.get("novelText", "")
+                    )
+                    self.description = data.get("description", "")
+                    self.author_name = data.get("authorName", "") or data.get(
+                        "userName", ""
+                    )
+                    self.create_date = data.get("createDate", "")
+                    self.bookmark_count = data.get("bookmarkCount", 0)
+                    self.comment_count = data.get("commentCount", 0)
+                    self.total_view = data.get("totalView", 0) or data.get(
+                        "viewCount", 0
+                    )
+
                 def __getattr__(self, name):
                     # 允许访问原始数据中的任何字段
                     return self.raw_data.get(name, None)
-            
+
             return SimpleNovelResult(novel_data)
-            
+
         except PixivError:
             raise
         except Exception as e:

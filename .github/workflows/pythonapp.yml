@@ -29,5 +29,7 @@ jobs:
         run: poetry install
       - name: Install dependencies tests
         run: poetry install --with test
+      - name: Make repo importable (set PYTHONPATH)
+        run: echo "PYTHONPATH=$GITHUB_WORKSPACE" >> $GITHUB_ENV
       - name: Run tests
         run: poetry run pytest

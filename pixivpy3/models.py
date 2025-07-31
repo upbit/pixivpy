@@ -299,7 +299,7 @@ class WebviewNovel(BasePixivpyModel):
     replaceable_item_ids: Optional[List[str]] = None
     ai_type: Optional[int] = None
     is_original: Optional[bool] = None
-    
+
     # AJAX API返回的额外字段
     bookmark_count: Optional[int] = None
     comment_count: Optional[int] = None
