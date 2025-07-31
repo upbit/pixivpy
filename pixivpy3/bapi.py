@@ -43,19 +43,38 @@ class ByPassSniApi(AppPixivAPI):
                 response = requests.get(
                     url, headers=headers, params=params, timeout=timeout
                 )
-            except (requests.exceptions.JSONDecodeError, KeyError):
-                logger.debug(
-                    f"Unable to get according hostname info from '{url}', skipping...",
-                    exc_info=True,
-                )
-            except requests.ConnectionError:
-                logger.debug(
-                    f"Unable to establish connection to '{url}', skipping...",
-                    exc_info=True,
-                )
-            else:
-                domain_data = response.json()["Answer"][0]["data"]
+                response.raise_for_status()  # 检查HTTP状态码
+
+                # 解析JSON响应
+                json_data = response.json()
+
+                # 检查响应格式
+                if "Answer" not in json_data or not json_data["Answer"]:
+                    logger.debug(f"No Answer field in response from '{url}'")
+                    continue
+
+                domain_data = json_data["Answer"][0]["data"]
                 self.hosts = f"https://{domain_data}"
+                logger.info(
+                    f"Successfully resolved {hostname} to {domain_data} via {url}"
+                )
                 return self.hosts
 
+            except (requests.exceptions.JSONDecodeError, KeyError, IndexError) as e:
+                logger.debug(
+                    f"Unable to parse response from '{url}': {e}",
+                    exc_info=True,
+                )
+            except requests.ConnectionError as e:
+                logger.debug(
+                    f"Unable to establish connection to '{url}': {e}",
+                    exc_info=True,
+                )
+            except requests.RequestException as e:
+                logger.debug(
+                    f"Request failed for '{url}': {e}",
+                    exc_info=True,
+                )
+
+        logger.warning(f"Failed to resolve {hostname} via any DoH service")
         return False
