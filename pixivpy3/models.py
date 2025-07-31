@@ -278,26 +278,52 @@ class WebviewNovel(BasePixivpyModel):
             alias_generator = to_camel
             allow_population_by_field_name = True
 
-    id: str
-    title: str
-    series_id: Optional[str]
-    series_title: Optional[str]
-    series_is_watched: Optional[bool]
-    user_id: str
-    cover_url: str
-    tags: List[str]
-    caption: str
-    cdate: str
-    rating: NovelRating
-    text: str
-    marker: Optional[str]
-    illusts: List[str]
-    images: List[str]
-    series_navigation: Union[NovelNavigationInfo, EmptyObject, None]
-    glossary_items: List[str]
-    replaceable_item_ids: List[str]
-    ai_type: int
-    is_original: bool
+    # 基础字段
+    id: Optional[str] = None
+    title: Optional[str] = None
+    series_id: Optional[str] = None
+    series_title: Optional[str] = None
+    series_is_watched: Optional[bool] = None
+    user_id: Optional[str] = None
+    cover_url: Optional[str] = None
+    tags: Optional[List[str]] = None
+    caption: Optional[str] = None
+    cdate: Optional[str] = None
+    rating: Optional[NovelRating] = None
+    text: Optional[str] = None
+    marker: Optional[str] = None
+    illusts: Optional[List[str]] = None
+    images: Optional[List[str]] = None
+    series_navigation: Optional[Union[NovelNavigationInfo, EmptyObject, None]] = None
+    glossary_items: Optional[List[str]] = None
+    replaceable_item_ids: Optional[List[str]] = None
+    ai_type: Optional[int] = None
+    is_original: Optional[bool] = None
+    
+    # AJAX API返回的额外字段
+    bookmark_count: Optional[int] = None
+    comment_count: Optional[int] = None
+    marker_count: Optional[int] = None
+    create_date: Optional[str] = None
+    upload_date: Optional[str] = None
+    description: Optional[str] = None
+    author_id: Optional[str] = None
+    author_name: Optional[str] = None
+    author_account: Optional[str] = None
+    author_profile_image_urls: Optional[dict] = None
+    is_bookmarked: Optional[bool] = None
+    is_followed: Optional[bool] = None
+    is_mypixiv_only: Optional[bool] = None
+    is_x_restricted: Optional[bool] = None
+    novel_ai_type: Optional[int] = None
+    restrict: Optional[int] = None
+    x_restrict: Optional[int] = None
+    total_view: Optional[int] = None
+    total_bookmarks: Optional[int] = None
+    total_comments: Optional[int] = None
+    visible: Optional[bool] = None
+    is_muted: Optional[bool] = None
+    comment_access_control: Optional[int] = None
 
 
 class UserBookmarksNovel(BasePixivpyModel):

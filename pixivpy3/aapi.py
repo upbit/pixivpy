@@ -859,26 +859,74 @@ class AppPixivAPI(BasePixivAPI):
         raw: bool = False,
         req_auth: bool = True,
     ) -> models.WebviewNovel | str:
-        # change new endpoint due to #337
-        url = f"{self.hosts}/webview/v2/novel"
-        params = {
-            "id": novel_id,
-            "viewer_version": "20221031_ai",
+        """使用AJAX API获取小说内容（按照TypeScript代码思路）"""
+        
+        # 构建AJAX URL - 注意要用www而不是app-api
+        if "app-api" in self.hosts:
+            base_url = self.hosts.replace("app-api", "www")
+        else:
+            base_url = self.hosts
+        
+        url = f"{base_url}/ajax/novel/{novel_id}"
+        
+        headers = {
+            'Accept': 'application/json, text/plain, */*',
+            'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'X-Requested-With': 'XMLHttpRequest',
+            'Referer': f'{base_url}/novel/show.php?id={novel_id}',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'DNT': '1',
+            'Connection': 'keep-alive',
+            'Sec-Fetch-Dest': 'empty',
+            'Sec-Fetch-Mode': 'cors',
+            'Sec-Fetch-Site': 'same-origin',
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache',
+            'Sec-Ch-Ua': '"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
+            'Sec-Ch-Ua-Mobile': '?0',
+            'Sec-Ch-Ua-Platform': '"Windows"',
         }
-
-        r = self.no_auth_requests_call("GET", url, params=params, req_auth=req_auth)
+        
+        
+        # 添加随机延迟，避免被检测
+        import time
+        import random
+        time.sleep(random.uniform(1, 3))
+        r = self.no_auth_requests_call("GET", url, headers=headers, req_auth=req_auth)
         if raw:
             return r.text
-
-        # extract JSON content
-        match = re.search(r"novel:\s({.+}),\s+isOwnWork", r.text)
-        if not match or len(match.groups()) < 1:
-            msg = f"Extract novel content error: {r.text}"
-            raise PixivError(msg, header=r.headers, body=r.text)
-
-        json_str = match.groups()[0].encode()
-        json_data = self.parse_json(json_str)
-        return self._load_model(json_data, models.WebviewNovel)
+        
+        try:
+            # 使用现有的parse_result方法
+            json_data = self.parse_result(r)
+            print(f"🔍 解析成功，数据keys: {list(json_data.keys())}")
+            
+            # 检查API错误
+            if 'error' in json_data and json_data['error']:
+                error_msg = json_data.get('message', '未知错误')
+                raise PixivError(f"API错误: {error_msg}")
+            
+            # 按照TS代码，数据在body中
+            if 'body' not in json_data:
+                msg = f"AJAX API响应格式不正确: {list(json_data.keys())}"
+                raise PixivError(msg, header=r.headers, body=r.text)
+            
+            novel_data = json_data['body']
+            print(f"获取到body数据，类型: {type(novel_data)}")
+            print(f"body数据keys: {list(novel_data.keys()) if hasattr(novel_data, 'keys') else 'No keys'}")
+            
+            if not novel_data:
+                raise PixivError("API返回空数据")
+            
+            # 直接返回原始数据，避免模型验证问题
+            if raw:
+                return novel_data
+        except PixivError:
+            raise
+        except Exception as e:
+            msg = f"处理AJAX响应时出错: {e}"
+            raise PixivError(msg, header=r.headers, body=r.text) from e
 
     # 小说正文 (deprecated)
     def novel_text(
