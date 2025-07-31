@@ -115,6 +115,9 @@ class UserInfo(BasePixivpyModel):
     comment: Optional[str] = None  # present only on `user_detail` endpoint
     is_followed: Optional[bool]
     is_access_blocking_user: Optional[bool] = None
+    is_accept_request: Optional[bool] = (
+        None  # present only on `user_following` and `user_follower` endpoint
+    )
 
 
 class CommentUser(BasePixivpyModel):
