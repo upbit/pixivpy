@@ -900,7 +900,6 @@ class AppPixivAPI(BasePixivAPI):
         try:
             # 使用现有的parse_result方法
             json_data = self.parse_result(r)
-            print(f"🔍 解析成功，数据keys: {list(json_data.keys())}")
             
             # 检查API错误
             if 'error' in json_data and json_data['error']:
@@ -913,15 +912,33 @@ class AppPixivAPI(BasePixivAPI):
                 raise PixivError(msg, header=r.headers, body=r.text)
             
             novel_data = json_data['body']
-            print(f"获取到body数据，类型: {type(novel_data)}")
-            print(f"body数据keys: {list(novel_data.keys()) if hasattr(novel_data, 'keys') else 'No keys'}")
-            
             if not novel_data:
                 raise PixivError("API返回空数据")
             
             # 直接返回原始数据，避免模型验证问题
             if raw:
                 return novel_data
+            
+            # 创建一个简化的结果对象，包含主要信息
+            class SimpleNovelResult:
+                def __init__(self, data):
+                    self.raw_data = data
+                    self.title = data.get('title', '')
+                    # 尝试多个可能的字段名来获取小说内容
+                    self.text = data.get('text', '') or data.get('content', '') or data.get('novelText', '')
+                    self.description = data.get('description', '')
+                    self.author_name = data.get('authorName', '') or data.get('userName', '')
+                    self.create_date = data.get('createDate', '')
+                    self.bookmark_count = data.get('bookmarkCount', 0)
+                    self.comment_count = data.get('commentCount', 0)
+                    self.total_view = data.get('totalView', 0) or data.get('viewCount', 0)
+                    
+                def __getattr__(self, name):
+                    # 允许访问原始数据中的任何字段
+                    return self.raw_data.get(name, None)
+            
+            return SimpleNovelResult(novel_data)
+            
         except PixivError:
             raise
         except Exception as e:

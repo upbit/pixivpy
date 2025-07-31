@@ -13,7 +13,7 @@ from pixivpy3 import AppPixivAPI, ByPassSniApi
 import json
 
 def test_webview_novel():
-    # 使用ByPassSniApi绕过GFW和Cloudflare
+    # 方案1: 使用ByPassSniApi绕过GFW和Cloudflare
     print("="*60)
     print("方案1: 使用ByPassSniApi")
     print("="*60)
@@ -64,7 +64,7 @@ def test_webview_novel():
                 text_length = len(result.text) if result.text else 0
                 print(f"✓ 内容长度: {text_length} 字符")
                 if text_length > 0:
-                    print(f"✓ 内容预览: {result.text[:100]}...")
+                    print(f"✓ 内容预览: {result.text[:500]}...")
                 else:
                     print("⚠️  内容为空")
                     
